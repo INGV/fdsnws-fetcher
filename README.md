@@ -14,19 +14,17 @@ This docker can be run:
  - get StationXML paramenters (`-u`) and TYPE (`-t`) as input params
  - search the "StationXML paramenters" on all the the StationXML FDSN entry point available (INGV, IRIS, ecc...)
  - put the output "resp" or "dless" files into the `$(pwd)/OUTPUT`; print the "dataselect_list" on screen
-- as "**web services**" with (`-m "ws"`):
- - open the URL `http://<host>:8888/query?params=<StationXML_paramenters>&type=<type>` 
 
 ### Build docker
 ```
-$ git clone git@gitlab.rm.ingv.it:uf/docker_StationXML2SEED.git
-$ cd docker_StationXML2SEED
-$ docker build --tag stationxml2seed:1.0 . 
+$ git clone git@gitlab.rm.ingv.it:docker/fdsnws_fetcher.git
+$ cd fdsnws_fetcher
+$ docker build --tag fdsnws_fetcher:1.0 . 
 ```
 
 in case of errors, try:
 ```
-$ docker build --no-cache --pull --tag stationxml2seed:1.0 . 
+$ docker build --no-cache --pull --tag fdsnws_fetcher:1.0 . 
 ```
 
 ### Update `stationxml.conf`
