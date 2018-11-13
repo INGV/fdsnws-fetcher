@@ -186,14 +186,22 @@ echo ""
 
 if (( ${EXISTS} == 1 )); then
     if [[ "${TYPE}" == "resp" ]] || [[ "${TYPE}" == "dless" ]]; then
-        ${DIR_WORK}/02_get_dless.sh -t ${TYPE}
-    elif [[ "${TYPE}" == "dataselect_list" ]] || [[ "${TYPE}" == "miniseed" ]] || [[ "${TYPE}" == "sac" ]]; then
-        ${DIR_WORK}/04_get_dataselect_list-mseed-sac.sh -t ${TYPE}
+        ${DIR_WORK}/02_get_dless-resp.sh -t ${TYPE}
+    elif [[ "${TYPE}" == "sac" ]]; then
+        ${DIR_WORK}/02_get_dless-resp.sh -t ${TYPE}
+        ${DIR_WORK}/03_get_dataselect_list-mseed-sac.sh -t ${TYPE}
+    elif [[ "${TYPE}" == "dataselect_list" ]] || [[ "${TYPE}" == "miniseed" ]]; then
+        ${DIR_WORK}/03_get_dataselect_list-mseed-sac.sh -t ${TYPE}
         if [[ "${TYPE}" == "dataselect_list" ]]; then
             for FDSNWS_NODE_PATH in $( ls -d ${DIR_TMP}/* ); do
                 cat ${FDSNWS_NODE_PATH}/dataselect_urls.txt
             done
         fi
+    fi
+
+    # copy to output folder
+    if [ -d ./OUTPUT ]; then
+        cp -R ${DIR_TMP} ./OUTPUT
     fi
 else 
     echo ""

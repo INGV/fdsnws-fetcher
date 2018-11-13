@@ -106,7 +106,7 @@ for FDSNWS_NODE_PATH in $( ls -d ${DIR_TMP}/* ); do
         DATASELECT_URL="${DATASELECT_BASE_URL}?network=${NETWORK}&station=${STATION}&channel=${CHANNEL}${LOC_OPTIONAL}&starttime=${STARTTIME}&endtime=${ENDTIME}"
         echo "${DATASELECT_URL}" >> ${FDSNWS_NODE_PATH}/dataselect_urls.txt
 
-        if [[ "${TYPE}" == "miniseed" ]]; then
+        if [[ "${TYPE}" == "miniseed" ]] || [[ "${TYPE}" == "sac" ]]; then
             # create MSEED dir
             DIR_MSEED_NODE=${FDSNWS_NODE_PATH}/mseed
             mkdir -p ${DIR_MSEED_NODE}
@@ -122,18 +122,20 @@ for FDSNWS_NODE_PATH in $( ls -d ${DIR_TMP}/* ); do
                     echo "OK - file ${OUTPUTMINISEED} successfully downloaded."
                 fi
                 if [[ "${TYPE}" == "sac" ]]; then
-                    # create SAC dir
-                    DIR_SAC_NODE=${FDSNWS_NODE_PATH}/sac
-                    mkdir -p ${DIR_SAC_NODE}
                     if [ -f ${OUTPUTDATALESS} ]; then
+                        # create SAC dir
+                        DIR_SAC_NODE=${FDSNWS_NODE_PATH}/sac
+                        if [ ! -d ${DIR_SAC_NODE} ]; then
+                            mkdir -p ${DIR_SAC_NODE}
+                        fi
                         ${RDSEED} -o SAC -q ${DIR_SAC_NODE} -d -f ${OUTPUTMINISEED} -g ${OUTPUTDATALESS}
                         RET=$?
                         if [ $RET -ne 0 ]; then
                             echo " ERROR - converting ${OUTPUTMINISEED} to SAC format."
                         fi
+                    else
+                        echo " ERROR - skip SAC conversion. File ${OUTPUTDATALESS} not found."
                     fi
-                else
-                    echo " ERROR - skip SAC conversion. File ${OUTPUTDATALESS} not found."
                 fi
             elif [ ${RET_CODE} -eq 0 ] && [ ${HTTP_CODE} -eq 204 ]; then
                 echo "NODATA - requesting ${DATASELECT_URL}"

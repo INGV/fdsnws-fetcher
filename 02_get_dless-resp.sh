@@ -89,6 +89,10 @@ for FDSNWS_NODE_PATH in $( ls -d ${DIR_TMP}/* ); do
         #
         if [[ "${TYPE}" == "resp" ]]; then
             if [ -f ${DIR_DLESS_NODE}/${NETWORK}_${STATION}.dless ]; then
+                DIR_RESP_NODE=${FDSNWS_NODE_PATH}/resp
+                if [ ! -d ${DIR_RESP_NODE} ]; then
+                    mkdir -p ${DIR_RESP_NODE}
+                fi
                 echo " create RESP for \"${NETWORK}_${STATION}\" from \"${DIR_DLESS_NODE}/${NETWORK}_${STATION}.dless\""
                 ${RDSEED} -f ${DIR_DLESS_NODE}/${NETWORK}_${STATION}.dless -q ${DIR_RESP_NODE} >> ${DIR_LOG_NODE}/rdseed__${NETWORK}_${STATION}.out 2>> ${DIR_LOG_NODE}/rdseed__${NETWORK}_${STATION}.err
                 RET_RDSEED=${?}
@@ -102,5 +106,12 @@ for FDSNWS_NODE_PATH in $( ls -d ${DIR_TMP}/* ); do
         fi        
 
     done < ${FDSNWS_NODE_PATH}/net_sta.txt
+
+    # copy to OUTPUT folder
+    if [[ "${TYPE}" == "dless" ]]; then
+        cp -R ${DIR_DLESS_NODE} ./OUTPUT
+    elif [[ "${TYPE}" == "resp" ]]; then
+        cp -R ${DIR_RESP_NODE} ./OUTPUT
+    fi
     echo ""
 done
