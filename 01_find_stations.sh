@@ -198,11 +198,6 @@ if (( ${EXISTS} == 1 )); then
             done
         fi
     fi
-
-    # copy to output folder
-    if [ -d ./OUTPUT ]; then
-        cp -R ${DIR_TMP} ./OUTPUT
-    fi
 else 
     echo ""
     echo "There are no FDSNWS_NODE_URL that contains \"${STATIONXML_PARAMS}\"."
