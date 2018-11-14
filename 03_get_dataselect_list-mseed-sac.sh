@@ -108,11 +108,11 @@ for FDSNWS_NODE_PATH in $( ls -d ${DIR_TMP}/* ); do
 
         if [[ "${TYPE}" == "miniseed" ]] || [[ "${TYPE}" == "sac" ]]; then
             # create MSEED dir
-            DIR_MSEED_NODE=${FDSNWS_NODE_PATH}/mseed
+            DIR_MSEED_NODE=${FDSNWS_NODE_PATH}/miniseed
             mkdir -p ${DIR_MSEED_NODE}
 
             #
-            OUTPUTMINISEED="${DIR_MSEED_NODE}/${NETWORK}.${STATION}.${LOCATION}.${CHANNEL}.mseed"
+            OUTPUTMINISEED="${DIR_MSEED_NODE}/${NETWORK}.${STATION}.${LOCATION}.${CHANNEL}.miniseed"
             OUTPUTDATALESS="${FDSNWS_NODE_PATH}/dless/${NETWORK}_${STATION}.dless"
             curl "${DATASELECT_URL}" -o "${OUTPUTMINISEED}" --write-out "%{http_code}\\n" > ${FILE_CURL2_HTTPCODE} -s
             RET_CODE=$?

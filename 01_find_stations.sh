@@ -192,11 +192,6 @@ if (( ${EXISTS} == 1 )); then
         ${DIR_WORK}/03_get_dataselect_list-mseed-sac.sh -t ${TYPE}
     elif [[ "${TYPE}" == "dataselect_list" ]] || [[ "${TYPE}" == "miniseed" ]]; then
         ${DIR_WORK}/03_get_dataselect_list-mseed-sac.sh -t ${TYPE}
-        if [[ "${TYPE}" == "dataselect_list" ]]; then
-            for FDSNWS_NODE_PATH in $( ls -d ${DIR_TMP}/* ); do
-                cat ${FDSNWS_NODE_PATH}/dataselect_urls.txt
-            done
-        fi
     fi
 else 
     echo ""
@@ -204,6 +199,16 @@ else
     echo ""
     exit -1
 fi
+
+#
+for FDSNWS_NODE_PATH in $( ls -d ${DIR_TMP}/* ); do
+    if [ -d ${FDSNWS_NODE_PATH}/${TYPE} ]; then
+        DIR_OUTPUT_NODE=${DIR_OUTPUT}/$( basename ${FDSNWS_NODE_PATH} )
+        mkdir -p ${DIR_OUTPUT_NODE}
+
+        cp -R ${FDSNWS_NODE_PATH}/${TYPE} ${DIR_OUTPUT_NODE}
+    fi
+done
 
 # Remove temporary files/directories
 #if [ -d ${DIR_TMP} ]; then

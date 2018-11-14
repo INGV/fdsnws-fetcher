@@ -103,15 +103,6 @@ for FDSNWS_NODE_PATH in $( ls -d ${DIR_TMP}/* ); do
             else
                 echo "  the DLESS \"${DIR_DLESS_NODE}/${NETWORK}_${STATION}.dless\" doesn't exist"
             fi
-        fi        
-
+        fi
     done < ${FDSNWS_NODE_PATH}/net_sta.txt
-
-    # copy to OUTPUT folder
-    if [[ "${TYPE}" == "dless" ]]; then
-        cp -R ${DIR_DLESS_NODE} ./OUTPUT
-    elif [[ "${TYPE}" == "resp" ]]; then
-        cp -R ${DIR_RESP_NODE} ./OUTPUT
-    fi
-    echo ""
 done
