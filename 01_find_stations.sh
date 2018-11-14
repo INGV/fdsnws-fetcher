@@ -209,6 +209,9 @@ for FDSNWS_NODE_PATH in $( ls -d ${DIR_TMP}/* ); do
         cp -R ${FDSNWS_NODE_PATH}/${TYPE} ${DIR_OUTPUT_NODE}
     fi
 done
+echo ""
+echo "OUTPUT=${DIR_OUTPUT}"
+echo ""
 
 # Remove temporary files/directories
 #if [ -d ${DIR_TMP} ]; then

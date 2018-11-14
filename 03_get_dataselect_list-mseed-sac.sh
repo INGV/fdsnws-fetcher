@@ -86,6 +86,10 @@ for FDSNWS_NODE_PATH in $( ls -d ${DIR_TMP}/* ); do
     done
     # END - Parse URL params
 
+    # create 'dataselect_list' dir
+    DIR_DATASELECT_LIST_NODE=${FDSNWS_NODE_PATH}/dataselect_list
+    mkdir -p ${DIR_DATASELECT_LIST_NODE}
+
     # build base 'dataselect' URL
     DATASELECT_BASE_URL=$( echo ${STATIONXML_FULL_URL} | awk -F"?" '{print $1}' | sed 's/station/dataselect/' )
 
@@ -104,7 +108,7 @@ for FDSNWS_NODE_PATH in $( ls -d ${DIR_TMP}/* ); do
 
         # build DATASELCT URL
         DATASELECT_URL="${DATASELECT_BASE_URL}?network=${NETWORK}&station=${STATION}&channel=${CHANNEL}${LOC_OPTIONAL}&starttime=${STARTTIME}&endtime=${ENDTIME}"
-        echo "${DATASELECT_URL}" >> ${FDSNWS_NODE_PATH}/dataselect_urls.txt
+        echo "${DATASELECT_URL}" >> ${DIR_DATASELECT_LIST_NODE}/dataselect_urls.txt
 
         if [[ "${TYPE}" == "miniseed" ]] || [[ "${TYPE}" == "sac" ]]; then
             # create MSEED dir

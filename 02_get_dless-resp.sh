@@ -58,7 +58,7 @@ for FDSNWS_NODE_PATH in $( ls -d ${DIR_TMP}/* ); do
 
     # create DLESS dir
     DIR_DLESS_NODE=${FDSNWS_NODE_PATH}/dless
-    DIR_LOG_NODE=${FDSNWS_NODE_PATH}/log
+    DIR_LOG_NODE=${DIR_DLESS_NODE}/log
     mkdir -p ${DIR_DLESS_NODE}
     mkdir -p ${DIR_LOG_NODE}
 
@@ -69,14 +69,14 @@ for FDSNWS_NODE_PATH in $( ls -d ${DIR_TMP}/* ); do
         STATIONXML_FOR_DLESS=
 
         # build URL to get StationXML
-        STATIONXML_FULL_URL__NET__FIRST=$( echo ${STATIONXML_FULL_URL} | awk -F"network=" '{print $1}' )
-        STATIONXML_FULL_URL__NET__SECOND=$( echo ${STATIONXML_FULL_URL} | awk -F"network=" '{print $2}' | sed 's/^[^&]*//' )
-        STATIONXML_FOR_DLESS="${STATIONXML_FULL_URL__NET__FIRST}network=${NETWORK}${STATIONXML_FULL_URL__NET__SECOND}"
+#        STATIONXML_FULL_URL__NET__FIRST=$( echo ${STATIONXML_FULL_URL} | awk -F"network=" '{print $1}' )
+#        STATIONXML_FULL_URL__NET__SECOND=$( echo ${STATIONXML_FULL_URL} | awk -F"network=" '{print $2}' | sed 's/^[^&]*//' )
+#        STATIONXML_FOR_DLESS="${STATIONXML_FULL_URL__NET__FIRST}network=${NETWORK}${STATIONXML_FULL_URL__NET__SECOND}"
 
-        STATIONXML_FOR_DLESS__STA__FIRST=$( echo ${STATIONXML_FOR_DLESS} | awk -F"station=" '{print $1}' )
-        STATIONXML_FOR_DLESS__STA__SECOND=$( echo ${STATIONXML_FOR_DLESS} | awk -F"station=" '{print $2}' | sed 's/^[^&]*//' )
-        STATIONXML_FOR_DLESS="${STATIONXML_FOR_DLESS__STA__FIRST}station=${STATION}${STATIONXML_FOR_DLESS__STA__SECOND}"
-
+#        STATIONXML_FOR_DLESS__STA__FIRST=$( echo ${STATIONXML_FOR_DLESS} | awk -F"station=" '{print $1}' )
+#        STATIONXML_FOR_DLESS__STA__SECOND=$( echo ${STATIONXML_FOR_DLESS} | awk -F"station=" '{print $2}' | sed 's/^[^&]*//' )
+#        STATIONXML_FOR_DLESS="${STATIONXML_FOR_DLESS__STA__FIRST}station=${STATION}${STATIONXML_FOR_DLESS__STA__SECOND}"
+STATIONXML_FOR_DLESS=$( echo ${STATIONXML_FULL_URL} | sed -e "s/network=[^&]\+/network=${NETWORK}/" | sed -e "s/station=[^&]\+/station=${STATION}/" )
         #
         echo " create DLESS for \"${NETWORK}_${STATION}\" from \"${STATIONXML_FOR_DLESS}\""
         ${STATIONXML_TO_SEED} -o ${DIR_DLESS_NODE}/${NETWORK}_${STATION}.dless "${STATIONXML_FOR_DLESS}" >> ${DIR_LOG_NODE}/stationxml-converter__${NETWORK}_${STATION}.out 2>> ${DIR_LOG_NODE}/stationxml-converter__${NETWORK}_${STATION}.err
