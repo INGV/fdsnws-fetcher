@@ -12,12 +12,13 @@ RUN apt-get update \
     && apt-get dist-upgrade -y --no-install-recommends \
     && apt-get install -y \
         vim \
-	git \
-	telnet \
+        git \
+        telnet \
         dnsutils \
         wget \
-	curl \
-	default-jre
+        curl \
+        default-jre \
+        procps
 
 RUN apt-get install -y \
 	python-dev \
@@ -25,14 +26,14 @@ RUN apt-get install -y \
 	python-simplejson \
 	libcurl4-gnutls-dev \
 	libssl-dev \
-    	python \
+    python \
 	python-psutil \
 	python-requests \
 	python-jsonschema \
-    	python-setuptools \
+    python-setuptools \
 	python-dev \
 	build-essential \
-    	libxml2-dev \
+    libxml2-dev \
 	libxslt1-dev \
 	libz-dev
 
@@ -81,12 +82,14 @@ WORKDIR /opt
 RUN wget --no-check-certificate ${STATIONXML_CONVERTER}
 COPY 01_find_stations.sh /opt/
 COPY 02_get_dless-resp.sh /opt/
+COPY 021_get_dless-resp-parallel.sh /opt/
 COPY 03_get_dataselect_list-mseed-sac.sh /opt/
 COPY entrypoint.sh /opt/
 COPY config.sh /opt/
 COPY stationxml.conf /opt/
 RUN chmod 755 /opt/01_find_stations.sh
 RUN chmod 755 /opt/02_get_dless-resp.sh
+RUN chmod 755 /opt/021_get_dless-resp-parallel.sh
 RUN chmod 755 /opt/03_get_dataselect_list-mseed-sac.sh
 
 # Install service

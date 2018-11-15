@@ -18,42 +18,6 @@
 # Import config file
 . $(dirname $0)/config.sh
 
-# Functions
-function usage_entrypoint() {
-BASE_COMMAND="docker run -it --rm -v \$(pwd)/stationxml.conf:/opt/stationxml.conf"
-DOCKER_VOLUME_1="-v \$(pwd)/OUTPUT:/opt/OUTPUT"
-DOCKER_NAME="stationxml2seed:1.0"
-cat << EOF
-
- This docker could be run as "Web Service" or "CLI"
- This docker search the given STATIONXML_PARAMETERS on StationXML and convert it to RESP or DATALESS files or DATASELECT_LIST list.
-
- usage in "cli" mode: ${BASE_COMMAND} ${DOCKER_VOLUME_1} ${DOCKER_NAME} -m "cli"
-
-    Values for option -t: resp, dless, dataselect_list, miniseed, sac
-
-    Examples:
-     1) $ ${BASE_COMMAND} ${DOCKER_VOLUME_1} ${DOCKER_NAME} -m "cli" -u "network=IV&station=ACER&starttime=2017-11-02T00:00:00&endtime=2017-11-02T01:00:00" -t "dataselect_list"
-     2) $ ${BASE_COMMAND} ${DOCKER_VOLUME_1} ${DOCKER_NAME} -m "cli" -u "network=IV&latitude=42&longitude=12&maxradius=1" -t "dataselect_list"
-     3) $ ${BASE_COMMAND} ${DOCKER_VOLUME_1} ${DOCKER_NAME} -m "cli" -u "network=IV&latitude=47.12&longitude=11.38&maxradius=0.5&channel=HH?,EH?,HN?" -t "dataselect_list"
-     4) $ ${BASE_COMMAND} ${DOCKER_VOLUME_1} ${DOCKER_NAME} -m "cli" -u "network=IV&station=ACER&starttime=2017-11-02T00:00:00&endtime=2017-11-02T01:00:00&channel=L??" -t "dless"
-     5) $ ${BASE_COMMAND} ${DOCKER_VOLUME_1} ${DOCKER_NAME} -m "cli" -u "latitude=-3.66&longitude=127.92&maxradius=2&channel=HH?,EH?,HN?&starttime=2017-11-02T00:00:00&endtime=2017-11-02T01:00:00" -t "dataselect_list"
-     6) $ ${BASE_COMMAND} ${DOCKER_VOLUME_1} ${DOCKER_NAME} -m "cli" -u "latitude=-3.66&longitude=127.92&maxradius=2&channel=HH?,EH?,HN?&starttime=2017-11-02T00:00:00&endtime=2017-11-02T01:00:00" -t "resp"
-     7) $ ${BASE_COMMAND} ${DOCKER_VOLUME_1} ${DOCKER_NAME} -m "cli" -u "latitude=-3.66&longitude=127.92&maxradius=2&channel=HH?,EH?,HN?&starttime=2017-11-02T00:00:00&endtime=2017-11-02T01:00:00" -t "miniseed"
-
-     8) $ ${BASE_COMMAND} ${DOCKER_VOLUME_1} ${DOCKER_NAME} -m "cli" -u "latitude=-3.66&longitude=127.92&maxradius=2&channel=HH?,EH?,HN?&starttime=2017-11-02T00:00:00&endtime=2017-11-02T01:00:00" -t "sac"
-          Note: before request SAC you need request dataless by -t "dless"
-
- usage in "ws" mode: ${BASE_COMMAND} {DOCKER_NAME} -m "ws"
-    Examples:
-     1) http://<host>:8888/query?net=IV&sta=ACER&type=resp
-     2) http://<host>:8888/query?net=IV&sta=ACER&type=dless
-
-    with "ws" option, you must expose the Docker port with command '-p 8888:8888', then connect to: http://<host>:8888/query?params=<StationXML_paramenters>&type=<type>
-
-EOF
-}
-
 ### START - Check parameters ###
 IN__STATIONXML_URL=
 IN__TYPE=
@@ -84,7 +48,7 @@ fi
 if [[ -z ${IN__TYPE} ]]; then
 	TYPE="resp"
 else
-	if [[ "${IN__TYPE}" == "resp" ]] || [[ "${IN__TYPE}" == "dless" ]] || [[ "${IN__TYPE}" == "dataselect_list" ]] || [[ "${IN__TYPE}" == "miniseed" ]] || [[ "${IN__TYPE}" == "sac" ]]; then
+	if [[ "${IN__TYPE}" == "resp" ]] || [[ "${IN__TYPE}" == "dless" ]] || [[ "${IN__TYPE}" == "dataselect_list" ]] || [[ "${IN__TYPE}" == "miniseed" ]] || [[ "${IN__TYPE}" == "sac" ]] || [[ "${IN__TYPE}" == "fullseed" ]]; then
 		TYPE=${IN__TYPE} 
 	else
         echo ""
@@ -151,7 +115,8 @@ while read FDSNWS_NODE_URL; do
 
     HTTP_CODE=$( cat ${FILE_CURL1_HTTPCODE} )
     if (( ${RETURNED_CODE} == 0 )) && (( ${HTTP_CODE} == 200 )); then
-        echo " FOUND!"
+        N_STATIONS=$( grep -v ^"#" ${FILE_CURL1} | wc | awk '{print $1}' )
+        echo " ${N_STATIONS} station(s) found!"
         EXISTS=1
 
         # get node host (ie: rtserve.beg.utexas.edu, eida.ipgp.fr, webservices.ingv.it, ...)
@@ -187,7 +152,7 @@ echo ""
 if (( ${EXISTS} == 1 )); then
     if [[ "${TYPE}" == "resp" ]] || [[ "${TYPE}" == "dless" ]]; then
         ${DIR_WORK}/02_get_dless-resp.sh -t ${TYPE}
-    elif [[ "${TYPE}" == "sac" ]]; then
+    elif [[ "${TYPE}" == "sac" ]] || [[ "${TYPE}" == "fullseed" ]]; then
         ${DIR_WORK}/02_get_dless-resp.sh -t ${TYPE}
         ${DIR_WORK}/03_get_dataselect_list-mseed-sac.sh -t ${TYPE}
     elif [[ "${TYPE}" == "dataselect_list" ]] || [[ "${TYPE}" == "miniseed" ]]; then
@@ -210,7 +175,7 @@ for FDSNWS_NODE_PATH in $( ls -d ${DIR_TMP}/* ); do
     fi
 done
 echo ""
-echo "OUTPUT=${DIR_OUTPUT}"
+echo "OUTPUT=./OUTPUT/${DATE_NOW}"
 echo ""
 
 # Remove temporary files/directories

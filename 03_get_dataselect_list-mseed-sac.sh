@@ -140,6 +140,21 @@ for FDSNWS_NODE_PATH in $( ls -d ${DIR_TMP}/* ); do
                     else
                         echo " ERROR - skip SAC conversion. File ${OUTPUTDATALESS} not found."
                     fi
+                elif [[ "${TYPE}" == "fullseed" ]]; then
+                    if [ -f ${OUTPUTDATALESS} ]; then
+                        # create fullseed dir
+                        DIR_FULLSEED_NODE=${FDSNWS_NODE_PATH}/fullseed
+                        if [ ! -d ${DIR_FULLSEED_NODE} ]; then
+                            mkdir -p ${DIR_FULLSEED_NODE}
+                        fi
+                        ${RDSEED} -d -o 5 -q ${DIR_FULLSEED_NODE} -f ${OUTPUTMINISEED} -g ${OUTPUTDATALESS}
+                        RET=$?
+                        if [ $RET -ne 0 ]; then
+                            echo " ERROR - converting ${OUTPUTMINISEED} to FULLSEED format."
+                        fi
+                    else
+                        echo " ERROR - skip FULLSEED conversion. File ${OUTPUTDATALESS} not found."
+                    fi
                 fi
             elif [ ${RET_CODE} -eq 0 ] && [ ${HTTP_CODE} -eq 204 ]; then
                 echo "NODATA - requesting ${DATASELECT_URL}"

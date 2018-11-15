@@ -20,3 +20,34 @@ FILE_FDSNWS_NODES_URLS="stationxml.conf"
 # Set software
 STATIONXML_TO_SEED="java -jar ./stationxml-converter-1.0.9.jar -s"
 RDSEED="rdseed -R"
+
+# Set var
+N_PROCESS_TO_GET_DLESS=10
+
+# Functions
+function usage_entrypoint() {
+BASE_COMMAND="docker run -it --rm -v \$(pwd)/stationxml.conf:/opt/stationxml.conf"
+DOCKER_VOLUME_1="-v \$(pwd)/OUTPUT:/opt/OUTPUT"
+DOCKER_NAME="fdsnws_fetcher:1.0"
+cat << EOF
+
+ This docker search the given STATIONXML_PARAMETERS on StationXML and convert it to RESP or DATALESS files or DATASELECT_LIST list.
+
+ usage: 
+ $ ${BASE_COMMAND} ${DOCKER_VOLUME_1} ${DOCKER_NAME} -u <stationxml params>
+
+    Values for option -t: resp, dless, dataselect_list, miniseed, fullseed, sac
+
+    Examples:
+     1) $ ${BASE_COMMAND} ${DOCKER_VOLUME_1} ${DOCKER_NAME} -u "network=IV&station=ACER&starttime=2017-11-02T00:00:00&endtime=2017-11-02T01:00:00" -t "dataselect_list"
+     2) $ ${BASE_COMMAND} ${DOCKER_VOLUME_1} ${DOCKER_NAME} -u "network=IV&latitude=42&longitude=12&maxradius=1" -t "dataselect_list"
+     3) $ ${BASE_COMMAND} ${DOCKER_VOLUME_1} ${DOCKER_NAME} -u "network=IV&latitude=47.12&longitude=11.38&maxradius=0.5&channel=HH?,EH?,HN?" -t "dataselect_list"
+     4) $ ${BASE_COMMAND} ${DOCKER_VOLUME_1} ${DOCKER_NAME} -u "network=IV,MN&station=BLY&starttime=2017-11-02T00:00:00&endtime=2017-11-02T01:00:00" -t "dless"
+     5) $ ${BASE_COMMAND} ${DOCKER_VOLUME_1} ${DOCKER_NAME} -u "lat=45.75&lon=11.1&maxradius=1&starttime=2017-11-02T00:00:00&endtime=2017-11-02T01:00:00" -t "fullseed"
+     6) $ ${BASE_COMMAND} ${DOCKER_VOLUME_1} ${DOCKER_NAME} -u "lat=45.75&lon=11.1&maxradius=1&starttime=2017-11-02T00:00:00&endtime=2017-11-02T01:00:00" -t "resp"
+     7) $ ${BASE_COMMAND} ${DOCKER_VOLUME_1} ${DOCKER_NAME} -u "lat=45.75&lon=11.1&maxradius=1&starttime=2017-11-02T00:00:00&endtime=2017-11-02T01:00:00" -t "miniseed"
+     8) $ ${BASE_COMMAND} ${DOCKER_VOLUME_1} ${DOCKER_NAME} -u "lat=45.75&lon=11.1&maxradius=1&starttime=2017-11-02T00:00:00&endtime=2017-11-02T01:00:00" -t "sac"
+
+
+EOF
+}

@@ -20,18 +20,16 @@ IN__MODE=
 while getopts :hm: OPTION
 do
         case ${OPTION} in
-                h)
-                        usage_entrypoint
-                        exit 1
-                        ;;
-                m)      IN__MODE="${OPTARG}"
-                        ;;
-                \?)
-      			echo "Invalid option: -$OPTARG" >/dev/null
-                        ;;
+            h)
+                usage_entrypoint
+                exit 1
+                ;;
+            \?)
+                echo "Invalid option: -$OPTARG" >/dev/null
+                ;;
     		:)
       			echo "Option -$OPTARG requires an argument." >&2
-			usage_entrypoint
+                usage_entrypoint
      			exit 1
       			;;
         esac
@@ -39,17 +37,13 @@ done
 OPTIND=1
 
 # Check input parameter
-if [[ -z ${IN__MODE} ]]; then
+if [[ -z ${@} ]]; then
         echo ""
-        echo " Please, set the MODE (-m) option"
+        echo " Please, give me an input params"
         echo ""
         usage_entrypoint
         exit 1
 fi
 
-#
-if [[ "${IN__MODE}" == "ws" ]]; then
-	python ads_services.py
-else
-	./01_find_stations.sh $@
-fi
+# run command
+time ./01_find_stations.sh $@
