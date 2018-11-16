@@ -1,19 +1,11 @@
 #!/bin/bash
 #
-
 #
-# xml2seed.sh
-#
-# This script helps staging of station response metadata to a local storage.
-# It uses an FDSN station service to download station metadata in StationXML
-# and converts them in the desired format, here RESP files.
-#
-# (c) 2017 Peter Danecek <peter.danecek@ingv.it>,
-#          Valentino Lauciani <valentino.lauciani@ingv.it>,
+# (c) 2018 Valentino Lauciani <valentino.lauciani@ingv.it>,
 #          Matteo Quintiliani <matteo.quintiliani@ingv.it>,
 #          Istituto Nazione di Geofisica e Vulcanologia.
 # 
-#####################################################3
+#####################################################
 
 # Import config file
 . $(dirname $0)/config.sh
@@ -51,8 +43,7 @@ done
 BASENAME_DLESS=$( basename ${FILE_OUTPUT_DLESS} )
 DIRNAME_DLESS=$( dirname ${FILE_OUTPUT_DLESS} )
 DIR_NODE=$( cd ${DIRNAME_DLESS} && cd ../ && pwd )
-DIR_DLESS_LOG_NODE=${DIR_NODE}/log
-
+DIR_DLESS_LOG_NODE=${DIRNAME_DLESS}/log
 
 # create dir
 if [ ! -d ${DIR_DLESS_LOG_NODE} ]; then
@@ -64,7 +55,6 @@ ${STATIONXML_TO_SEED} -o ${FILE_OUTPUT_DLESS} "${STATIONXML_INPUT_URL}" >> ${DIR
 RET_STATIONXML_TO_SEED=${?}
 if (( ${RET_STATIONXML_TO_SEED} != 0 )); then
     echo "  ERROR - Retriving StationXML from \"${STATIONXML_INPUT_URL}\". Check: ${DIR_DLESS_LOG_NODE}/${BASENAME_DLESS}.stationxml-converter.err"
-    #cat ${DIR_DLESS_LOG_NODE}/${BASENAME_DLESS}.stationxml-converter.err
     echo ""
 fi
 
@@ -86,7 +76,5 @@ if [[ "${TYPE}" == "resp" ]]; then
             cat ${DIR_RESP_LOG_NODE}/${BASENAME_DLESS}.rdseed.err
             echo -e "\n"
         fi
-#    else
-#        echo "  the DLESS \"${FILE_OUTPUT_DLESS}\" doesn't exist"
     fi
 fi

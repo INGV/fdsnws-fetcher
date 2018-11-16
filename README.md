@@ -3,18 +3,13 @@
 This Docker is used to retrieve:
 - "**resp**": Response file
 - "**dless**": Dataless file
+- "**fullseed**": Dataless file
+- "**sac**": Dataless file
 - "**dataselect_list**" A list of **dataselect** URL to download required MSEED
 
 sending a request to each "**station**" FDSNS-WS to find available stations.
 
 ## Quickstart
-### How it works
-This docker can be run:
-- as "**cli**" with (`-m "cli"`) and:
- - get StationXML paramenters (`-u`) and TYPE (`-t`) as input params
- - search the "StationXML paramenters" on all the the StationXML FDSN entry point available (INGV, IRIS, ecc...)
- - put the output "resp" or "dless" files into the `$(pwd)/OUTPUT`; print the "dataselect_list" on screen
-
 ### Build docker
 ```
 $ git clone git@gitlab.rm.ingv.it:docker/fdsnws_fetcher.git

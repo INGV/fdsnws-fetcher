@@ -1,15 +1,11 @@
 #!/bin/bash
 #
 #
-# xml2seed.sh
-#
-# This script helps staging of station response metadata to a local storage.
-# It uses an FDSN station service to download station metadata in StationXML
-# and converts them in the desired format, here RESP files.
-#
-# (c) 2017 Peter Danecek <peter.danecek@ingv.it> and Valentino Lauciani <valentino.lauciani@ingv.it>, Istituto Nazione di Geofisica e Vulcanologia.
-#
-#####################################################3
+# (c) 2018 Valentino Lauciani <valentino.lauciani@ingv.it>,
+#          Matteo Quintiliani <matteo.quintiliani@ingv.it>,
+#          Istituto Nazione di Geofisica e Vulcanologia.
+# 
+#####################################################
 
 # Import config file
 . $(dirname $0)/config.sh

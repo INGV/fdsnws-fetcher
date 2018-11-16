@@ -1,19 +1,11 @@
 #!/bin/bash
 #
 
-#
-# xml2seed.sh
-#
-# This script helps staging of station response metadata to a local storage.
-# It uses an FDSN station service to download station metadata in StationXML
-# and converts them in the desired format, here RESP files.
-#
-# (c) 2017 Peter Danecek <peter.danecek@ingv.it>,
-#          Valentino Lauciani <valentino.lauciani@ingv.it>,
+# (c) 2018 Valentino Lauciani <valentino.lauciani@ingv.it>,
 #          Matteo Quintiliani <matteo.quintiliani@ingv.it>,
 #          Istituto Nazione di Geofisica e Vulcanologia.
 # 
-#####################################################3
+#####################################################
 
 # Import config file
 . $(dirname $0)/config.sh
@@ -110,68 +102,29 @@ for FDSNWS_NODE_PATH in $( ls -d ${DIR_TMP}/* ); do
         DATASELECT_URL="${DATASELECT_BASE_URL}?network=${NETWORK}&station=${STATION}&channel=${CHANNEL}${LOC_OPTIONAL}&starttime=${STARTTIME}&endtime=${ENDTIME}"
         echo "${DATASELECT_URL}" >> ${DIR_DATASELECT_LIST_NODE}/dataselect_urls.txt
 
-        if [[ "${TYPE}" == "miniseed" ]] || [[ "${TYPE}" == "sac" ]]; then
+        if [[ "${TYPE}" == "miniseed" ]] || [[ "${TYPE}" == "sac" ]] || [[ "${TYPE}" == "fullseed" ]]; then
             # create MSEED dir
             DIR_MSEED_NODE=${FDSNWS_NODE_PATH}/miniseed
-            mkdir -p ${DIR_MSEED_NODE}
+            if [ ! -d ${DIR_MSEED_NODE} ]; then
+                mkdir -p ${DIR_MSEED_NODE}
+            fi
 
             #
-            OUTPUTMINISEED="${DIR_MSEED_NODE}/${NETWORK}.${STATION}.${LOCATION}.${CHANNEL}.miniseed"
-            OUTPUTDATALESS="${FDSNWS_NODE_PATH}/dless/${NETWORK}_${STATION}.dless"
-            curl "${DATASELECT_URL}" -o "${OUTPUTMINISEED}" --write-out "%{http_code}\\n" > ${FILE_CURL2_HTTPCODE} -s
-            RET_CODE=$?
-            HTTP_CODE=$( cat ${FILE_CURL2_HTTPCODE} )
-            if [ ${RET_CODE} -eq 0 ] && [ ${HTTP_CODE} -eq 200 ]; then
-                if [ -f ${OUTPUTMINISEED} ]; then
-                    echo "OK - file ${OUTPUTMINISEED} successfully downloaded."
-                fi
-                if [[ "${TYPE}" == "sac" ]]; then
-                    if [ -f ${OUTPUTDATALESS} ]; then
-                        # create SAC dir
-                        DIR_SAC_NODE=${FDSNWS_NODE_PATH}/sac
-                        if [ ! -d ${DIR_SAC_NODE} ]; then
-                            mkdir -p ${DIR_SAC_NODE}
-                        fi
-                        ${RDSEED} -o SAC -q ${DIR_SAC_NODE} -d -f ${OUTPUTMINISEED} -g ${OUTPUTDATALESS}
-                        RET=$?
-                        if [ $RET -ne 0 ]; then
-                            echo " ERROR - converting ${OUTPUTMINISEED} to SAC format."
-                        fi
-                    else
-                        echo " ERROR - skip SAC conversion. File ${OUTPUTDATALESS} not found."
-                    fi
-                elif [[ "${TYPE}" == "fullseed" ]]; then
-                    if [ -f ${OUTPUTDATALESS} ]; then
-                        # create fullseed dir
-                        DIR_FULLSEED_NODE=${FDSNWS_NODE_PATH}/fullseed
-                        if [ ! -d ${DIR_FULLSEED_NODE} ]; then
-                            mkdir -p ${DIR_FULLSEED_NODE}
-                        fi
-                        ${RDSEED} -d -o 5 -q ${DIR_FULLSEED_NODE} -f ${OUTPUTMINISEED} -g ${OUTPUTDATALESS}
-                        RET=$?
-                        if [ $RET -ne 0 ]; then
-                            echo " ERROR - converting ${OUTPUTMINISEED} to FULLSEED format."
-                        fi
-                    else
-                        echo " ERROR - skip FULLSEED conversion. File ${OUTPUTDATALESS} not found."
-                    fi
-                fi
-            elif [ ${RET_CODE} -eq 0 ] && [ ${HTTP_CODE} -eq 204 ]; then
-                echo "NODATA - requesting ${DATASELECT_URL}"
-                echo "         return RET_CODE=${RET_CODE}, HTTP_CODE=${HTTP_CODE}"
-                if [ -f ${OUTPUTMINISEED} ]; then
-                    rm -f ${OUTPUTMINISEED}
-                fi
-                echo ""
-            else
-                echo "ERROR - requesting ${DATASELECT_URL}"
-                echo "        return RET_CODE=${RET_CODE}, HTTP_CODE=${HTTP_CODE}"
-                if [ -f ${OUTPUTMINISEED} ]; then
-                    rm -f ${OUTPUTMINISEED}
-                fi
-                echo ""
-            fi
+            FILE_OUTPUT_MSEED="${DIR_MSEED_NODE}/${NETWORK}.${STATION}.${LOCATION}.${CHANNEL}.miniseed"
+            FILE_OUTPUT_DLESS="${FDSNWS_NODE_PATH}/dless/${NETWORK}_${STATION}.dless"
+            
+            # Running process
+            ${DIR_WORK}/031_get_mseed-sac_parallel.sh -o ${FILE_OUTPUT_MSEED} -d ${FILE_OUTPUT_DLESS} -u ${DATASELECT_URL} -t ${TYPE} &
+
+            # Checking process number
+            RUNNING_PROCESS=$( ps axu | grep "031_get_mseed-sac_parallel.sh" | grep -v "grep" | wc | awk '{print $1}' )
+            while (( ${RUNNING_PROCESS} > ${N_PROCESS_TO_GET_DLESS} )); do
+                echo " !!! there are just \"${RUNNING_PROCESS}\" parallel process running (the limit is \"${N_PROCESS_TO_GET_DLESS}\"), waiting..."
+                sleep 10
+                RUNNING_PROCESS=$( ps axu | grep "031_get_mseed-sac_parallel.sh" | grep -v "grep" | wc | awk '{print $1}' )
+            done
         fi
     done < ${FDSNWS_NODE_PATH}/stationxml_channel.txt
 done
+wait
 echo ""

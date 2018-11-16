@@ -1,19 +1,11 @@
 #!/bin/bash
 #
-
 #
-# xml2seed.sh
-#
-# This script helps staging of station response metadata to a local storage.
-# It uses an FDSN station service to download station metadata in StationXML
-# and converts them in the desired format, here RESP files.
-#
-# (c) 2017 Peter Danecek <peter.danecek@ingv.it>,
-#          Valentino Lauciani <valentino.lauciani@ingv.it>,
+# (c) 2018 Valentino Lauciani <valentino.lauciani@ingv.it>,
 #          Matteo Quintiliani <matteo.quintiliani@ingv.it>,
 #          Istituto Nazione di Geofisica e Vulcanologia.
 # 
-#####################################################3
+#####################################################
 
 # Import config file
 . $(dirname $0)/config.sh
@@ -82,46 +74,18 @@ for FDSNWS_NODE_PATH in $( ls -d ${DIR_TMP}/* ); do
         STATIONXML_FOR_DLESS=$( echo ${STATIONXML_FULL_URL} | sed -e "s/network=[^&]\+//" | sed -e "s/station=[^&]\+//" )"&network=${NETWORK}&station=${STATION}"
         # END - Soluzione 2
         #
-#        echo " create DLESS for \"${NETWORK}_${STATION}\" from \"${STATIONXML_FOR_DLESS}\""
+
+        # Running process
+        ${DIR_WORK}/021_get_dless-resp-parallel.sh -o ${DIR_DLESS_NODE}/${NETWORK}_${STATION}.dless -u "${STATIONXML_FOR_DLESS}" -t ${TYPE} &
 
         # Checking process number
         RUNNING_PROCESS=$( ps axu | grep "021_get_dless-resp-parallel.sh" | grep -v "grep" | wc | awk '{print $1}' )
         while (( ${RUNNING_PROCESS} > ${N_PROCESS_TO_GET_DLESS} )); do
-            echo " !!! there are just \"${RUNNING_PROCESS}\" parallel process (the limit is \"${N_PROCESS_TO_GET_DLESS}\") running, waiting..."
+            echo " !!! there are just \"${RUNNING_PROCESS}\" parallel process running (the limit is \"${N_PROCESS_TO_GET_DLESS}\"), waiting..."
             sleep 10
             RUNNING_PROCESS=$( ps axu | grep "021_get_dless-resp-parallel.sh" | grep -v "grep" | wc | awk '{print $1}' )
         done
-        ${DIR_WORK}/021_get_dless-resp-parallel.sh -o ${DIR_DLESS_NODE}/${NETWORK}_${STATION}.dless -u "${STATIONXML_FOR_DLESS}" -t ${TYPE} &
-        sleep 1
-
-#        ${STATIONXML_TO_SEED} -o ${DIR_DLESS_NODE}/${NETWORK}_${STATION}.dless "${STATIONXML_FOR_DLESS}" >> ${DIR_LOG_NODE}/stationxml-converter__${NETWORK}_${STATION}.out 2>> ${DIR_LOG_NODE}/stationxml-converter__${NETWORK}_${STATION}.err
-#        RET_STATIONXML_TO_SEED=${?}
-#        if (( ${RET_STATIONXML_TO_SEED} != 0 )); then
-#            cat ${DIR_LOG_NODE}/stationxml-converter__${NETWORK}_${STATION}.err
-#            echo -e "\n"
-#        fi
-
-        #
-#        if [[ "${TYPE}" == "resp" ]]; then
-#            if [ -f ${DIR_DLESS_NODE}/${NETWORK}_${STATION}.dless ]; then
-#                DIR_RESP_NODE=${FDSNWS_NODE_PATH}/resp
-#                if [ ! -d ${DIR_RESP_NODE} ]; then
-#                    mkdir -p ${DIR_RESP_NODE}
-#                fi
-#                echo " create RESP for \"${NETWORK}_${STATION}\" from \"${DIR_DLESS_NODE}/${NETWORK}_${STATION}.dless\""
-#                ${RDSEED} -f ${DIR_DLESS_NODE}/${NETWORK}_${STATION}.dless -q ${DIR_RESP_NODE} >> ${DIR_LOG_NODE}/rdseed__${NETWORK}_${STATION}.out 2>> ${DIR_LOG_NODE}/rdseed__${NETWORK}_${STATION}.err
-#                RET_RDSEED=${?}
-#                if (( ${RET_RDSEED} != 0 )); then
-#                    cat ${DIR_LOG_NODE}/rdseed__${NETWORK}_${STATION}.err
-#                    echo -e "\n"
-#                fi
-#            else
-#                echo "  the DLESS \"${DIR_DLESS_NODE}/${NETWORK}_${STATION}.dless\" doesn't exist"
-#            fi
-#        fi
     done < ${FDSNWS_NODE_PATH}/net_sta.txt
 done
-#echo ""
-#echo "waiting, retring data..."
 wait
 echo ""

@@ -1,19 +1,11 @@
 #!/bin/bash
 #
-
 #
-# xml2seed.sh
-#
-# This script helps staging of station response metadata to a local storage.
-# It uses an FDSN station service to download station metadata in StationXML
-# and converts them in the desired format, here RESP files.
-#
-# (c) 2017 Peter Danecek <peter.danecek@ingv.it>,
-#          Valentino Lauciani <valentino.lauciani@ingv.it>,
+# (c) 2018 Valentino Lauciani <valentino.lauciani@ingv.it>,
 #          Matteo Quintiliani <matteo.quintiliani@ingv.it>,
 #          Istituto Nazione di Geofisica e Vulcanologia.
 # 
-#####################################################3
+#####################################################
 
 # Import config file
 . $(dirname $0)/config.sh
@@ -48,7 +40,7 @@ fi
 if [[ -z ${IN__TYPE} ]]; then
 	TYPE="resp"
 else
-	if [[ "${IN__TYPE}" == "resp" ]] || [[ "${IN__TYPE}" == "dless" ]] || [[ "${IN__TYPE}" == "dataselect_list" ]] || [[ "${IN__TYPE}" == "miniseed" ]] || [[ "${IN__TYPE}" == "sac" ]] || [[ "${IN__TYPE}" == "fullseed" ]]; then
+	if [[ "${IN__TYPE}" == "resp" ]] || [[ "${IN__TYPE}" == "dless" ]] || [[ "${IN__TYPE}" == "dataselect_list" ]] || [[ "${IN__TYPE}" == "miniseed" ]] || [[ "${IN__TYPE}" == "sac" ]] || [[ "${IN__TYPE}" == "fullseedno" ]]; then
 		TYPE=${IN__TYPE} 
 	else
         echo ""
@@ -61,7 +53,7 @@ fi
 
 # Create dir
 if [ ! -d ${DIR_LOG} ]; then
-	mkdir -p ${DIR_LOG}
+    mkdir -p ${DIR_LOG}
 fi
 if [ ! -d ${DIR_OUTPUT} ]; then
     mkdir -p ${DIR_OUTPUT}
@@ -155,6 +147,9 @@ if (( ${EXISTS} == 1 )); then
     elif [[ "${TYPE}" == "sac" ]] || [[ "${TYPE}" == "fullseed" ]]; then
         ${DIR_WORK}/02_get_dless-resp.sh -t ${TYPE}
         ${DIR_WORK}/03_get_dataselect_list-mseed-sac.sh -t ${TYPE}
+        if [[ "${TYPE}" == "fullseed" ]]; then
+            ${DIR_WORK}/04_get_fullseed.sh -t ${TYPE}
+        fi
     elif [[ "${TYPE}" == "dataselect_list" ]] || [[ "${TYPE}" == "miniseed" ]]; then
         ${DIR_WORK}/03_get_dataselect_list-mseed-sac.sh -t ${TYPE}
     fi
