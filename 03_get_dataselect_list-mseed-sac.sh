@@ -65,7 +65,7 @@ for FDSNWS_NODE_PATH in $( ls -d ${DIR_TMP}/* ); do
     ENDTIME="$( date +%Y-%m-%d )T23:59:59"
 
     set -f   # disable wildcard expansion
-    ARRAY_URL_TMP=(${DATASELECT_PARAMS//[=&]/ })
+    ARRAY_URL_TMP=(${STATIONXML_FULL_URL//[=&]/ })
     set +f   # restore wildcard expansion
 
     for ((i=0; i<${#ARRAY_URL_TMP[@]}; i+=2))
