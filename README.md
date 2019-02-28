@@ -1,4 +1,4 @@
-# docker_StationXML2SEED
+# fdsnws-fetcher
 
 This Docker is used to retrieve:
 - "**resp**": Response file
