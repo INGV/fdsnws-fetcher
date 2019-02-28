@@ -10,8 +10,9 @@ sending a request to each "**station**" FDSNS-WS to find available stations.
 
 ## Quickstart
 ### Build docker
+Clone this repository, then:
+
 ```
-$ git clone git@gitlab.rm.ingv.it:docker/fdsnws-fetcher.git
 $ cd fdsnws-fetcher
 $ docker build --tag fdsnws-fetcher:1.0 . 
 ```
