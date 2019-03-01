@@ -85,7 +85,7 @@ COPY 02_get_dless-resp.sh /opt/
 COPY 021_get_dless-resp_parallel.sh /opt/
 COPY 03_get_dataselect_list-mseed-sac.sh /opt/
 COPY 031_get_mseed-sac_parallel.sh /opt/
-COPY 04_get_fullseed.sh /opt/
+#COPY 04_get_fullseed.sh /opt/
 COPY entrypoint.sh /opt/
 COPY config.sh /opt/
 COPY stationxml.conf /opt/
