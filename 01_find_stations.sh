@@ -70,6 +70,7 @@ SEED_2_OUTPUT="rdseed -R"
 # Set StationXML config file
 echo "StationXML used to find NETWORK/STATION (update your \"${FILE_FDSNWS_NODES_URLS}\" file to add more)"
 if [ -f ${FILE_FDSNWS_NODES_URLS} ]; then
+	echo "StationXML used to find NETWORK/STATION (update your \"${FILE_FDSNWS_NODES_URLS}\" file to add more)"
 	cat ${FILE_FDSNWS_NODES_URLS}
 else
 	echo ""
