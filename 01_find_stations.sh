@@ -69,7 +69,14 @@ SEED_2_OUTPUT="rdseed -R"
 
 # Set StationXML config file
 echo "StationXML used to find NETWORK/STATION (update your \"${FILE_FDSNWS_NODES_URLS}\" file to add more)"
-cat ${FILE_FDSNWS_NODES_URLS}
+if [ -f ${FILE_FDSNWS_NODES_URLS} ]; then
+	cat ${FILE_FDSNWS_NODES_URLS}
+else
+	echo ""
+	echo " Then file \"${FILE_FDSNWS_NODES_URLS}\" doesn't exist; check that it is mounted as a docker volume. View the help output."
+	echo ""
+	exit 1
+fi
 echo ""
 
 # Parse input URL
