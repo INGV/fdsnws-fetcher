@@ -68,7 +68,7 @@ STATIONXML_TO_SEED="java -jar ./stationxml-converter-1.0.9.jar -s"
 SEED_2_OUTPUT="rdseed -R"
 
 # Set StationXML config file
-echo "StationXML used to find NETWORK/STATION (update your \"stationxml.conf\" file to add more)"
+echo "StationXML used to find NETWORK/STATION (update your \"${FILE_FDSNWS_NODES_URLS}\" file to add more)"
 cat ${FILE_FDSNWS_NODES_URLS}
 echo ""
 

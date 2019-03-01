@@ -24,7 +24,7 @@ N_PROCESS_TO_GET_DLESS=10
 
 # Functions
 function usage_entrypoint() {
-BASE_COMMAND="docker run -it --rm -v \$(pwd)/stationxml.conf:/opt/stationxml.conf"
+BASE_COMMAND="docker run -it --rm -v \$(pwd)/${FILE_FDSNWS_NODES_URLS}:/opt/${FILE_FDSNWS_NODES_URLS}"
 DOCKER_VOLUME_1="-v \$(pwd)/OUTPUT:/opt/OUTPUT"
 DOCKER_NAME="fdsnws-fetcher:1.0"
 cat << EOF
