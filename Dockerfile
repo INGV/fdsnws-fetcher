@@ -94,7 +94,7 @@ RUN chmod 755 /opt/02_get_dless-resp.sh
 RUN chmod 755 /opt/021_get_dless-resp_parallel.sh
 RUN chmod 755 /opt/03_get_dataselect_list-mseed-sac.sh
 RUN chmod 755 /opt/031_get_mseed-sac_parallel.sh
-RUN chmod 755 /opt/04_get_fullseed.sh
+#RUN chmod 755 /opt/04_get_fullseed.sh
 
 # Install service
 WORKDIR /opt
