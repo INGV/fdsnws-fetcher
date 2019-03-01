@@ -88,7 +88,7 @@ COPY 031_get_mseed-sac_parallel.sh /opt/
 #COPY 04_get_fullseed.sh /opt/
 COPY entrypoint.sh /opt/
 COPY config.sh /opt/
-COPY stationxml.conf /opt/
+#COPY stationxml.conf /opt/
 RUN chmod 755 /opt/01_find_stations.sh
 RUN chmod 755 /opt/02_get_dless-resp.sh
 RUN chmod 755 /opt/021_get_dless-resp_parallel.sh
