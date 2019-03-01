@@ -26,29 +26,16 @@ RUN apt-get install -y \
 	python-simplejson \
 	libcurl4-gnutls-dev \
 	libssl-dev \
-    python \
+	python \
 	python-psutil \
 	python-requests \
 	python-jsonschema \
-    python-setuptools \
+	python-setuptools \
 	python-dev \
 	build-essential \
-    libxml2-dev \
+	libxml2-dev \
 	libxslt1-dev \
 	libz-dev
-
-# pip
-#WORKDIR /tmp
-#RUN easy_install pip
-
-# 
-# Python libraries + util & tornado
-#RUN pip install --upgrade pip \
-#    simplejson httplib2 defusedxml lxml queuelib dweepy \
-#    tornado 
-
-# port
-#EXPOSE 8888
 
 # Set .bashrc
 RUN echo "" >> /root/.bashrc \
@@ -61,14 +48,6 @@ RUN echo "" >> /root/.bashrc \
 # Set 'root' pwd
 RUN echo root:toor | chpasswd
 
-# Copy GIT deploy key
-RUN mkdir /root/.ssh
-COPY id_rsa* known_hosts /root/.ssh/
-RUN chmod 600 /root/.ssh/id_rsa \
-    && chmod 644 /root/.ssh/id_rsa.pub \
-    && chmod 644 /root/.ssh/known_hosts \
-    && chmod 700 /root/.ssh/
-
 # Get and install rdseed
 WORKDIR /opt
 RUN wget http://ds.iris.edu/pub/programs/rdseedv5.3.1.tar.gz \
@@ -77,7 +56,7 @@ RUN wget http://ds.iris.edu/pub/programs/rdseedv5.3.1.tar.gz \
     && cd /usr/bin \
     && ln -s /opt/rdseedv5.3.1/rdseed.rh6.linux_64 rdseed
 
-# Install Xml2Resp
+# Install Xml2Resp and scripts
 WORKDIR /opt
 RUN wget --no-check-certificate ${STATIONXML_CONVERTER}
 COPY 01_find_stations.sh /opt/
@@ -85,21 +64,17 @@ COPY 02_get_dless-resp.sh /opt/
 COPY 021_get_dless-resp_parallel.sh /opt/
 COPY 03_get_dataselect_list-mseed-sac.sh /opt/
 COPY 031_get_mseed-sac_parallel.sh /opt/
-#COPY 04_get_fullseed.sh /opt/
 COPY entrypoint.sh /opt/
 COPY config.sh /opt/
-#COPY stationxml.conf /opt/
 RUN chmod 755 /opt/01_find_stations.sh
 RUN chmod 755 /opt/02_get_dless-resp.sh
 RUN chmod 755 /opt/021_get_dless-resp_parallel.sh
 RUN chmod 755 /opt/03_get_dataselect_list-mseed-sac.sh
 RUN chmod 755 /opt/031_get_mseed-sac_parallel.sh
-#RUN chmod 755 /opt/04_get_fullseed.sh
 
-# Install service
+# Create OUTPUT dir 
 WORKDIR /opt
-#COPY ads_services.py /opt/
-#RUN chmod 755 /opt/ads_services.py
 RUN mkdir /opt/OUTPUT
 
+# Set entrypoint
 ENTRYPOINT ["./entrypoint.sh"]
