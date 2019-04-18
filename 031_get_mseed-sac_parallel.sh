@@ -54,9 +54,18 @@ if [ ! -d ${DIR_MSEED_LOG} ]; then
 fi
 
 # running process
-curl "${DATASELECT_URL}" -o "${FILE_OUTPUT_MSEED}" --write-out "%{http_code}\\n" > ${FILE_OUTPUT_MSEED_HTTPCODE_LOG} -s
-RET_CODE=$?
-HTTP_CODE=$( cat ${FILE_OUTPUT_MSEED_HTTPCODE_LOG} )
+COUNT=0
+HTTP_CODE=429
+while (( ${HTTP_CODE} == 429 )) && (( ${COUNT} < 5 )); do
+        curl "${DATASELECT_URL}" -o "${FILE_OUTPUT_MSEED}" --write-out "%{http_code}\\n" > ${FILE_OUTPUT_MSEED_HTTPCODE_LOG} -s
+        RET_CODE=$?
+        HTTP_CODE=$( cat ${FILE_OUTPUT_MSEED_HTTPCODE_LOG} )
+        if (( ${HTTP_CODE} == 429 )); then
+                echo "TOO MANY REQUEST - requesting \"${DATASELECT_URL}\". RET_CODE=${RET_CODE}, HTTP_CODE=${HTTP_CODE}. I'll try later..."
+                sleep 5
+        fi
+        COUNT=$(( ${COUNT} + 1 ))
+done
 if (( ${RET_CODE} == 0 )); then
     if (( ${HTTP_CODE} == 200 )); then
         if [ -f ${FILE_OUTPUT_MSEED} ]; then
@@ -90,6 +99,11 @@ if (( ${RET_CODE} == 0 )); then
         if [ -f ${FILE_OUTPUT_MSEED} ]; then
             mv ${FILE_OUTPUT_MSEED} ${DIR_MSEED_LOG}/$( basename ${FILE_OUTPUT_MSEED} ).log
         fi
+    elif (( ${HTTP_CODE} == 429 )); then
+        echo "TOO MANY REQUEST - requesting \"${DATASELECT_URL}\". RET_CODE=${RET_CODE}, HTTP_CODE=${HTTP_CODE}"
+        echo ${DATASELECT_URL} > ${DIR_MSEED_LOG}/$( basename ${FILE_OUTPUT_MSEED} ).tooManyRequest
+    else
+        echo "UNKNOWN - requesting \"${DATASELECT_URL}\". RET_CODE=${RET_CODE}, HTTP_CODE=${HTTP_CODE}"
     fi
 else
     echo "ERROR - requesting \"${DATASELECT_URL}\". RET_CODE=${RET_CODE}, HTTP_CODE=${HTTP_CODE}"
