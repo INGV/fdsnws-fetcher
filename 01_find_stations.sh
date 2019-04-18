@@ -109,7 +109,7 @@ EXISTS=0
 while read FDSNWS_NODE_URL; do
     STATIONXML_FULL_URL="${FDSNWS_NODE_URL}/fdsnws/station/1/query?${STATIONXML_PARAMS_FIND}"
     echo "Searching on \"${STATIONXML_FULL_URL}\""
-    curl "${STATIONXML_FULL_URL}" -o "${FILE_CURL1}" --write-out "%{http_code}\\n" > ${FILE_CURL1_HTTPCODE} -s
+    curl "${STATIONXML_FULL_URL}" -o "${FILE_CURL1}" --max-time 20 --write-out "%{http_code}\\n" > ${FILE_CURL1_HTTPCODE} -s -S
     RETURNED_CODE=${?}
 
     HTTP_CODE=$( cat ${FILE_CURL1_HTTPCODE} )
@@ -143,7 +143,6 @@ while read FDSNWS_NODE_URL; do
 
         # create 'net_sta.txt' file with only NET and STA for that node
         cp ${FILE_CURL1} ${FDSNWS_NODE_PATH}/net_sta.txt
-        
     fi
 done < ${FILE_FDSNWS_NODES_URLS}
 echo ""
