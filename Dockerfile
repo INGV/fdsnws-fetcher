@@ -5,7 +5,7 @@ LABEL maintainer="Valentino Lauciani <valentino.lauciani@ingv.it>"
 ENV DEBIAN_FRONTEND=noninteractive
 ENV INITRD No
 ENV FAKE_CHROOT 1
-ENV STATIONXML_CONVERTER=https://seiscode.iris.washington.edu/attachments/download/741/stationxml-converter-1.0.9.jar
+ENV STATIONXML_CONVERTER=https://github.com/iris-edu/stationxml-seed-converter/releases/download/1.0.10/stationxml-converter-1.0.10.jar
 
 # install packages
 RUN apt-get update \
