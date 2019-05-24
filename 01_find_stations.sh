@@ -63,10 +63,6 @@ if [ ! -d ${DIR_TMP} ]; then
 fi
 
 
-# Set software
-STATIONXML_TO_SEED="java -jar ./stationxml-converter-1.0.9.jar -s"
-SEED_2_OUTPUT="rdseed -R"
-
 # Check StationXML config file
 if [ -f ${FILE_FDSNWS_NODES_URLS} ]; then
 	echo "StationXML used to find NETWORK/STATION (update your \"${FILE_FDSNWS_NODES_URLS}\" file to add more)"
