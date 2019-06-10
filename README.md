@@ -1,10 +1,11 @@
 # fdsnws-fetcher
 
 This Docker is used to retrieve:
-- "**resp**": Response file
-- "**dless**": Dataless file
-- "**sac**": Dataless file
-- "**miniseed**": MiniSeed file
+- "**resp**": Response file(s)
+- "**dless**": Dataless file(s)
+- "**sac**": Dataless file(s)
+- "**miniseed**": MiniSeed file(s)
+- "**dless_and_miniseed**": Dataless and MiniSeed file(s)
 - "**dataselect_list**": A list of **dataselect** URL used to download MiniSeed
 
 sending a request to each "**station**" FDSNS-WS to find available stations.
@@ -36,7 +37,7 @@ $ docker run -it --rm -v $(pwd)/stationxml.conf:/opt/stationxml.conf -v $(pwd)/O
  usage:
  $ docker run -it --rm -v $(pwd)/stationxml.conf:/opt/stationxml.conf -v $(pwd)/OUTPUT:/opt/OUTPUT fdsnws-fetcher -u <stationxml params>
 
-    Values for option -t: resp, dless, dataselect_list, miniseed, sac
+    Values for option -t: resp, dless, dataselect_list, miniseed, dless_and_miniseed, sac
 
     Examples:
      1) $ docker run -it --rm -v $(pwd)/stationxml.conf:/opt/stationxml.conf -v $(pwd)/OUTPUT:/opt/OUTPUT fdsnws-fetcher -u "network=IV&station=ACER&starttime=2017-11-02T00:00:00&endtime=2017-11-02T01:00:00" -t "dataselect_list"
