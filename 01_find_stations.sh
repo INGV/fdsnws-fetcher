@@ -40,7 +40,7 @@ fi
 if [[ -z ${IN__TYPE} ]]; then
 	TYPE="resp"
 else
-	if [[ "${IN__TYPE}" == "resp" ]] || [[ "${IN__TYPE}" == "dless" ]] || [[ "${IN__TYPE}" == "dataselect_list" ]] || [[ "${IN__TYPE}" == "miniseed" ]] || [[ "${IN__TYPE}" == "sac" ]] || [[ "${IN__TYPE}" == "fullseedno" ]]; then
+	if [[ "${IN__TYPE}" == "resp" ]] || [[ "${IN__TYPE}" == "dless" ]] || [[ "${IN__TYPE}" == "dataselect_list" ]] || [[ "${IN__TYPE}" == "miniseed" ]] || [[ "${IN__TYPE}" == "sac" ]] || [[ "${IN__TYPE}" == "dless_and_miniseed" ]]; then
 		TYPE=${IN__TYPE} 
 	else
         echo ""
@@ -146,12 +146,9 @@ echo ""
 if (( ${EXISTS} == 1 )); then
     if [[ "${TYPE}" == "resp" ]] || [[ "${TYPE}" == "dless" ]]; then
         ${DIR_WORK}/02_get_dless-resp.sh -t ${TYPE}
-    elif [[ "${TYPE}" == "sac" ]] || [[ "${TYPE}" == "fullseed" ]]; then
+    elif [[ "${TYPE}" == "sac" ]] || [[ "${TYPE}" == "dless_and_miniseed" ]]; then
         ${DIR_WORK}/02_get_dless-resp.sh -t ${TYPE}
         ${DIR_WORK}/03_get_dataselect_list-mseed-sac.sh -t ${TYPE}
-        if [[ "${TYPE}" == "fullseed" ]]; then
-            ${DIR_WORK}/04_get_fullseed.sh -t ${TYPE}
-        fi
     elif [[ "${TYPE}" == "dataselect_list" ]] || [[ "${TYPE}" == "miniseed" ]]; then
         ${DIR_WORK}/03_get_dataselect_list-mseed-sac.sh -t ${TYPE}
     fi
@@ -164,12 +161,15 @@ fi
 
 #
 for FDSNWS_NODE_PATH in $( ls -d ${DIR_TMP}/* ); do
-    if [ -d ${FDSNWS_NODE_PATH}/${TYPE} ]; then
         DIR_OUTPUT_NODE=${DIR_OUTPUT}/$( basename ${FDSNWS_NODE_PATH} )
         mkdir -p ${DIR_OUTPUT_NODE}
 
-        cp -R ${FDSNWS_NODE_PATH}/${TYPE} ${DIR_OUTPUT_NODE}
-    fi
+	if [[ "${TYPE}" == "dless_and_miniseed" ]]; then
+        	cp -R ${FDSNWS_NODE_PATH}/dless ${DIR_OUTPUT_NODE}
+        	cp -R ${FDSNWS_NODE_PATH}/miniseed ${DIR_OUTPUT_NODE}
+	else
+        	cp -R ${FDSNWS_NODE_PATH}/${TYPE} ${DIR_OUTPUT_NODE}
+	fi
 done
 echo ""
 echo "OUTPUT=./OUTPUT/${DATE_NOW}"
