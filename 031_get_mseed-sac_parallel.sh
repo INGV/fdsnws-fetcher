@@ -76,7 +76,14 @@ if (( ${RET_CODE} == 0 )); then
                 if [ ! -d ${DIR_SAC_NODE} ]; then
                     mkdir -p ${DIR_SAC_NODE}
                 fi
-                ${RDSEED} -o SAC -q ${DIR_SAC_NODE} -d -f ${FILE_OUTPUT_MSEED} -g ${FILE_OUTPUT_DLESS}
+		# Option 1 | Convert to SAC and RESP
+                #${RDSEED} -o SAC -q ${DIR_SAC_NODE} -d -f ${FILE_OUTPUT_MSEED} -g ${FILE_OUTPUT_DLESS}
+
+		# Option 1/2 | Convert to SAC...
+		python /opt/fseed2sac.py --oud ${DIR_SAC_NODE} --fmtout SAC --filein ${FILE_OUTPUT_MSEED}
+		# Option 2/2 | ...convert to RESP
+		${RDSEED} -q ${DIR_SAC_NODE} -f ${FILE_OUTPUT_DLESS}
+
                 RET=$?
                 if [ $RET -ne 0 ]; then
                     echo " ERROR - converting ${FILE_OUTPUT_MSEED} to SAC format."

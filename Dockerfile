@@ -56,6 +56,16 @@ RUN wget http://ds.iris.edu/pub/programs/rdseedv5.3.1.tar.gz \
     && cd /usr/bin \
     && ln -s /opt/rdseedv5.3.1/rdseed.rh6.linux_64 rdseed
 
+# Get and install ObsPy
+RUN apt-get update \
+    && apt-get install -y \
+        software-properties-common
+RUN add-apt-repository "deb http://deb.obspy.org $(lsb_release -cs) main"
+RUN wget --quiet -O - https://raw.github.com/obspy/obspy/master/misc/debian/public.key | apt-key add -
+RUN apt-get update \
+    && apt-get install -y \
+        python-obspy 
+
 # Install Xml2Resp and scripts
 WORKDIR /opt
 RUN wget --no-check-certificate ${STATIONXML_CONVERTER}
@@ -66,11 +76,13 @@ COPY 03_get_dataselect_list-mseed-sac.sh /opt/
 COPY 031_get_mseed-sac_parallel.sh /opt/
 COPY entrypoint.sh /opt/
 COPY config.sh /opt/
+COPY fseed2sac.py /opt/
 RUN chmod 755 /opt/01_find_stations.sh
 RUN chmod 755 /opt/02_get_dless-resp.sh
 RUN chmod 755 /opt/021_get_dless-resp_parallel.sh
 RUN chmod 755 /opt/03_get_dataselect_list-mseed-sac.sh
 RUN chmod 755 /opt/031_get_mseed-sac_parallel.sh
+RUN chmod 755 /opt/fseed2sac.py
 
 # Create OUTPUT dir 
 WORKDIR /opt
