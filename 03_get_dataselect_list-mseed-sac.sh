@@ -86,7 +86,11 @@ for FDSNWS_NODE_PATH in $( ls -d ${DIR_TMP}/* ); do
     DATASELECT_BASE_URL=$( echo ${STATIONXML_FULL_URL} | awk -F"?" '{print $1}' | sed 's/station/dataselect/' )
 
     # get network and station
+    N_NET_STA_LOC_CHA=$( wc ${FDSNWS_NODE_PATH}/stationxml_channel.txt | awk '{print $1}' )
+    COUNT=1
     while read NET_STA_LOC_CHA; do
+        echo "${COUNT}/${N_NET_STA_LOC_CHA} - Processing \"${NET_STA_LOC_CHA}\" on \"$( basename ${FDSNWS_NODE_PATH} )\""
+
         NETWORK=$( echo ${NET_STA_LOC_CHA} | awk -F"|" '{print $1}' )
         STATION=$( echo ${NET_STA_LOC_CHA} | awk -F"|" '{print $2}' )
         LOCATION=$( echo ${NET_STA_LOC_CHA} | awk -F"|" '{print $3}' )
@@ -124,6 +128,7 @@ for FDSNWS_NODE_PATH in $( ls -d ${DIR_TMP}/* ); do
                 RUNNING_PROCESS=$( ps axu | grep "031_get_mseed-sac_parallel.sh" | grep -v "grep" | wc | awk '{print $1}' )
             done
         fi
+        COUNT=$(( ${COUNT} + 1 ))
     done < ${FDSNWS_NODE_PATH}/stationxml_channel.txt
 done
 wait

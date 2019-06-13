@@ -55,7 +55,11 @@ for FDSNWS_NODE_PATH in $( ls -d ${DIR_TMP}/* ); do
     mkdir -p ${DIR_LOG_NODE}
 
     # get network and station
+    N_NET_STA=$( wc ${FDSNWS_NODE_PATH}/net_sta.txt | awk '{print $1}' )
+    COUNT=1
     while read NET_STA; do
+	echo "${COUNT}/${N_NET_STA} - Processing \"${NET_STA}\" on \"$( basename ${FDSNWS_NODE_PATH} )\""
+
         NETWORK=$( echo ${NET_STA} | awk -F"|" '{print $1}' )
         STATION=$( echo ${NET_STA} | awk -F"|" '{print $2}' )
         STATIONXML_FOR_DLESS=
@@ -73,7 +77,7 @@ for FDSNWS_NODE_PATH in $( ls -d ${DIR_TMP}/* ); do
         # START - Soluzione 2
         STATIONXML_FOR_DLESS=$( echo ${STATIONXML_FULL_URL} | sed -e "s/network=[^&]\+//" | sed -e "s/station=[^&]\+//" )"&network=${NETWORK}&station=${STATION}"
         # END - Soluzione 2
-        #
+        
 
         # Running process
         ${DIR_WORK}/021_get_dless-resp_parallel.sh -o ${DIR_DLESS_NODE}/${NETWORK}_${STATION}.dless -u "${STATIONXML_FOR_DLESS}" -t ${TYPE} &
@@ -85,6 +89,7 @@ for FDSNWS_NODE_PATH in $( ls -d ${DIR_TMP}/* ); do
             sleep 10
             RUNNING_PROCESS=$( ps axu | grep "021_get_dless-resp_parallel.sh" | grep -v "grep" | wc | awk '{print $1}' )
         done
+	COUNT=$(( ${COUNT} + 1 ))
     done < ${FDSNWS_NODE_PATH}/net_sta.txt
 done
 wait
