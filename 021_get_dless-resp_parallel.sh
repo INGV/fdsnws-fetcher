@@ -24,17 +24,17 @@ while getopts :o:u:t: OPTION
 do
 	case ${OPTION} in
         o)	FILE_OUTPUT_DLESS="${OPTARG}"
-			;;
+		;;
         u)	STATIONXML_INPUT_URL="${OPTARG}"
-			;;
+		;;
         t)	TYPE="${OPTARG}"
-			;;
+		;;
         \?) echo "Invalid option: -$OPTARG" >/dev/null
-			shift
-			;;
+		shift
+		;;
         *)  #echo $OPTARG >/dev/null
-			echo "Invalid OPTARG: -$OPTARG" >&2
-            ;;
+		echo "Invalid OPTARG: -$OPTARG" >&2
+                ;;
 	esac
 done
 ### END - Check parameters ###
@@ -51,11 +51,15 @@ if [ ! -d ${DIR_DLESS_LOG_NODE} ]; then
 fi
 
 echo " create DLESS \"${BASENAME_DLESS}\" from \"${STATIONXML_INPUT_URL}\""
-${STATIONXML_TO_SEED} -o ${FILE_OUTPUT_DLESS} "${STATIONXML_INPUT_URL}" >> ${DIR_DLESS_LOG_NODE}/${BASENAME_DLESS}.stationxml-converter.out 2>> ${DIR_DLESS_LOG_NODE}/${BASENAME_DLESS}.stationxml-converter.err
-RET_STATIONXML_TO_SEED=${?}
-if (( ${RET_STATIONXML_TO_SEED} != 0 )); then
-    echo "  ERROR - Retriving StationXML from \"${STATIONXML_INPUT_URL}\". Check: ${DIR_DLESS_LOG_NODE}/${BASENAME_DLESS}.stationxml-converter.err"
-    echo ""
+if [[ -f ${FILE_OUTPUT_DLESS} ]]; then
+	echo "  DLESS already exists"
+else
+	${STATIONXML_TO_SEED} -o ${FILE_OUTPUT_DLESS} "${STATIONXML_INPUT_URL}" >> ${DIR_DLESS_LOG_NODE}/${BASENAME_DLESS}.stationxml-converter.out 2>> ${DIR_DLESS_LOG_NODE}/${BASENAME_DLESS}.stationxml-converter.err
+	RET_STATIONXML_TO_SEED=${?}
+	if (( ${RET_STATIONXML_TO_SEED} != 0 )); then
+    		echo "  ERROR - Retriving StationXML from \"${STATIONXML_INPUT_URL}\". Check: ${DIR_DLESS_LOG_NODE}/${BASENAME_DLESS}.stationxml-converter.err"
+    		echo ""
+	fi
 fi
 
 # Create RESP if requested

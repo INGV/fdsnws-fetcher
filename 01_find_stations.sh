@@ -12,20 +12,20 @@
 
 ### START - Check parameters ###
 IN__STATIONXML_URL=
-IN__TYPE=
+IN__TYPES=
 while getopts :u:t: OPTION
 do
 	case ${OPTION} in
-		u)	IN__STATIONXML_URL="${OPTARG}"
-			;;
-        t)	IN__TYPE="${OPTARG}"
-			;;
+	u)	IN__STATIONXML_URL="${OPTARG}"
+		;;
+        t)	IN__TYPES="${OPTARG}"
+		;;
         \?) echo "Invalid option: -$OPTARG" >/dev/null
-			shift
-			;;
+		shift
+		;;
         *)  #echo $OPTARG >/dev/null
-			echo "Invalid OPTARG: -$OPTARG" >&2
-            ;;
+		echo "Invalid OPTARG: -$OPTARG" >&2
+		;;
 	esac
 done
 
@@ -36,19 +36,25 @@ if [[ -z ${IN__STATIONXML_URL} ]]; then
         echo ""
         usage_entrypoint
         exit 1
-fi
-if [[ -z ${IN__TYPE} ]]; then
-	TYPE="resp"
+fi 
+if [[ -z ${IN__TYPES} ]]; then
+	TYPES="resp"
 else
-	if [[ "${IN__TYPE}" == "resp" ]] || [[ "${IN__TYPE}" == "dless" ]] || [[ "${IN__TYPE}" == "dataselect_list" ]] || [[ "${IN__TYPE}" == "miniseed" ]] || [[ "${IN__TYPE}" == "sac" ]] || [[ "${IN__TYPE}" == "dless_and_miniseed" ]]; then
-		TYPE=${IN__TYPE} 
-	else
-        echo ""
-        echo " Please, set the TYPE param"
-        echo ""
-        usage_entrypoint
-        exit 1
-	fi
+	set -f   # disable wildcard expansion
+	ARRAY_TYPES=(${IN__TYPES//[,]/ })
+	set +f   # restore wildcard expansion
+
+	for ((i=0; i<${#ARRAY_TYPES[@]}; i+=1))
+	do
+		if check_type ${ARRAY_TYPES[i]} ; then
+                	echo "" > /dev/null
+        	else
+			echo ""
+			echo " The \"${ARRAY_TYPES[i]}\" TYPE is not valid type."
+			echo ""
+        		exit 1		
+        	fi
+	done
 fi
 
 # Create dir
@@ -144,19 +150,30 @@ done < ${FILE_FDSNWS_NODES_URLS}
 echo ""
 
 if (( ${EXISTS} == 1 )); then
-    if [[ "${TYPE}" == "resp" ]] || [[ "${TYPE}" == "dless" ]]; then
-        ${DIR_WORK}/02_get_dless-resp.sh -t ${TYPE}
-    elif [[ "${TYPE}" == "sac" ]] || [[ "${TYPE}" == "dless_and_miniseed" ]]; then
-        ${DIR_WORK}/02_get_dless-resp.sh -t ${TYPE}
-        ${DIR_WORK}/03_get_dataselect_list-mseed-sac.sh -t ${TYPE}
-    elif [[ "${TYPE}" == "dataselect_list" ]] || [[ "${TYPE}" == "miniseed" ]]; then
-        ${DIR_WORK}/03_get_dataselect_list-mseed-sac.sh -t ${TYPE}
-    fi
+	for ((i=0; i<${#ARRAY_TYPES[@]}; i+=1))
+        do
+		TYPE=${ARRAY_TYPES[i]}
+    		#if [[ "${TYPE}" == "resp" ]] || [[ "${TYPE}" == "dless" ]]; then
+        	#	${DIR_WORK}/02_get_dless-resp.sh -t ${TYPE}
+    		#elif [[ "${TYPE}" == "sac" ]] || [[ "${TYPE}" == "dless_and_miniseed" ]]; then
+        	#	${DIR_WORK}/02_get_dless-resp.sh -t ${TYPE}
+        	#	${DIR_WORK}/03_get_dataselect_list-mseed-sac.sh -t ${TYPE}
+    		#elif [[ "${TYPE}" == "dataselect_list" ]] || [[ "${TYPE}" == "miniseed" ]]; then
+        	#	${DIR_WORK}/03_get_dataselect_list-mseed-sac.sh -t ${TYPE}
+    		#fi
+
+                if [[ "${TYPE}" == "resp" ]] || [[ "${TYPE}" == "dless" ]]; then
+                        ${DIR_WORK}/02_get_dless-resp.sh -t ${TYPE}
+		fi
+                if [[ "${TYPE}" == "dataselect_list" ]] || [[ "${TYPE}" == "miniseed" ]] || [[ "${TYPE}" == "sac" ]]; then
+                        ${DIR_WORK}/03_get_dataselect_list-mseed-sac.sh -t ${TYPE}
+                fi
+    	done
 else 
-    echo ""
-    echo "There are no FDSNWS_NODE_URL that contains \"${STATIONXML_PARAMS}\"."
-    echo ""
-    exit -1
+	echo ""
+    	echo "There are no FDSNWS_NODE_URL that contains \"${STATIONXML_PARAMS}\"."
+    	echo ""
+    	exit -1
 fi
 
 #
@@ -164,12 +181,11 @@ for FDSNWS_NODE_PATH in $( ls -d ${DIR_TMP}/* ); do
         DIR_OUTPUT_NODE=${DIR_OUTPUT}/$( basename ${FDSNWS_NODE_PATH} )
         mkdir -p ${DIR_OUTPUT_NODE}
 
-	if [[ "${TYPE}" == "dless_and_miniseed" ]]; then
-        	cp -R ${FDSNWS_NODE_PATH}/dless ${DIR_OUTPUT_NODE}
-        	cp -R ${FDSNWS_NODE_PATH}/miniseed ${DIR_OUTPUT_NODE}
-	else
-        	cp -R ${FDSNWS_NODE_PATH}/${TYPE} ${DIR_OUTPUT_NODE}
-	fi
+        for ((i=0; i<${#ARRAY_TYPES[@]}; i+=1))
+        do
+                TYPE=${ARRAY_TYPES[i]}
+                cp -R ${FDSNWS_NODE_PATH}/${TYPE} ${DIR_OUTPUT_NODE}
+        done
 done
 echo ""
 echo "OUTPUT=./OUTPUT/${DATE_NOW}"

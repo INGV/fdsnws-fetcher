@@ -34,7 +34,7 @@ cat << EOF
  usage: 
  $ ${BASE_COMMAND} ${DOCKER_VOLUME_1} ${DOCKER_NAME} -u <stationxml params>
 
-    Values for option -t: resp, dless, dataselect_list, dless_and_miniseed, miniseed, sac
+    Values for option -t: resp, dless, dataselect_list, miniseed, sac
 
     Examples:
      1) $ ${BASE_COMMAND} ${DOCKER_VOLUME_1} ${DOCKER_NAME} -u "network=IV&station=ACER&starttime=2017-11-02T00:00:00&endtime=2017-11-02T01:00:00" -t "dataselect_list"
@@ -47,4 +47,14 @@ cat << EOF
 
 
 EOF
+}
+
+function check_type() {
+	TYPE=${1}
+        
+	if [[ "${TYPE}" == "resp" ]] || [[ "${TYPE}" == "dless" ]] || [[ "${TYPE}" == "dataselect_list" ]] || [[ "${TYPE}" == "miniseed" ]] || [[ "${TYPE}" == "sac" ]]; then
+		return 0
+        else
+		return 1
+        fi
 }

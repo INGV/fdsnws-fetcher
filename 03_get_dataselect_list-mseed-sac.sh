@@ -102,7 +102,7 @@ for FDSNWS_NODE_PATH in $( ls -d ${DIR_TMP}/* ); do
         DATASELECT_URL="${DATASELECT_BASE_URL}?network=${NETWORK}&station=${STATION}&channel=${CHANNEL}${LOC_OPTIONAL}&starttime=${STARTTIME}&endtime=${ENDTIME}"
         echo "${DATASELECT_URL}" >> ${DIR_DATASELECT_LIST_NODE}/dataselect_urls.txt
 
-        if [[ "${TYPE}" == "miniseed" ]] || [[ "${TYPE}" == "sac" ]] || [[ "${TYPE}" == "dless_and_miniseed" ]]; then
+        if [[ "${TYPE}" == "miniseed" ]] || [[ "${TYPE}" == "sac" ]]; then
             # create MSEED dir
             DIR_MSEED_NODE=${FDSNWS_NODE_PATH}/miniseed
             if [ ! -d ${DIR_MSEED_NODE} ]; then
