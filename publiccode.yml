@@ -31,7 +31,7 @@ maintenance:
       email: valentino.lauciani@ingv.it
 legal:
   authorsFile: Valentino Lauciani
-  repoOwner: 'INGV - Istituto Nazionale di Geofisica e Vulcanologia'
+  repoOwner: 'Istituto Nazionale di Geofisica e Vulcanologia - INGV'
   license: 'AGPL-3.0-or-later'
 intendedAudience:
   scope:
