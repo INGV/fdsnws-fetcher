@@ -1,0 +1,74 @@
+# This repository adheres to the publiccode.yml standard by including this 
+# metadata file that makes public software easily discoverable.
+# More info at https://github.com/italia/publiccode.yml
+
+publiccodeYmlVersion: '0.2'
+name: 'FDSNWS Fetcher' 
+releaseDate: '2019-06-20'
+url: 'https://github.com/INGV/fdsnws-fetcher'
+landingURL: 'https://github.com/INGV/fdsnws-fetcher'
+softwareVersion: 1.0.0
+developmentStatus: stable
+softwareType: standalone/other
+platforms:
+  - windows
+  - mac
+  - linux
+usedBy:
+  - INGV
+outputTypes:
+  - sac
+  - mseed
+  - resp
+  - paz
+categories:
+  - data-analytics
+  - data-collection
+maintenance:
+  type: internal
+  contacts:
+    - name: Valentino Lauciani
+      email: valentino.lauciani@ingv.it
+legal:
+  authorsFile: Valentino Lauciani
+  repoOwner: 'INGV - Istituto Nazionale di Geofisica e Vulcanologia'
+  license: 'AGPL-3.0-or-later'
+intendedAudience:
+  scope:
+    - research
+localisation:
+  localisationReady: false
+  availableLanguages:
+    - en
+it:
+  countryExtensionVersion: '0.2'
+description:
+  en:
+    genericName: fdsnws-fetcher
+    shortDescription: >-
+      Docker used to retrieve "resp", "dless", "sac", "minified", "paz" or
+      "dataselect_list" from FDSN node.
+    documentation: 'https://github.com/INGV/fdsnws-fetcher/blob/master/README.md'
+    longDescription: >
+      This project is developed to interact with "station" and "dataselect" FDSN
+      (https://www.fdsn.org) Web Services:
+
+
+      - the "station" WS is used to retrieve station metadata:
+      https://www.fdsn.org/webservices/FDSN-WS-Specifications-1.2.pdf#page=11
+
+      - the "dataselect" WS is used to retrieve seismic waveform:
+      https://www.fdsn.org/webservices/FDSN-WS-Specifications-1.2.pdf#page=9
+
+
+      It is developed using docker technology and implements a set of software,
+      tools and script to find seismic stations by geographic constrain and time
+      window.
+
+
+      The output is RAW data like seismic "waveforms" in MSEED format or
+      metadata like response function in "SAC", "RESP" or "PAZ" (Poles and
+      Zeros) format.
+    localisedName: fdsnws-fetcher
+    features:
+      - Seismic waveform and metadata downloader
