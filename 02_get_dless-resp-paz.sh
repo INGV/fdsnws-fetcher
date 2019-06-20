@@ -80,14 +80,14 @@ for FDSNWS_NODE_PATH in $( ls -d ${DIR_TMP}/* ); do
         
 
         # Running process
-        ${DIR_WORK}/021_get_dless-resp_parallel.sh -o ${DIR_DLESS_NODE}/${NETWORK}_${STATION}.dless -u "${STATIONXML_FOR_DLESS}" -t ${TYPE} &
+        ${DIR_WORK}/021_get_dless-resp-paz_parallel.sh -o ${DIR_DLESS_NODE}/${NETWORK}_${STATION}.dless -u "${STATIONXML_FOR_DLESS}" -t ${TYPE} &
 
         # Checking process number
-        RUNNING_PROCESS=$( ps axu | grep "021_get_dless-resp_parallel.sh" | grep -v "grep" | wc | awk '{print $1}' )
+        RUNNING_PROCESS=$( ps axu | grep "021_get_dless-resp-paz_parallel.sh" | grep -v "grep" | wc | awk '{print $1}' )
         while (( ${RUNNING_PROCESS} > ${N_PROCESS_TO_GET_DLESS} )); do
             echo " !!! there are just \"${RUNNING_PROCESS}\" parallel process running (the limit is \"${N_PROCESS_TO_GET_DLESS}\"), waiting..."
             sleep 10
-            RUNNING_PROCESS=$( ps axu | grep "021_get_dless-resp_parallel.sh" | grep -v "grep" | wc | awk '{print $1}' )
+            RUNNING_PROCESS=$( ps axu | grep "021_get_dless-resp-paz_parallel.sh" | grep -v "grep" | wc | awk '{print $1}' )
         done
 	COUNT=$(( ${COUNT} + 1 ))
     done < ${FDSNWS_NODE_PATH}/net_sta.txt

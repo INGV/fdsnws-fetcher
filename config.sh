@@ -17,7 +17,7 @@ FILE_FDSNWS_NODES_URLS="stationxml.conf"
 
 # Set software
 STATIONXML_TO_SEED="java -jar ./stationxml-converter-1.0.10.jar -s"
-RDSEED="rdseed -R"
+RDSEED="rdseed"
 
 # Set var
 N_PROCESS_TO_GET_DLESS=10
@@ -34,16 +34,16 @@ cat << EOF
  usage: 
  $ ${BASE_COMMAND} ${DOCKER_VOLUME_1} ${DOCKER_NAME} -u <stationxml params>
 
-    Values for option -t: resp, dless, dataselect_list, miniseed, sac
+    Values for option -t: resp, paz, dless, dataselect_list, miniseed, sac
 
     Examples:
      1) $ ${BASE_COMMAND} ${DOCKER_VOLUME_1} ${DOCKER_NAME} -u "network=IV&station=ACER&starttime=2017-11-02T00:00:00&endtime=2017-11-02T01:00:00" -t "dataselect_list"
      2) $ ${BASE_COMMAND} ${DOCKER_VOLUME_1} ${DOCKER_NAME} -u "network=IV&latitude=42&longitude=12&maxradius=1" -t "dataselect_list"
      3) $ ${BASE_COMMAND} ${DOCKER_VOLUME_1} ${DOCKER_NAME} -u "network=IV&latitude=47.12&longitude=11.38&maxradius=0.5&channel=HH?,EH?,HN?" -t "dataselect_list"
      4) $ ${BASE_COMMAND} ${DOCKER_VOLUME_1} ${DOCKER_NAME} -u "network=IV,MN&station=BLY&starttime=2017-11-02T00:00:00&endtime=2017-11-02T01:00:00" -t "dless"
-     5) $ ${BASE_COMMAND} ${DOCKER_VOLUME_1} ${DOCKER_NAME} -u "lat=45.75&lon=11.1&maxradius=1&starttime=2017-11-02T00:00:00&endtime=2017-11-02T01:00:00" -t "resp"
-     6) $ ${BASE_COMMAND} ${DOCKER_VOLUME_1} ${DOCKER_NAME} -u "lat=45.75&lon=11.1&maxradius=1&starttime=2017-11-02T00:00:00&endtime=2017-11-02T01:00:00" -t "miniseed"
-     7) $ ${BASE_COMMAND} ${DOCKER_VOLUME_1} ${DOCKER_NAME} -u "lat=45.75&lon=11.1&maxradius=1&starttime=2017-11-02T00:00:00&endtime=2017-11-02T01:00:00" -t "sac"
+     5) $ ${BASE_COMMAND} ${DOCKER_VOLUME_1} ${DOCKER_NAME} -u "lat=45.75&lon=11.1&maxradius=1&starttime=2017-11-02T00:00:00&endtime=2017-11-02T01:00:00" -t "resp,dless"
+     6) $ ${BASE_COMMAND} ${DOCKER_VOLUME_1} ${DOCKER_NAME} -u "lat=45.75&lon=11.1&maxradius=1&starttime=2017-11-02T00:00:00&endtime=2017-11-02T01:00:00" -t "miniseed,resp"
+     7) $ ${BASE_COMMAND} ${DOCKER_VOLUME_1} ${DOCKER_NAME} -u "lat=45.75&lon=11.1&maxradius=1&starttime=2017-11-02T00:00:00&endtime=2017-11-02T01:00:00" -t "sac,dataselect_list"
 
 
 EOF
@@ -52,7 +52,7 @@ EOF
 function check_type() {
 	TYPE=${1}
         
-	if [[ "${TYPE}" == "resp" ]] || [[ "${TYPE}" == "dless" ]] || [[ "${TYPE}" == "dataselect_list" ]] || [[ "${TYPE}" == "miniseed" ]] || [[ "${TYPE}" == "sac" ]]; then
+	if [[ "${TYPE}" == "resp" ]] || [[ "${TYPE}" == "dless" ]] || [[ "${TYPE}" == "dataselect_list" ]] || [[ "${TYPE}" == "miniseed" ]] || [[ "${TYPE}" == "sac" ]] || [[ "${TYPE}" == "paz" ]]; then
 		return 0
         else
 		return 1

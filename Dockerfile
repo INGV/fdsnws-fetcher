@@ -70,16 +70,16 @@ RUN apt-get update \
 WORKDIR /opt
 RUN wget --no-check-certificate ${STATIONXML_CONVERTER}
 COPY 01_find_stations.sh /opt/
-COPY 02_get_dless-resp.sh /opt/
-COPY 021_get_dless-resp_parallel.sh /opt/
+COPY 02_get_dless-resp-paz.sh /opt/
+COPY 021_get_dless-resp-paz_parallel.sh /opt/
 COPY 03_get_dataselect_list-mseed-sac.sh /opt/
 COPY 031_get_mseed-sac_parallel.sh /opt/
 COPY entrypoint.sh /opt/
 COPY config.sh /opt/
 COPY fseed2sac.py /opt/
 RUN chmod 755 /opt/01_find_stations.sh
-RUN chmod 755 /opt/02_get_dless-resp.sh
-RUN chmod 755 /opt/021_get_dless-resp_parallel.sh
+RUN chmod 755 /opt/02_get_dless-resp-paz.sh
+RUN chmod 755 /opt/021_get_dless-resp-paz_parallel.sh
 RUN chmod 755 /opt/03_get_dataselect_list-mseed-sac.sh
 RUN chmod 755 /opt/031_get_mseed-sac_parallel.sh
 RUN chmod 755 /opt/fseed2sac.py

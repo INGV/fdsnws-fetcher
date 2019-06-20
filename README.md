@@ -2,6 +2,7 @@
 
 This Docker is used to retrieve:
 - "**resp**": Response file(s)
+- "**paz**": Poles and zeros file(s)
 - "**dless**": Dataless file(s)
 - "**sac**": Dataless file(s)
 - "**miniseed**": MiniSeed file(s)
@@ -36,7 +37,7 @@ $ docker run -it --rm -v $(pwd)/stationxml.conf:/opt/stationxml.conf -v $(pwd)/O
  usage:
  $ docker run -it --rm -v $(pwd)/stationxml.conf:/opt/stationxml.conf -v $(pwd)/OUTPUT:/opt/OUTPUT fdsnws-fetcher -u <stationxml params>
 
-    Values for option -t: resp, dless, dataselect_list, miniseed, sac
+    Values for option -t: resp, paz, dless, dataselect_list, miniseed, sac
 
     Examples:
      1) $ docker run -it --rm -v $(pwd)/stationxml.conf:/opt/stationxml.conf -v $(pwd)/OUTPUT:/opt/OUTPUT fdsnws-fetcher -u "network=IV&station=ACER&starttime=2017-11-02T00:00:00&endtime=2017-11-02T01:00:00" -t "dataselect_list"

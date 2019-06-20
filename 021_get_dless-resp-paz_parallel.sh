@@ -62,23 +62,42 @@ else
 	fi
 fi
 
-# Create RESP if requested
-if [[ "${TYPE}" == "resp" ]]; then
-    if [ -s ${FILE_OUTPUT_DLESS} ]; then
+# Create RESP and/or PAZ
+if [ -s ${FILE_OUTPUT_DLESS} ]; then
+    if [[ "${TYPE}" == "resp" ]]; then
         DIR_RESP_NODE=${DIR_NODE}/resp
-        DIR_RESP_LOG_NODE=${DIR_RESP_NODE}/log
         if [ ! -d ${DIR_RESP_NODE} ]; then
             mkdir -p ${DIR_RESP_NODE}
         fi
+        DIR_RESP_LOG_NODE=${DIR_RESP_NODE}/log
         if [ ! -d ${DIR_RESP_LOG_NODE} ]; then
             mkdir -p ${DIR_RESP_LOG_NODE}
         fi
         echo " create RESP from \"${FILE_OUTPUT_DLESS}\""
-        ${RDSEED} -f ${FILE_OUTPUT_DLESS} -q ${DIR_RESP_NODE} >> ${DIR_RESP_LOG_NODE}/${BASENAME_DLESS}.rdseed.out 2>> ${DIR_RESP_LOG_NODE}/${BASENAME_DLESS}.rdseed.err
+        ${RDSEED} -R -f ${FILE_OUTPUT_DLESS} -q ${DIR_RESP_NODE} >> ${DIR_RESP_LOG_NODE}/${BASENAME_DLESS}.rdseed.out 2>> ${DIR_RESP_LOG_NODE}/${BASENAME_DLESS}.rdseed.err
         RET_RDSEED=${?}
         if (( ${RET_RDSEED} != 0 )); then
             cat ${DIR_RESP_LOG_NODE}/${BASENAME_DLESS}.rdseed.err
             echo -e "\n"
         fi
     fi
+    if [[ "${TYPE}" == "paz" ]]; then
+        DIR_PAZ_NODE=${DIR_NODE}/paz
+        if [ ! -d ${DIR_PAZ_NODE} ]; then
+            mkdir -p ${DIR_PAZ_NODE}
+        fi
+        DIR_PAZ_LOG_NODE=${DIR_PAZ_NODE}/log
+        if [ ! -d ${DIR_PAZ_LOG_NODE} ]; then
+            mkdir -p ${DIR_PAZ_LOG_NODE}
+        fi
+        echo " create PAZ from \"${FILE_OUTPUT_DLESS}\""
+        ${RDSEED} -p -f ${FILE_OUTPUT_DLESS} -q ${DIR_PAZ_NODE} >> ${DIR_PAZ_LOG_NODE}/${BASENAME_DLESS}.rdseed.out 2>> ${DIR_PAZ_LOG_NODE}/${BASENAME_DLESS}.rdseed.err
+        RET_RDSEED=${?}
+        if (( ${RET_RDSEED} != 0 )); then
+            cat ${DIR_PAZ_LOG_NODE}/${BASENAME_DLESS}.rdseed.err
+            echo -e "\n"
+        fi
+    fi
 fi
+
+
