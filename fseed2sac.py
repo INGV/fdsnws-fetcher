@@ -1,4 +1,4 @@
-import argparse,sys,os,glob,copy,pwd
+import argparse,sys,os,glob,copy,pwd,warnings
 import getpass
 
 import obspy.core
@@ -20,10 +20,9 @@ def parseArguments():
         parser.add_argument('--oud', default='.',help='Output Directory for Sac Files')
         parser.add_argument('--fmtout', default='SAC',help='Output Format: SAC,MSEED')
         parser.add_argument('--filein', help='Input file name')
-        #parser.add_argument('--fileout', help='Optional name of file out')
         if len(sys.argv)==1:
             parser.print_help()
-            sys.exit(1)
+            sys.exit(2)
         args=parser.parse_args()
         return args
 
@@ -31,10 +30,12 @@ def fillwave(st):
        fwe=0
        try:
            st.merge(method=0, fill_value='interpolate', interpolation_samples=0)
-       except:
-           wout="Merge & Fill: Fallito\n"
+       except Exception as e:
+           wout="Merge & Fill: Fallito\n" + str(e) + "\n"
            logfn.write(wout)
            fwe=1
+           logfn.close()
+           sys.exit(fwe)
        return (st),fwe
 
 
@@ -50,10 +51,20 @@ fileout=False
 try:
    fileout=args.fileout
 except:
-   print('No fileout name set')
+   pass
 
 USER = getpass.getuser()
-st = read(filein)
+with warnings.catch_warnings(record=True) as w:
+    warnings.simplefilter('always')
+    try:
+        st = read(filein,format="MSEED")
+    except Exception as e:
+        if len(w):
+           for wm in w:
+               logfn.write(str(wm.message)+"\n")
+        logfn.write(str(e)+"\n")
+        logfn.close()
+        sys.exit(1)
 start=0
 stnew=Stream()
 
@@ -76,7 +87,6 @@ for tr in st:
     samplin = tr.stats.sampling_rate
     
     if len(st) == 1:
-       print "File has no gaps and is single station"
        stnew = stnew + tr
        stnew,fwerr = fillwave(stnew)
        if fileout:
@@ -87,13 +97,12 @@ for tr in st:
            stnew.write(A, format=args.fmtout)
        except:
            wout="Error writing: "+network+station+location+channel+'\n'
-           print wout,"See fseed2sac.Log"
            logfn.write(wout)
        logfn.close()
-       sys.exit()
+       sys.exit(0)
     else:
        if start == 0:
-          print "Statione attuale: ",network,station,channel,location,samplin
+          pass
    
        if ((network != net_old or station != sta_old or location != loc_old or channel != cha_old) and start != 0) or (counter == len(st) and start != 0):
           A  = oud + os.sep + sta_old + '.' + cha_old + '.' + net_old + '.' + loc_old
@@ -110,9 +119,7 @@ for tr in st:
               logfn.write(wout)
           stnew=Stream()
           stnew = stnew + tr
-          print "Stazione nuova",network,station,channel,location,samplin
        else:
-          print "Sto in Else"
           stnew = stnew + tr
           wout=str(tr)+'\n'
           logfn.write(wout)
@@ -125,3 +132,4 @@ for tr in st:
        sam_old=samplin
     
 logfn.close()
+sys.exit(0)
