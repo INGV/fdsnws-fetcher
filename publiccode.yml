@@ -42,6 +42,8 @@ localisation:
     - en
 it:
   countryExtensionVersion: '0.2'
+  riuso:
+    codiceIPA: ingv
 description:
   en:
     genericName: fdsnws-fetcher
