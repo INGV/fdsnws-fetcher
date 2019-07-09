@@ -3,7 +3,7 @@
 # More info at https://github.com/italia/publiccode.yml
 
 publiccodeYmlVersion: '0.2'
-name: 'FDSNWS Fetcher' 
+name: 'INGV - FDSNWS Fetcher' 
 releaseDate: '2019-06-20'
 url: 'https://github.com/INGV/fdsnws-fetcher'
 logo: http://webservices.ingv.it/ingv_logo_text_two_lines.png
