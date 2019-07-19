@@ -6,7 +6,7 @@ publiccodeYmlVersion: '0.2'
 name: 'INGV - FDSNWS Fetcher' 
 releaseDate: '2019-06-20'
 url: 'https://github.com/INGV/fdsnws-fetcher'
-logo: http://webservices.ingv.it/ingv_logo_text_two_lines.png
+logo: logo/ingv_logo_text_two_lines.png
 landingURL: 'https://github.com/INGV/fdsnws-fetcher'
 softwareVersion: 1.0.0
 developmentStatus: stable
@@ -17,11 +17,6 @@ platforms:
   - linux
 usedBy:
   - INGV
-outputTypes:
-  - sac
-  - mseed
-  - resp
-  - paz
 categories:
   - data-analytics
   - data-collection
@@ -31,7 +26,7 @@ maintenance:
     - name: Valentino Lauciani
       email: valentino.lauciani@ingv.it
 legal:
-  authorsFile: Valentino Lauciani
+  authorsFile: AUTHORS.md 
   repoOwner: 'Istituto Nazionale di Geofisica e Vulcanologia - INGV'
   license: 'AGPL-3.0-or-later'
 intendedAudience:
