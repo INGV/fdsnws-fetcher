@@ -67,6 +67,6 @@ description:
       The output is RAW data like seismic "waveforms" in MSEED format or
       metadata like response function in "SAC", "RESP" or "PAZ" (Poles and
       Zeros) format.
-    localisedName: 'INGV - FDSNWS Fetcher'
+    localisedName: 'FDSNWS Fetcher'
     features:
       - Seismic waveform and metadata downloader
