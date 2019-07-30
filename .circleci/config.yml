@@ -1,21 +1,12 @@
 version: 2
 jobs:
-  build:
+  start:
     docker:
       - image: debian:stretch
     steps:
-      - checkout
       - run:
-          name: Greeting
-          command: echo Hello, world.
-      - run:
-          name: Print the Current Time
+          name: Date start
           command: date
-      - run:
-          name: test path
-          command: |
-            pwd
-            ls -l
   validate_publiccode:
     docker: 
       - image: golang 
@@ -25,12 +16,20 @@ jobs:
           name: Validate publiccode.yml
           #command: pwd ; ls -l 
           command: go get github.com/italia/publiccode-parser-go/pcvalidate; /go/bin/pcvalidate publiccode.yml
+  end:
+    docker:
+      - image: debian:stretch
+    steps:
+      - run:
+          name: Date end
+          command: date
 
 workflows:
   version: 2
   my_workflow:
     jobs:
-      - build
+      - start
       - validate_publiccode:
+      - end:
           requires:
-            - build
+            - start
