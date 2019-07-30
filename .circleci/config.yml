@@ -6,11 +6,12 @@ jobs:
 
     steps:
       - checkout
-
       - run:
           name: Greeting
           command: echo Hello, world.
-
       - run:
           name: Print the Current Time
           command: date
+      - run:
+          name: Validate publiccode.yma
+          command: docker run -v $(pwd):/var/tmp:ro -it --rm golang sh -c "go get github.com/italia/publiccode-parser-go/pcvalidate; cd /var/tmp; /go/bin/pcvalidate publiccode.yml"
