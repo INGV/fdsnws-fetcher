@@ -1,6 +1,6 @@
 version: 2
 jobs:
-  my_build:
+  build:
     docker:
       - image: debian:stretch
     steps:
@@ -17,13 +17,14 @@ jobs:
     steps:
       - run:
           name: Validate publiccode.yml
+          command: pwd ; ls -l 
           command: go get github.com/italia/publiccode-parser-go/pcvalidate; /go/bin/pcvalidate publiccode.yml
 
 workflows:
   version: 2
   my_workflow:
     jobs:
-      - my_build
+      - build
       - validate_publiccode:
           requires:
-            - my_build
+            - build
