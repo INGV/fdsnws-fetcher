@@ -11,6 +11,11 @@ jobs:
       - run:
           name: Print the Current Time
           command: date
+      - run:
+          name: test path
+          command: |
+            pwd
+            ls -l
   validate_publiccode:
     docker: 
       - image: golang 
