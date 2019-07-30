@@ -29,7 +29,9 @@ workflows:
   my_workflow:
     jobs:
       - start
-      - validate_publiccode
-      - end:
+      - validate_publiccode:
           requires:
             - start
+      - end:
+          requires:
+            - validate_publiccode
