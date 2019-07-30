@@ -1,6 +1,6 @@
 version: 2
 jobs:
-  build:
+  my_build:
     docker:
       - image: debian:stretch
     steps:
@@ -23,7 +23,7 @@ workflow:
   version: 2
   my_workflow:
     jobs:
-      - build
+      - my_build
       - validate_publiccode:
           requires:
-            - build
+            - my_build
