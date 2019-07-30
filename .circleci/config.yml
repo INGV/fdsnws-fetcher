@@ -20,6 +20,7 @@ jobs:
     docker: 
       - image: golang 
     steps:
+      - checkout
       - run:
           name: Validate publiccode.yml
           command: pwd ; ls -l 
