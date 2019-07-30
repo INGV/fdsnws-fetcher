@@ -18,7 +18,7 @@ jobs:
       - run:
           name: Validate publiccode.yml
           command: pwd ; ls -l 
-          command: go get github.com/italia/publiccode-parser-go/pcvalidate; /go/bin/pcvalidate publiccode.yml
+          #command: go get github.com/italia/publiccode-parser-go/pcvalidate; /go/bin/pcvalidate publiccode.yml
 
 workflows:
   version: 2
