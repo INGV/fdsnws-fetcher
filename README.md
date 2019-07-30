@@ -1,3 +1,5 @@
+[![CircleCI](https://circleci.com/gh/INGV/fdsnws-fetcher/tree/master.svg?style=svg)](https://circleci.com/gh/INGV/fdsnws-fetcher/tree/master)
+
 # fdsnws-fetcher
 
 This Docker is used to retrieve:
