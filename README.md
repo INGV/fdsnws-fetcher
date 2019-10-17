@@ -56,14 +56,14 @@ $
 
 The output data is into the `./OUTPUT` local directory.
 
+### Example screenshot
+![alt text](images/screen_output.png)
+
 ### Enter into the Docker
 To override the `ENTRYPOINT` directive and enter into the Docker images, run:
 ```
 $ docker run -it --rm -v $(pwd)/OUTPUT:/opt/OUTPUT -v $(pwd)/stationxml.conf:/opt/stationxml.conf --entrypoint=bash fdsnws-fetcher
 ```
-
-### Example screenshot
-![alt text](images/screen_output.png)
 
 # Contribute
 Please, feel free to contribute.
