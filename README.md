@@ -5,7 +5,7 @@
 [![Join the #general channel](https://img.shields.io/badge/Slack%20channel-%23general-blue.svg)](https://ingv-institute.slack.com/messages/CKS902Y5B)
 [![Get invited](https://slack.developers.italia.it/badge.svg)](https://ingv-institute.slack.com/)
 
-# fdsnws-fetcher [![CircleCI](https://circleci.com/gh/INGV/fdsnws-fetcher/tree/master.svg?style=svg)](https://circleci.com/gh/INGV/fdsnws-fetcher/tree/master)
+# fdsnws-fetcher [![Version](https://img.shields.io/badge/dynamic/yaml?label=ver&query=softwareVersion&url=https%3A%2F%2Fraw.githubusercontent.com%2FINGV%2Ffdsnws-fetcher%2Fmaster%2Fpubliccode.yml)](https://github.com/INGV/fdsnws-fetcher/blob/master/HISTORY) [![CircleCI](https://circleci.com/gh/INGV/fdsnws-fetcher/tree/master.svg?style=svg)](https://circleci.com/gh/INGV/fdsnws-fetcher/tree/master)
 
 This Docker is used to retrieve:
 - "**resp**": Response file(s)
