@@ -8,6 +8,8 @@ jobs:
           name: Date start
           command: date
   test_code:
+    docker:
+      - image: debian:stretch
     steps:
       - checkout
       - run:
