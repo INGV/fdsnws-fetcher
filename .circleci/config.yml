@@ -7,15 +7,12 @@ jobs:
       - run:
           name: Date start
           command: date
-  validate_publiccode:
-    docker: 
-      - image: golang 
+  test_code:
     steps:
       - checkout
       - run:
-          name: Validate publiccode.yml
-          #command: pwd ; ls -l 
-          command: go get github.com/italia/publiccode-parser-go/pcvalidate; /go/bin/pcvalidate publiccode.yml
+          name: Test the code here
+          command: pwd ; ls -l 
   end:
     docker:
       - image: debian:stretch
@@ -24,14 +21,23 @@ jobs:
           name: Date end
           command: date
 
+  test_publiccode:
+    docker:
+      - image: circleci/golang:1.12
+    steps:
+      - checkout
+      - run: go get -v github.com/italia/publiccode-parser-go/pcvalidate
+      - run: /go/bin/pcvalidate --remote-base-url https://raw.githubusercontent.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME/$CIRCLE_BRANCH publiccode.yml
+
 workflows:
   version: 2
   my_workflow:
     jobs:
       - start
-      - validate_publiccode:
+      - test_code:
           requires:
             - start
       - end:
           requires:
-            - validate_publiccode
+            - test_code
+      - test_publiccode
