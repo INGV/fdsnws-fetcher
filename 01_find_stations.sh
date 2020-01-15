@@ -106,6 +106,10 @@ STATIONXML_PARAMS=${STATIONXML_PARAMS%?}
 # 
 STATIONXML_PARAMS_FIND="level=station&format=text&${STATIONXML_PARAMS}"
 
+# Remove commented lines from StationXML url(s) list
+FILE_FDSNWS_NODES_URLS_FILTERED=/tmp/$( basename ${FILE_FDSNWS_NODES_URLS} )
+cat ${FILE_FDSNWS_NODES_URLS} | grep -v "^#" > ${FILE_FDSNWS_NODES_URLS_FILTERED}
+
 # Search StationXML that match IN__STATIONXML_URL
 EXISTS=0
 while read FDSNWS_NODE_URL; do
@@ -146,7 +150,7 @@ while read FDSNWS_NODE_URL; do
         # create 'net_sta.txt' file with only NET and STA for that node
         cp ${FILE_CURL1} ${FDSNWS_NODE_PATH}/net_sta.txt
     fi
-done < ${FILE_FDSNWS_NODES_URLS}
+done < ${FILE_FDSNWS_NODES_URLS_FILTERED}
 echo ""
 
 if (( ${EXISTS} == 1 )); then
