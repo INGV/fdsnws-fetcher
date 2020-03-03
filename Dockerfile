@@ -83,10 +83,12 @@ RUN chmod 755 /opt/021_get_dless-resp-paz_parallel.sh
 RUN chmod 755 /opt/03_get_dataselect_list-mseed-sac.sh
 RUN chmod 755 /opt/031_get_mseed-sac_parallel.sh
 RUN chmod 755 /opt/fseed2sac.py
+RUN chmod 777 /opt
 
 # Create OUTPUT dir 
 WORKDIR /opt
 RUN mkdir /opt/OUTPUT
+RUN chmod -R 777 /opt/OUTPUT
 
 # Set entrypoint
 ENTRYPOINT ["./entrypoint.sh"]
