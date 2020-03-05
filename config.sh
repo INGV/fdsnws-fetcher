@@ -13,6 +13,8 @@ DIR_LOG="${DIR_WORK}/log/${DATE_NOW}"
 FILE_FDSNNODE_STATION="${DIR_LOG}/$(basename $0)__FDSNNODE_STATION.txt"
 FILE_CURL1="${DIR_LOG}/$(basename $0)__FILE_CURL1.log"
 FILE_CURL1_HTTPCODE="${DIR_LOG}/$(basename $0)__FILE_CURL1.http_code"
+FILE_CURL2="${DIR_LOG}/$(basename $0)__FILE_CURL2.log"
+FILE_CURL2_HTTPCODE="${DIR_LOG}/$(basename $0)__FILE_CURL2.http_code"
 FILE_FDSNWS_NODES_URLS="stationxml.conf"
 
 # Set software
@@ -24,8 +26,9 @@ N_PROCESS_TO_GET_DLESS=10
 
 # Functions
 function usage_entrypoint() {
-BASE_COMMAND="docker run -it --rm -v \$(pwd)/${FILE_FDSNWS_NODES_URLS}:/opt/${FILE_FDSNWS_NODES_URLS}"
+BASE_COMMAND="docker run -it --rm --user \$(id -u):\$(id -g) -v \$(pwd)/${FILE_FDSNWS_NODES_URLS}:/opt/${FILE_FDSNWS_NODES_URLS}"
 DOCKER_VOLUME_1="-v \$(pwd)/OUTPUT:/opt/OUTPUT"
+DOCKER_VOLUME_2="-v \$(pwd)/my_token:/opt/token"
 DOCKER_NAME="fdsnws-fetcher"
 cat << EOF
 
@@ -44,6 +47,11 @@ cat << EOF
      5) $ ${BASE_COMMAND} ${DOCKER_VOLUME_1} ${DOCKER_NAME} -u "lat=45.75&lon=11.1&maxradius=1&starttime=2017-11-02T00:00:00&endtime=2017-11-02T01:00:00" -t "resp,dless"
      6) $ ${BASE_COMMAND} ${DOCKER_VOLUME_1} ${DOCKER_NAME} -u "lat=45.75&lon=11.1&maxradius=1&starttime=2017-11-02T00:00:00&endtime=2017-11-02T01:00:00" -t "miniseed,resp"
      7) $ ${BASE_COMMAND} ${DOCKER_VOLUME_1} ${DOCKER_NAME} -u "lat=45.75&lon=11.1&maxradius=1&starttime=2017-11-02T00:00:00&endtime=2017-11-02T01:00:00" -t "sac,dataselect_list"
+
+    Example with auth token for restricted stations:
+     1) $ ${BASE_COMMAND} ${DOCKER_VOLUME_1} ${DOCKER_VOLUME_2} ${DOCKER_NAME} -u "network=IV&station=ACER&starttime=2017-11-02T00:00:00&endtime=2017-11-02T01:00:00" -t "dataselect_list"
+     2) $ ${BASE_COMMAND} ${DOCKER_VOLUME_1} ${DOCKER_VOLUME_2} ${DOCKER_NAME} -u "lat=45.75&lon=11.1&maxradius=1&starttime=2017-11-02T00:00:00&endtime=2017-11-02T01:00:00" -t "miniseed,resp"
+     3) $ ${BASE_COMMAND} ${DOCKER_VOLUME_1} ${DOCKER_VOLUME_2} ${DOCKER_NAME} -u "lat=45.75&lon=11.1&maxradius=1&starttime=2017-11-02T00:00:00&endtime=2017-11-02T01:00:00" -t "sac"
 
 
 EOF

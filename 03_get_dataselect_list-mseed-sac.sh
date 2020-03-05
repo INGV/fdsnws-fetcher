@@ -37,7 +37,8 @@ done
 
 #
 for FDSNWS_NODE_PATH in $( ls -d ${DIR_TMP}/* ); do
-    echo "Processing node to create DATASELECT_LIST: $( basename ${FDSNWS_NODE_PATH} )"
+    FDSNWS_NODE=$( basename ${FDSNWS_NODE_PATH} )
+    echo "Processing node to create DATASELECT_LIST: ${FDSNWS_NODE}"
 
     # get 'STATIONXML_FULL_URL' from file
     STATIONXML_FULL_URL=$( cat ${FDSNWS_NODE_PATH}/stationxml_station.txt )
@@ -102,7 +103,24 @@ for FDSNWS_NODE_PATH in $( ls -d ${DIR_TMP}/* ); do
             LOC_OPTIONAL="&location=${LOCATION}"
         fi
 
-        # build DATASELCT URL
+        # Build DATASELCT URL
+	# 1/n - Check if user pass a token
+	if [[ -f /opt/token ]]; then
+            DATASELECT_BASE_URL_AUTH=$( echo ${DATASELECT_BASE_URL} | sed 's/query/auth/' )
+
+            curl --data-binary @/opt/token "${DATASELECT_BASE_URL_AUTH}" -o "${FILE_CURL2}" --write-out "%{http_code}\\n" > ${FILE_CURL2_HTTPCODE} -s
+            RETURNED_CODE=${?}
+            HTTP_CODE=$( cat ${FILE_CURL2_HTTPCODE} )
+            if (( ${RETURNED_CODE} == 0 )) && (( ${HTTP_CODE} == 200 )); then
+                DATASELECT_BASE_URL=$( echo ${DATASELECT_BASE_URL} | sed "s|//|//$( cat ${FILE_CURL2} )@|" )
+            else
+                echo " HTTP_CODE=${HTTP_CODE}"
+                if grep -q -i "token is expired" ${FILE_CURL2} ; then
+                    echo "  Token is expired"
+                fi
+                echo " try to get data without token"
+            fi
+        fi
         DATASELECT_URL="${DATASELECT_BASE_URL}?network=${NETWORK}&station=${STATION}&channel=${CHANNEL}${LOC_OPTIONAL}&starttime=${STARTTIME}&endtime=${ENDTIME}"
         echo "${DATASELECT_URL}" >> ${DIR_DATASELECT_LIST_NODE}/dataselect_urls.txt
 
