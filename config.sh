@@ -22,7 +22,7 @@ STATIONXML_TO_SEED="java -jar ./stationxml-converter-1.0.10.jar -s"
 RDSEED="rdseed"
 
 # Set var
-N_PROCESS_TO_GET_DLESS=10
+N_PROCESS_TO_GET_DLESS=20
 
 # Functions
 function usage_entrypoint() {

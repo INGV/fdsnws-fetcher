@@ -57,7 +57,7 @@ fi
 COUNT=0
 HTTP_CODE=429
 while (( ${HTTP_CODE} == 429 )) && (( ${COUNT} < 5 )); do
-        curl "${DATASELECT_URL}" -o "${FILE_OUTPUT_MSEED}" --write-out "%{http_code}\\n" > ${FILE_OUTPUT_MSEED_HTTPCODE_LOG} -s
+        curl --digest "${DATASELECT_URL}" -o "${FILE_OUTPUT_MSEED}" --write-out "%{http_code}\\n" > ${FILE_OUTPUT_MSEED_HTTPCODE_LOG} -s
         RET_CODE=$?
         HTTP_CODE=$( cat ${FILE_OUTPUT_MSEED_HTTPCODE_LOG} )
         if (( ${HTTP_CODE} == 429 )); then
