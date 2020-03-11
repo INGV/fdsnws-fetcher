@@ -157,15 +157,6 @@ if (( ${EXISTS} == 1 )); then
 	for ((i=0; i<${#ARRAY_TYPES[@]}; i+=1))
         do
 		TYPE=${ARRAY_TYPES[i]}
-    		#if [[ "${TYPE}" == "resp" ]] || [[ "${TYPE}" == "dless" ]]; then
-        	#	${DIR_WORK}/02_get_dless-resp-paz.sh -t ${TYPE}
-    		#elif [[ "${TYPE}" == "sac" ]] || [[ "${TYPE}" == "dless_and_miniseed" ]]; then
-        	#	${DIR_WORK}/02_get_dless-resp-paz.sh -t ${TYPE}
-        	#	${DIR_WORK}/03_get_dataselect_list-mseed-sac.sh -t ${TYPE}
-    		#elif [[ "${TYPE}" == "dataselect_list" ]] || [[ "${TYPE}" == "miniseed" ]]; then
-        	#	${DIR_WORK}/03_get_dataselect_list-mseed-sac.sh -t ${TYPE}
-    		#fi
-
                 if [[ "${TYPE}" == "resp" ]] || [[ "${TYPE}" == "dless" ]] || [[ "${TYPE}" == "paz" ]]; then
                         ${DIR_WORK}/02_get_dless-resp-paz.sh -t ${TYPE}
 		fi
