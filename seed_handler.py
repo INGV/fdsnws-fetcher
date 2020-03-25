@@ -12,9 +12,10 @@ class MyParser(argparse.ArgumentParser):
 
 def parseArguments():
         parser=MyParser()	
-        parser.add_argument('--oud', default='.',help='Output Directory')
+        parser.add_argument('--oud',    default='.',help='Output Directory')
         parser.add_argument('--fmtout', default='SAC',help='Output Format: SAC,MSEED')
         parser.add_argument('--filein', help='Input file name')
+        parser.add_argument('--verbose',help='If given, prints too much',action='store_true')
         if len(sys.argv)==1:
             parser.print_help()
             sys.exit(2)
@@ -77,7 +78,7 @@ def write_file(f,s,n,l,ns,n_o,s_o,l_o,c_o,sm_o):
 
 ############################################
 args = parseArguments()
-
+verb = True if args.verbose else False
 if args.filein:
    filein=args.filein
 else:
@@ -117,7 +118,7 @@ loc_old=""
 cha_old=""
 sam_old=""
 counter=0
-
+written=False
 for tr in st:
     counter+=1
     last=True if counter == len(st) else False
@@ -131,9 +132,12 @@ for tr in st:
     channel = tr.stats.channel
     sampling = tr.stats.sampling_rate
 
-    #print("TEST: ",network,station,location,channel,sampling)
+    if verb:
+                print("TEST: ",network,station,location,channel,sampling)
     
     if len(st) == 1: # If the input file is a single segment single channel fseed or mseed it directly writes out
+       if verb:
+                print("Case: Len == 1","Written=",written)
        stnew = stnew + tr
        A = oud + os.sep + fileout if fileout else oud + os.sep + network + '.' + station + '.' + location + '.' + channel + '.' + ext
        write_file(args.fmtout,stnew,A,logfn,segments,network,station,location,channel,sampling)
@@ -141,6 +145,8 @@ for tr in st:
        sys.exit(0)
     else: # If the input file is a multiple segment and/or multiple channel fseed or mseed it goes on iterating to compose the single channel stream
        if start: # First step on, setup, to check if channel level has changed at next step; this works only the first time
+          if verb:
+                print("Case: Start == True","Written=",written)
           start=False
           net_old=network
           sta_old=station
@@ -148,22 +154,52 @@ for tr in st:
           cha_old=channel
           sam_old=sampling
           stnew = stnew + tr
+          written=False
           continue
        else:
+          if verb:
+                print("Case: Start == False")
           change=True if (network != net_old or station != sta_old or location != loc_old or channel != cha_old) else False
+          if verb:
+                print("Change == ",change)
           A = oud + os.sep + fileout if fileout else oud + os.sep + net_old + '.' + sta_old + '.' + loc_old + '.' + cha_old + '.' + ext
           if not change or (change and start):
+             if verb:
+                print("Case: not change or (change and start)","Written=",written)
              stnew = stnew + tr
+             written=False
           if (change and not start and not last) or (not change and last):
+             if verb:
+                print("Case: (change and not start and not last) or (not change and last)","Written=",written,"Writing ",stnew)
              segments=len(stnew)
              write_file(args.fmtout,stnew,A,logfn,segments,net_old,sta_old,loc_old,cha_old,sam_old)
+             written=True
           if change:
-             stnew=Stream()
+             if verb:
+                print("Case: only change true",stnew,"Written=",written,"Last=",last,"Start=",start)
+             if written and not last:
+                if verb:
+                   print("Case: only change true, written true  and last false")
+                stnew=Stream()
+                stnew = stnew + tr
+                if verb:
+                   print("Updating stnew",stnew)
+                written=False
+             if not written and last:
+                if verb:
+                   print("Case: only change true, written true  and last true (penultima forma d'onda pero'")
+                segments=len(stnew)
+                write_file(args.fmtout,stnew,A,logfn,segments,net_old,sta_old,loc_old,cha_old,sam_old)
+                written=True
+                stnew=Stream()
           if last:
+             if verb:
+                print("Case: only last true","Written=",written)
              stnew = stnew + tr
              segments=len(stnew)
              A = oud + os.sep + fileout if fileout else oud + os.sep + network + '.' + station + '.' + location + '.' + channel + '.' + ext
              write_file(args.fmtout,stnew,A,logfn,segments,network,station,location,channel,sampling)
+             written=True
           start=False
           net_old=network
           sta_old=station
