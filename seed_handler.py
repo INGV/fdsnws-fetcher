@@ -3,6 +3,9 @@ import argparse,sys,os,glob,copy,pwd,warnings
 import obspy.core
 from obspy import read, UTCDateTime, Stream
 from obspy import Trace as tr
+from pyrocko import (pile, io, util)
+from pyrocko import obspy_compat
+obspy_compat.plant()
 
 class MyParser(argparse.ArgumentParser):
     def error(self, message):
@@ -35,23 +38,31 @@ def fillwave(st):
        return (st),fwe
 
 def read_file(f,l):
+    s=False
     with warnings.catch_warnings(record=True) as w:
         warnings.simplefilter('always')
         try:
             s = read(f,format="MSEED")
         except Exception as e:
-            if len(w):
-               for wm in w:
-                   try:
-                       l.write(str(wm.message)+"\n")
-                   except:
-                       pass
             try:
-                l.write(str(e)+"\n")
+                l.write(str(e)+": obspy error messages\n===> NOW Trying toswitch to pyrocko decoding\n")
+            except:
+                print("Error writing Log file during obspy alternative")
+            try:
+                s = pile.make_pile([f]).to_obspy_stream()
+            except Exception as p:
+                if len(w):
+                    for wm in w:
+                        try:
+                            l.write(str(wm.message)+": general read warning messages\n")
+                        except:
+                            pass
+                try:
+                    l.write(str(p)+": pyrocko error messages\n")
+                except:
+                    print("Error writing Log file during pyrocko alternative")
                 l.close()
                 sys.exit(1)
-            except:
-                pass
     return s
 
 def write_file(f,s,n,l,ns,n_o,s_o,l_o,c_o,sm_o):
@@ -106,6 +117,9 @@ except:
 
 # Loading input file mseed into stream() st
 st = read_file(filein,logfn)
+if not st:
+   print("Problem reading filein ",filein)
+   sys.exit(1)
 
 # Single stream cumulating the per channel segments
 stnew=Stream()

@@ -77,7 +77,7 @@ if (( ${RET_CODE} == 0 )); then
                     mkdir -p ${DIR_SAC_NODE}
                 fi
 		# Convert to SAC.
-		python /opt/seed_handler.py --oud ${DIR_SAC_NODE} --fmtout SAC --filein ${FILE_OUTPUT_MSEED}
+		python3 /opt/seed_handler.py --oud ${DIR_SAC_NODE} --fmtout SAC --filein ${FILE_OUTPUT_MSEED}
 
                 RET=$?
                 if [ $RET -ne 0 ]; then

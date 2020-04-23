@@ -21,17 +21,17 @@ RUN apt-get update \
         procps
 
 RUN apt-get install -y \
-	python-dev \
-	python-pycurl \
-	python-simplejson \
+	python3-dev \
+	python3-pycurl \
+	python3-simplejson \
 	libcurl4-gnutls-dev \
 	libssl-dev \
-	python \
-	python-psutil \
-	python-requests \
-	python-jsonschema \
-	python-setuptools \
-	python-dev \
+	python3 \
+	python3-psutil \
+	python3-requests \
+	python3-jsonschema \
+	python3-setuptools \
+	python3-dev \
 	build-essential \
 	libxml2-dev \
 	libxslt1-dev \
@@ -64,7 +64,33 @@ RUN add-apt-repository "deb http://deb.obspy.org $(lsb_release -cs) main"
 RUN wget --quiet -O - https://raw.github.com/obspy/obspy/master/misc/debian/public.key | apt-key add -
 RUN apt-get update \
     && apt-get install -y \
-        python-obspy 
+        python3-obspy 
+
+# Get and install PyRocko - https://pyrocko.org/docs/current/install/system/deb.html
+WORKDIR /opt
+RUN apt-get update \
+    && apt-get install -y \
+        make \
+        git \
+        python3-dev \
+        python3-setuptools \
+        python3-numpy \
+        python3-numpy-dev \
+        python3-scipy \
+        python3-matplotlib \
+        python3-pyqt4 \
+        python3-pyqt4.qtopengl \
+        python3-pyqt5 \
+        python3-pyqt5.qtopengl \
+        python3-pyqt5.qtsvg \
+        python3-pyqt5.qtwebengine || apt-get install -y python3-pyqt5.qtwebkit 
+RUN apt-get install -y python3-yaml \
+        python3-progressbar \
+        python3-jinja2 \
+        python3-requests
+RUN git clone https://git.pyrocko.org/pyrocko/pyrocko.git pyrocko \
+    && cd pyrocko \
+    && python3 setup.py install
 
 # Install Xml2Resp and scripts
 WORKDIR /opt
