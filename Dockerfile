@@ -91,9 +91,9 @@ RUN apt-get install -y python3-yaml \
 RUN git clone https://git.pyrocko.org/pyrocko/pyrocko.git pyrocko \
     && cd pyrocko \
     && python3 setup.py install
-WORKDIR /root
-RUN mkdir /root/.pyrocko/ \
-    && chmod 777 /root/.pyrocko/
+WORKDIR /
+RUN mkdir /.pyrocko/ \
+    && chmod 777 /.pyrocko/
 
 # Install Xml2Resp and scripts
 WORKDIR /opt
