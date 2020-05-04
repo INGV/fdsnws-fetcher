@@ -71,7 +71,7 @@ fi
 # Print version
 echo ""
 VERSION=$( grep "softwareVersion" publiccode.yml | awk -F":" '{print $2}' )
-echo "Software version: ${VERSION}"
+echo "fdsnws-fetcher version: ${VERSION}"
 echo ""
 sleep 1
 
