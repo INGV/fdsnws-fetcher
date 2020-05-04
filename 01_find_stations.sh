@@ -68,6 +68,12 @@ if [ ! -d ${DIR_TMP} ]; then
     mkdir -p ${DIR_TMP}
 fi
 
+# Print version
+echo ""
+VERSION=$( grep "softwareVersion" publiccode.yml | awk -F":" '{print $2}' )
+echo "Software version: ${VERSION}"
+echo ""
+sleep 1
 
 # Check StationXML config file
 if [ -f ${FILE_FDSNWS_NODES_URLS} ]; then
