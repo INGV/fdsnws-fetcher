@@ -66,6 +66,7 @@ def read_file(f,l):
     return s
 
 def write_file(f,s,n,l,ns,n_o,s_o,l_o,c_o,sm_o):
+    ns = 1 if not ns else ns
     try:
         if f == 'SAC':
            s,err = fillwave(s)
@@ -134,17 +135,31 @@ sam_old=""
 counter=0
 written=False
 for tr in st:
+    segments=False
     counter+=1
     last=True if counter == len(st) else False
-    network = tr.stats.network
-    station = tr.stats.station
-    if len(tr.stats.location)==0:
-      	location=''
-    else:
-        location=tr.stats.location
-
-    channel = tr.stats.channel
-    sampling = tr.stats.sampling_rate
+    try:
+       network = tr.stats.network
+    except:
+       network = ''
+    try:
+       station = tr.stats.station
+    except:
+       station = ''
+    try:
+       location = tr.stats.location
+    except:
+      location=''
+    try:
+       channel = tr.stats.channel
+    except:
+       channel = ''
+    try:
+       sampling = tr.stats.sampling_rate
+    except:
+       wout = 'Unrecoverable error: tr.stats.sampling_rate is empty\n'
+       logfn.write(wout)
+       sys.exit(2)
 
     if verb:
                 print("TEST: ",network,station,location,channel,sampling)
