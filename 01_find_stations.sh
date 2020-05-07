@@ -160,9 +160,29 @@ done < ${FILE_FDSNWS_NODES_URLS_FILTERED}
 echo ""
 
 if (( ${EXISTS} == 1 )); then
-	for ((i=0; i<${#ARRAY_TYPES[@]}; i+=1))
+	# In case type are 'miniseed' and 'sac', 'miniseed' will be removed; it is downloaded with 'sac' type
+        CHECK_MINISEED=0
+        CHECK_SAC=0
+        for ((i=0; i<${#ARRAY_TYPES[@]}; i+=1))
         do
-		TYPE=${ARRAY_TYPES[i]}
+                TYPE=${ARRAY_TYPES[i]}
+                if [[ "${TYPE}" == "miniseed" ]]; then
+                        CHECK_MINISEED=1
+                fi
+                if [[ "${TYPE}" == "sac" ]]; then
+                        CHECK_SAC=1
+                fi
+        done
+        if (( ${CHECK_MINISEED} == 1 )) && (( ${CHECK_SAC} == 1 )); then
+                ARRAY_TYPES_2=("${ARRAY_TYPES[@]/miniseed}")
+	else
+                ARRAY_TYPES_2=("${ARRAY_TYPES[@]}")
+        fi
+
+	#
+	for ((i=0; i<${#ARRAY_TYPES_2[@]}; i+=1))
+        do
+		TYPE=${ARRAY_TYPES_2[i]}
                 if [[ "${TYPE}" == "resp" ]] || [[ "${TYPE}" == "dless" ]] || [[ "${TYPE}" == "paz" ]]; then
                         ${DIR_WORK}/02_get_dless-resp-paz.sh -t ${TYPE}
 		fi

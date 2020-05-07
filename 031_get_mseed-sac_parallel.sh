@@ -82,6 +82,8 @@ if (( ${RET_CODE} == 0 )); then
                 RET=$?
                 if [ $RET -ne 0 ]; then
                     echo " ERROR - converting ${FILE_OUTPUT_MSEED} to SAC format."
+		else
+		    echo " OK - converting ${FILE_OUTPUT_MSEED} to SAC format."
                 fi
             fi
         else
