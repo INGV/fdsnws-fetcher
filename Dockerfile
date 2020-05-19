@@ -5,7 +5,6 @@ LABEL maintainer="Valentino Lauciani <valentino.lauciani@ingv.it>"
 ENV DEBIAN_FRONTEND=noninteractive
 ENV INITRD No
 ENV FAKE_CHROOT 1
-ENV STATIONXML_CONVERTER=https://github.com/iris-edu/stationxml-seed-converter/releases/download/1.0.10/stationxml-converter-1.0.10.jar
 
 # install packages
 RUN apt-get update \
@@ -126,7 +125,7 @@ RUN mkdir /.pyrocko/ \
 
 # Install Xml2Resp and scripts
 WORKDIR /opt
-RUN wget --no-check-certificate ${STATIONXML_CONVERTER}
+COPY soft/stationxml-converter-1.0.10.jar /opt/
 COPY 01_find_stations.sh /opt/
 COPY 02_get_dless-resp-paz.sh /opt/
 COPY 021_get_dless-resp-paz_parallel.sh /opt/
