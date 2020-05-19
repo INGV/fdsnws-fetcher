@@ -20,7 +20,7 @@ fi
 
 ### START - Check parameters ###
 TYPE=
-while getopts :o:d:u:t: OPTION
+while getopts :o:d:u:t:s:e: OPTION
 do
 	case ${OPTION} in
         o)	FILE_OUTPUT_MSEED="${OPTARG}"
@@ -30,6 +30,10 @@ do
         t)	TYPE="${OPTARG}"
 			;;
         u)	DATASELECT_URL="${OPTARG}"
+			;;
+        s)	STARTTIME="${OPTARG}"
+			;;
+        e)	ENDTIME="${OPTARG}"
 			;;
         \?) echo "Invalid option: -$OPTARG" >/dev/null
 			shift
@@ -70,6 +74,12 @@ if (( ${RET_CODE} == 0 )); then
     if (( ${HTTP_CODE} == 200 )); then
         if [ -f ${FILE_OUTPUT_MSEED} ]; then
             echo "OK - file ${FILE_OUTPUT_MSEED} successfully downloaded."
+            # Use qmerge to cut file properly 
+            if [[ ! -z ${STARTTIME} ]] && [[ ! -z ${ENDTIME} ]]; then
+                echo "  use qmerge to cut file properly"
+                qmerge -f ${STARTTIME} -t ${ENDTIME} ${FILE_OUTPUT_MSEED} > ${FILE_OUTPUT_MSEED}.new
+                mv ${FILE_OUTPUT_MSEED}.new ${FILE_OUTPUT_MSEED}
+            fi
             if [[ "${TYPE}" == "sac" ]]; then
                 # create SAC dir
                 DIR_SAC_NODE=${DIR_NODE}/sac

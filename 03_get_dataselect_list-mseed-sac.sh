@@ -146,7 +146,7 @@ for FDSNWS_NODE_PATH in $( ls -d ${DIR_TMP}/* ); do
             FILE_OUTPUT_DLESS="${FDSNWS_NODE_PATH}/dless/${NETWORK}_${STATION}.dless"
             
             # Running process
-            ${DIR_WORK}/031_get_mseed-sac_parallel.sh -o ${FILE_OUTPUT_MSEED} -d ${FILE_OUTPUT_DLESS} -u ${DATASELECT_URL} -t ${TYPE} &
+            ${DIR_WORK}/031_get_mseed-sac_parallel.sh -o ${FILE_OUTPUT_MSEED} -d ${FILE_OUTPUT_DLESS} -u ${DATASELECT_URL} -t ${TYPE} -s ${STARTTIME} -e ${ENDTIME} &
 
             # Checking process number
             RUNNING_PROCESS=$( ps axu | grep "031_get_mseed-sac_parallel.sh" | grep -v "grep" | wc | awk '{print $1}' )
