@@ -40,7 +40,9 @@ workflows:
       - build_docker_image:
           requires:
             - start
+      - test_publiccode
+          requires:
+            - start            
       - end:
           requires:
-            - build_docker_image
-      - test_publiccode
+            - build_docker_image      
