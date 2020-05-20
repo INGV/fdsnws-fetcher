@@ -34,7 +34,7 @@ jobs:
 
 workflows:
   version: 2
-  workflow:
+  fdsnws-fetcher-workflow:
     jobs:
       - start
       - build_docker_image:
