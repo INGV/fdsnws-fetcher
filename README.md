@@ -32,8 +32,8 @@ $ cd fdsnws-fetcher
 ### Docker image
 To obtain *fdsnws-fetcher* docker image, you have two options:
 
-#### 1) Get built image
-Get the last built image from dockerhub:
+#### 1) Get built image from DockerHub
+Get the last built image from DockerHub repository:
 ```
 $ docker pull vlauciani/fdsnws-fetcher:latest
 ```
