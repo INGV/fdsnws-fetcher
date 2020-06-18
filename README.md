@@ -40,12 +40,12 @@ $ docker pull vlauciani/fdsnws-fetcher:latest
 
 #### 2) Build by yourself
 ```
-$ docker build --tag fdsnws-fetcher . 
+$ docker build --tag vlauciani/fdsnws-fetcher . 
 ```
 
 in case of errors, try:
 ```
-$ docker build --no-cache --pull --tag fdsnws-fetcher . 
+$ docker build --no-cache --pull --tag vlauciani/fdsnws-fetcher . 
 ```
 
 ### Update `stationxml.conf`
@@ -54,28 +54,28 @@ Update your `stationxml.conf` adding more StationXML entry point
 ### Run docker
 Running the command below to see the **help**:
 ```
-$ docker run -it --rm -v $(pwd)/stationxml.conf:/opt/stationxml.conf -v $(pwd)/OUTPUT:/opt/OUTPUT fdsnws-fetcher -h
+$ docker run -it --rm -v $(pwd)/stationxml.conf:/opt/stationxml.conf -v $(pwd)/OUTPUT:/opt/OUTPUT vlauciani/fdsnws-fetcher -h
 
  This docker search the given STATIONXML_PARAMETERS on StationXML and convert it to RESP and/or DATALESS files and/or DATASELECT_LIST list.
 
  usage:
- $ docker run -it --user $(id -u):$(id -g) --rm -v $(pwd)/stationxml.conf:/opt/stationxml.conf -v $(pwd)/OUTPUT:/opt/OUTPUT fdsnws-fetcher -u <stationxml params>
+ $ docker run -it --user $(id -u):$(id -g) --rm -v $(pwd)/stationxml.conf:/opt/stationxml.conf -v $(pwd)/OUTPUT:/opt/OUTPUT vlauciani/fdsnws-fetcher -u <stationxml params>
 
     Values for option -t: resp, paz, dless, dataselect_list, miniseed, sac
 
     Examples:
-     1) $ docker run -it --user $(id -u):$(id -g) --rm -v $(pwd)/stationxml.conf:/opt/stationxml.conf -v $(pwd)/OUTPUT:/opt/OUTPUT fdsnws-fetcher -u "network=IV&station=ACER&starttime=2017-11-02T00:00:00&endtime=2017-11-02T01:00:00" -t "dataselect_list"
-     2) $ docker run -it --user $(id -u):$(id -g) --rm -v $(pwd)/stationxml.conf:/opt/stationxml.conf -v $(pwd)/OUTPUT:/opt/OUTPUT fdsnws-fetcher -u "network=IV&latitude=42&longitude=12&maxradius=1" -t "dataselect_list"
-     3) $ docker run -it --user $(id -u):$(id -g) --rm -v $(pwd)/stationxml.conf:/opt/stationxml.conf -v $(pwd)/OUTPUT:/opt/OUTPUT fdsnws-fetcher -u "network=IV&latitude=47.12&longitude=11.38&maxradius=0.5&channel=HH?,EH?,HN?" -t "dataselect_list"
-     4) $ docker run -it --user $(id -u):$(id -g) --rm -v $(pwd)/stationxml.conf:/opt/stationxml.conf -v $(pwd)/OUTPUT:/opt/OUTPUT fdsnws-fetcher -u "network=IV,MN&station=BLY&starttime=2017-11-02T00:00:00&endtime=2017-11-02T01:00:00" -t "dless"
-     5) $ docker run -it --user $(id -u):$(id -g) --rm -v $(pwd)/stationxml.conf:/opt/stationxml.conf -v $(pwd)/OUTPUT:/opt/OUTPUT fdsnws-fetcher -u "lat=45.75&lon=11.1&maxradius=1&starttime=2017-11-02T00:00:00&endtime=2017-11-02T01:00:00" -t "resp,dless"
-     6) $ docker run -it --user $(id -u):$(id -g) --rm -v $(pwd)/stationxml.conf:/opt/stationxml.conf -v $(pwd)/OUTPUT:/opt/OUTPUT fdsnws-fetcher -u "lat=45.75&lon=11.1&maxradius=1&starttime=2017-11-02T00:00:00&endtime=2017-11-02T01:00:00" -t "miniseed,resp"
-     7) $ docker run -it --user $(id -u):$(id -g) --rm -v $(pwd)/stationxml.conf:/opt/stationxml.conf -v $(pwd)/OUTPUT:/opt/OUTPUT fdsnws-fetcher -u "lat=45.75&lon=11.1&maxradius=1&starttime=2017-11-02T00:00:00&endtime=2017-11-02T01:00:00" -t "sac,dataselect_list"
+     1) $ docker run -it --user $(id -u):$(id -g) --rm -v $(pwd)/stationxml.conf:/opt/stationxml.conf -v $(pwd)/OUTPUT:/opt/OUTPUT vlauciani/fdsnws-fetcher -u "network=IV&station=ACER&starttime=2017-11-02T00:00:00&endtime=2017-11-02T01:00:00" -t "dataselect_list"
+     2) $ docker run -it --user $(id -u):$(id -g) --rm -v $(pwd)/stationxml.conf:/opt/stationxml.conf -v $(pwd)/OUTPUT:/opt/OUTPUT vlauciani/fdsnws-fetcher -u "network=IV&latitude=42&longitude=12&maxradius=1" -t "dataselect_list"
+     3) $ docker run -it --user $(id -u):$(id -g) --rm -v $(pwd)/stationxml.conf:/opt/stationxml.conf -v $(pwd)/OUTPUT:/opt/OUTPUT vlauciani/fdsnws-fetcher -u "network=IV&latitude=47.12&longitude=11.38&maxradius=0.5&channel=HH?,EH?,HN?" -t "dataselect_list"
+     4) $ docker run -it --user $(id -u):$(id -g) --rm -v $(pwd)/stationxml.conf:/opt/stationxml.conf -v $(pwd)/OUTPUT:/opt/OUTPUT vlauciani/fdsnws-fetcher -u "network=IV,MN&station=BLY&starttime=2017-11-02T00:00:00&endtime=2017-11-02T01:00:00" -t "dless"
+     5) $ docker run -it --user $(id -u):$(id -g) --rm -v $(pwd)/stationxml.conf:/opt/stationxml.conf -v $(pwd)/OUTPUT:/opt/OUTPUT vlauciani/fdsnws-fetcher -u "lat=45.75&lon=11.1&maxradius=1&starttime=2017-11-02T00:00:00&endtime=2017-11-02T01:00:00" -t "resp,dless"
+     6) $ docker run -it --user $(id -u):$(id -g) --rm -v $(pwd)/stationxml.conf:/opt/stationxml.conf -v $(pwd)/OUTPUT:/opt/OUTPUT vlauciani/fdsnws-fetcher -u "lat=45.75&lon=11.1&maxradius=1&starttime=2017-11-02T00:00:00&endtime=2017-11-02T01:00:00" -t "miniseed,resp"
+     7) $ docker run -it --user $(id -u):$(id -g) --rm -v $(pwd)/stationxml.conf:/opt/stationxml.conf -v $(pwd)/OUTPUT:/opt/OUTPUT vlauciani/fdsnws-fetcher -u "lat=45.75&lon=11.1&maxradius=1&starttime=2017-11-02T00:00:00&endtime=2017-11-02T01:00:00" -t "sac,dataselect_list"
 
     Example with auth token for restricted stations:
-     1) $ docker run -it --user $(id -u):$(id -g) --rm -v $(pwd)/stationxml.conf:/opt/stationxml.conf -v $(pwd)/OUTPUT:/opt/OUTPUT -v $(pwd)/my_token:/opt/token fdsnws-fetcher -u "network=IV&station=ACER&starttime=2017-11-02T00:00:00&endtime=2017-11-02T01:00:00" -t "dataselect_list"
-     2) $ docker run -it --user $(id -u):$(id -g) --rm -v $(pwd)/stationxml.conf:/opt/stationxml.conf -v $(pwd)/OUTPUT:/opt/OUTPUT -v $(pwd)/my_token:/opt/token fdsnws-fetcher -u "lat=45.75&lon=11.1&maxradius=1&starttime=2017-11-02T00:00:00&endtime=2017-11-02T01:00:00" -t "miniseed,resp"
-     3) $ docker run -it --user $(id -u):$(id -g) --rm -v $(pwd)/stationxml.conf:/opt/stationxml.conf -v $(pwd)/OUTPUT:/opt/OUTPUT -v $(pwd)/my_token:/opt/token fdsnws-fetcher -u "lat=45.75&lon=11.1&maxradius=1&starttime=2017-11-02T00:00:00&endtime=2017-11-02T01:00:00" -t "sac"
+     1) $ docker run -it --user $(id -u):$(id -g) --rm -v $(pwd)/stationxml.conf:/opt/stationxml.conf -v $(pwd)/OUTPUT:/opt/OUTPUT -v $(pwd)/my_token:/opt/token vlauciani/fdsnws-fetcher -u "network=IV&station=ACER&starttime=2017-11-02T00:00:00&endtime=2017-11-02T01:00:00" -t "dataselect_list"
+     2) $ docker run -it --user $(id -u):$(id -g) --rm -v $(pwd)/stationxml.conf:/opt/stationxml.conf -v $(pwd)/OUTPUT:/opt/OUTPUT -v $(pwd)/my_token:/opt/token vlauciani/fdsnws-fetcher -u "lat=45.75&lon=11.1&maxradius=1&starttime=2017-11-02T00:00:00&endtime=2017-11-02T01:00:00" -t "miniseed,resp"
+     3) $ docker run -it --user $(id -u):$(id -g) --rm -v $(pwd)/stationxml.conf:/opt/stationxml.conf -v $(pwd)/OUTPUT:/opt/OUTPUT -v $(pwd)/my_token:/opt/token vlauciani/fdsnws-fetcher -u "lat=45.75&lon=11.1&maxradius=1&starttime=2017-11-02T00:00:00&endtime=2017-11-02T01:00:00" -t "sac"
 
 
 $
@@ -89,11 +89,11 @@ The output data is into the `./OUTPUT` local directory.
 ### Enter into the Docker
 To override the `ENTRYPOINT` directive and enter into the Docker images, run:
 ```
-$ docker run -it --user $(id -u):$(id -g) --rm -v $(pwd)/OUTPUT:/opt/OUTPUT -v $(pwd)/stationxml.conf:/opt/stationxml.conf --entrypoint=bash fdsnws-fetcher
+$ docker run -it --user $(id -u):$(id -g) --rm -v $(pwd)/OUTPUT:/opt/OUTPUT -v $(pwd)/stationxml.conf:/opt/stationxml.conf --entrypoint=bash vlauciani/fdsnws-fetcher
 ```
 or with `root`:
 ```
-$ docker run -it --rm -v $(pwd)/OUTPUT:/opt/OUTPUT -v $(pwd)/stationxml.conf:/opt/stationxml.conf --entrypoint=bash fdsnws-fetcher
+$ docker run -it --rm -v $(pwd)/OUTPUT:/opt/OUTPUT -v $(pwd)/stationxml.conf:/opt/stationxml.conf --entrypoint=bash vlauciani/fdsnws-fetcher
 ```
 
 # Contribute
