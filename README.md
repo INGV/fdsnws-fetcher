@@ -5,6 +5,10 @@
 [![Join the #general channel](https://img.shields.io/badge/Slack%20channel-%23general-blue.svg)](https://ingv-institute.slack.com/messages/CKS902Y5B)
 [![Get invited](https://slack.developers.italia.it/badge.svg)](https://join.slack.com/t/ingv-institute/shared_invite/zt-ckoji8va-mutwycltiCw_EAhUWSND8Q)
 
+![Docker Cloud Build Status](https://img.shields.io/docker/cloud/build/vlauciani/fdsnws-fetcher)
+![Docker Image Size (latest semver)](https://img.shields.io/docker/image-size/vlauciani/fdsnws-fetcher?sort=semver)
+![Docker Pulls](https://img.shields.io/docker/pulls/vlauciani/fdsnws-fetcher)
+
 # fdsnws-fetcher [![Version](https://img.shields.io/badge/dynamic/yaml?label=ver&query=softwareVersion&url=https://raw.githubusercontent.com/INGV/fdsnws-fetcher/master/publiccode.yml)](https://github.com/INGV/fdsnws-fetcher/blob/master/publiccode.yml) [![CircleCI](https://circleci.com/gh/INGV/fdsnws-fetcher/tree/master.svg?style=svg)](https://circleci.com/gh/INGV/fdsnws-fetcher/tree/master)
 
 This Docker is used to retrieve:
@@ -18,11 +22,24 @@ This Docker is used to retrieve:
 sending a request to each "**station**" FDSNS-WS to find available stations.
 
 ## Quickstart
-### Build docker
-Clone this repository, then:
-
+### Clone the repository
+First, clone the git repositry:
 ```
+$ git clone https://github.com/INGV/fdsnws-fetcher.git
 $ cd fdsnws-fetcher
+```
+
+### Docker image
+To obtain *fdsnws-fetcher* docker image, you have two options:
+
+#### 1) Get built image
+Get the last built image from dockerhub:
+```
+$ docker pull vlauciani/fdsnws-fetcher:latest
+```
+
+#### 2) Build by yourself
+```
 $ docker build --tag fdsnws-fetcher . 
 ```
 
