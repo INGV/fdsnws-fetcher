@@ -209,7 +209,11 @@ for FDSNWS_NODE_PATH in $( ls -d ${DIR_TMP}/* ); do
         done
 done
 echo ""
+echo "Old version, DEPRECATED:"
 echo "OUTPUT=./OUTPUT/${DATE_NOW}"
+echo ""
+echo "New version:"
+echo "OUTPUT_DIR=${DATE_NOW}"
 echo ""
 
 # Remove temporary files/directories
