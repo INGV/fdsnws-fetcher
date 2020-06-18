@@ -76,7 +76,7 @@ if (( ${RET_CODE} == 0 )); then
             echo "OK - file ${FILE_OUTPUT_MSEED} successfully downloaded."
             # Use qmerge to cut file properly 
             if [[ ! -z ${STARTTIME} ]] && [[ ! -z ${ENDTIME} ]]; then
-                echo "  use qmerge to cut file properly"
+                #echo "  use qmerge to cut file properly"
                 qmerge -f ${STARTTIME} -t ${ENDTIME} ${FILE_OUTPUT_MSEED} > ${FILE_OUTPUT_MSEED}.new
                 mv ${FILE_OUTPUT_MSEED}.new ${FILE_OUTPUT_MSEED}
             fi
