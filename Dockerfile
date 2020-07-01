@@ -123,6 +123,10 @@ WORKDIR /
 RUN mkdir /.pyrocko/ \
     && chmod 777 /.pyrocko/
 
+# Get last leapseconds
+WORKDIR /usr/local/etc
+RUN wget -O leapseconds http://www.ncedc.org/ftp/pub/programs/leapseconds
+
 # Install Xml2Resp and scripts
 WORKDIR /opt
 COPY soft/stationxml-converter-1.0.10.jar /opt/
