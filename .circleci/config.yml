@@ -34,7 +34,7 @@ jobs:
           # https://github.com/italia/publiccode-parser-go
           name: Validate publiccode file
           command: |
-            docker run -v $(pwd)/publiccodes:/files italia/publiccode-parser-go
+            docker run -v $(pwd):/files italia/publiccode-parser-go /files/publiccode.yml
 
 workflows:
   version: 2
