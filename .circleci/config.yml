@@ -26,7 +26,7 @@ jobs:
 
   test_publiccode:
     docker:
-      - image: circleci/golang:1.12
+      - image: docker:18.06.0-ce
     steps:
       - checkout
       - setup_remote_docker
