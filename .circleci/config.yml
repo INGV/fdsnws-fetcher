@@ -34,9 +34,13 @@ jobs:
           # https://github.com/italia/publiccode-parser-go
           name: Validate publiccode file
           command: |
-            pwd
-            ls -l
-            docker run -v $(pwd):/files italia/publiccode-parser-go
+            ### CircleCI cannot mount folder: https://circleci.com/docs/2.0/building-docker-images/#mounting-folders
+            # create a dummy container which will hold a volume with config
+            docker create -v /publiccode_folder --name myfolder alpine:3.4 /bin/true
+            # copy a config file into this volume
+            docker cp publiccode.yml myfolder:/publiccode_folder
+            # start an application container using this volume
+            docker run --rm --volumes-from myfolder italia/publiccode-parser-go publiccode_folder/publiccode.yml
 
 workflows:
   version: 2
