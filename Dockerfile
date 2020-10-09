@@ -17,6 +17,7 @@ RUN apt-get update \
         wget \
         curl \
         default-jre \
+        apt-transport-https \
         procps
 
 RUN apt-get install -y \
@@ -89,7 +90,7 @@ RUN apt-get update \
     && apt-get install -y \
         software-properties-common
 RUN add-apt-repository "deb http://deb.obspy.org $(lsb_release -cs) main"
-RUN wget --quiet -O - https://raw.github.com/obspy/obspy/master/misc/debian/public.key | apt-key add -
+RUN wget --quiet -O - https://raw.githubusercontent.com/obspy/obspy/master/misc/debian/public.key | apt-key add -
 RUN apt-get update \
     && apt-get install -y \
         python3-obspy 
