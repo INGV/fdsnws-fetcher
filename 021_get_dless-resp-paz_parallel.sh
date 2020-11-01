@@ -80,7 +80,7 @@ if [ -s ${FILE_OUTPUT_DLESS} ]; then
             cat ${DIR_RESP_LOG_NODE}/${BASENAME_DLESS}.rdseed.err
             echo -e "\n"
         fi
-        if [[ -f ${DIR_RESP_NODE}/rdseed.stations ]]; then
+        if [ -f ${DIR_RESP_NODE}/rdseed.stations ]; then
             cat ${DIR_RESP_NODE}/rdseed.stations >> ${DIR_RESP_NODE}/rdseed.stations.info
             rm ${DIR_RESP_NODE}/rdseed.stations
         fi
