@@ -74,11 +74,15 @@ if [ -s ${FILE_OUTPUT_DLESS} ]; then
             mkdir -p ${DIR_RESP_LOG_NODE}
         fi
         echo " create RESP from \"${FILE_OUTPUT_DLESS}\""
-        ${RDSEED} -R -f ${FILE_OUTPUT_DLESS} -q ${DIR_RESP_NODE} >> ${DIR_RESP_LOG_NODE}/${BASENAME_DLESS}.rdseed.out 2>> ${DIR_RESP_LOG_NODE}/${BASENAME_DLESS}.rdseed.err
+        ${RDSEED} -R -S -f ${FILE_OUTPUT_DLESS} -q ${DIR_RESP_NODE} >> ${DIR_RESP_LOG_NODE}/${BASENAME_DLESS}.rdseed.out 2>> ${DIR_RESP_LOG_NODE}/${BASENAME_DLESS}.rdseed.err
         RET_RDSEED=${?}
         if (( ${RET_RDSEED} != 0 )); then
             cat ${DIR_RESP_LOG_NODE}/${BASENAME_DLESS}.rdseed.err
             echo -e "\n"
+        fi
+        if [[ -f ${DIR_RESP_NODE}/rdseed.stations ]]; then
+            cat ${DIR_RESP_NODE}/rdseed.stations >> ${DIR_RESP_NODE}/rdseed.stations.info
+            rm ${DIR_RESP_NODE}/rdseed.stations
         fi
     fi
     if [[ "${TYPE}" == "paz" ]]; then
