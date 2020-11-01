@@ -205,12 +205,11 @@ for FDSNWS_NODE_PATH in $( ls -d ${DIR_TMP}/* ); do
         for ((i=0; i<${#ARRAY_TYPES[@]}; i+=1))
         do
                 TYPE=${ARRAY_TYPES[i]}
-                cp -R ${FDSNWS_NODE_PATH}/${TYPE} ${DIR_OUTPUT_NODE}
+                if [ -d ${FDSNWS_NODE_PATH}/${TYPE} ]; then
+                        cp -R ${FDSNWS_NODE_PATH}/${TYPE} ${DIR_OUTPUT_NODE}
+                fi
         done
 done
-echo ""
-echo "Old version, DEPRECATED:"
-echo "OUTPUT=./OUTPUT/${DATE_NOW}"
 echo ""
 echo "New version:"
 echo "OUTPUT_DIR=${DATE_NOW}"
