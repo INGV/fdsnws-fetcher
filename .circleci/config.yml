@@ -75,7 +75,7 @@ jobs:
             docker run --rm --volumes-from myfolder italia/publiccode-parser-go publiccode_folder/publiccode.yml
 
 workflows:
-  version: 2
+  #version: 2
   fdsnws-fetcher-workflow:
     jobs:
       - start
