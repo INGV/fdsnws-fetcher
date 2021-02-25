@@ -46,7 +46,7 @@ jobs:
           name: Publish Docker Image to Docker Hub
           command: |
             echo $DOCKERHUB_USERNAME
-            echo ${DOCKERHUB_ACCESS_TOKEN} | docker login -u ${DOCKERHUB_USERNAME} --password-stdin
+            echo $DOCKERHUB_ACCESS_TOKEN | docker login -u $DOCKERHUB_USERNAME --password-stdin
             docker push $IMAGE_NAME:latest
   end:
     docker:
@@ -75,7 +75,6 @@ jobs:
             docker run --rm --volumes-from myfolder italia/publiccode-parser-go publiccode_folder/publiccode.yml
 
 workflows:
-  #version: 2
   fdsnws-fetcher-workflow:
     jobs:
       - start
