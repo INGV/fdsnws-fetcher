@@ -37,7 +37,7 @@ done
 
 # 
 for FDSNWS_NODE_PATH in $( ls -d ${DIR_TMP}/* ); do
-    echo "Processing node to create DLESS: $( basename ${FDSNWS_NODE_PATH} )"
+    echo "Retrieving station(s) info from: $( basename ${FDSNWS_NODE_PATH} )"
 
     # get 'STATIONXML_FULL_URL' from file
     STATIONXML_FULL_URL=$( cat ${FDSNWS_NODE_PATH}/stationxml_station.txt )
@@ -58,7 +58,7 @@ for FDSNWS_NODE_PATH in $( ls -d ${DIR_TMP}/* ); do
     N_NET_STA=$( wc ${FDSNWS_NODE_PATH}/net_sta.txt | awk '{print $1}' )
     COUNT=1
     while read NET_STA; do
-	echo "${COUNT}/${N_NET_STA} - Processing \"${NET_STA}\" on \"$( basename ${FDSNWS_NODE_PATH} )\""
+	echo "${COUNT}/${N_NET_STA} - Processing \"${NET_STA}\" on \"$( basename ${FDSNWS_NODE_PATH} )\"" > /dev/null
 
         NETWORK=$( echo ${NET_STA} | awk -F"|" '{print $1}' )
         STATION=$( echo ${NET_STA} | awk -F"|" '{print $2}' )
@@ -80,12 +80,12 @@ for FDSNWS_NODE_PATH in $( ls -d ${DIR_TMP}/* ); do
         
 
         # Running process
-        ${DIR_WORK}/021_get_dless-resp-paz_parallel.sh -o ${DIR_DLESS_NODE}/${NETWORK}_${STATION}.dless -u "${STATIONXML_FOR_DLESS}" -t ${TYPE} &
+        ${DIR_WORK}/021_get_dless-resp-paz_parallel.sh -k "${COUNT}/${N_NET_STA}" -o ${DIR_DLESS_NODE}/${NETWORK}_${STATION}.dless -u "${STATIONXML_FOR_DLESS}" -t ${TYPE} &
 
         # Checking process number
         RUNNING_PROCESS=$( ps axu | grep "021_get_dless-resp-paz_parallel.sh" | grep -v "grep" | wc | awk '{print $1}' )
         while (( ${RUNNING_PROCESS} > ${N_PROCESS_TO_GET_DLESS} )); do
-            echo " !!! there are just \"${RUNNING_PROCESS}\" parallel process running (the limit is \"${N_PROCESS_TO_GET_DLESS}\"), waiting..."
+            echo "****** there are just \"${RUNNING_PROCESS}\" parallel process running (the limit is \"${N_PROCESS_TO_GET_DLESS}\"), waiting... ******"
             sleep 10
             RUNNING_PROCESS=$( ps axu | grep "021_get_dless-resp-paz_parallel.sh" | grep -v "grep" | wc | awk '{print $1}' )
         done

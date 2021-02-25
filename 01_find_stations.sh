@@ -120,12 +120,25 @@ cat ${FILE_FDSNWS_NODES_URLS} | grep -v "^#" > ${FILE_FDSNWS_NODES_URLS_FILTERED
 EXISTS=0
 while read FDSNWS_NODE_URL; do
     STATIONXML_FULL_URL="${FDSNWS_NODE_URL}/fdsnws/station/1/query?${STATIONXML_PARAMS_FIND}"
+    COUNT=1
+    COUNT_LIMIT=5
+    HTTP_CODE=429
     echo "Searching on \"${STATIONXML_FULL_URL}\""
-    curl "${STATIONXML_FULL_URL}" -o "${FILE_CURL1}" --max-time 20 --write-out "%{http_code}\\n" > ${FILE_CURL1_HTTPCODE} -s -S
-    RETURNED_CODE=${?}
+    while ( (( ${HTTP_CODE} == 429 )) || (( ${HTTP_CODE} == 000 )) ) && (( ${COUNT} <= ${COUNT_LIMIT} )); do
+        curl "${STATIONXML_FULL_URL}" -o "${FILE_CURL1}" --max-time 5 --write-out "%{http_code}\\n" > ${FILE_CURL1_HTTPCODE} -s -S
+        RET_CODE=${?}
+        HTTP_CODE=$( cat ${FILE_CURL1_HTTPCODE} )
+        if (( ${HTTP_CODE} == 429 )); then
+            echo " TOO MANY REQUEST - Tentative: ${COUNT}/${COUNT_LIMIT}"
+            sleep 5
+        elif (( ${HTTP_CODE} == 000 )); then
+            echo " WARNING - curl timeout. Tentative: ${COUNT}/${COUNT_LIMIT}"
+            sleep 2
+        fi
+        COUNT=$(( ${COUNT} + 1 ))
+    done
 
-    HTTP_CODE=$( cat ${FILE_CURL1_HTTPCODE} )
-    if (( ${RETURNED_CODE} == 0 )) && (( ${HTTP_CODE} == 200 )); then
+    if (( ${RET_CODE} == 0 )) && (( ${HTTP_CODE} == 200 )); then
         N_STATIONS=$( grep -v ^"#" ${FILE_CURL1} | wc | awk '{print $1}' )
         echo " ${N_STATIONS} station(s) found!"
         EXISTS=1
@@ -155,6 +168,10 @@ while read FDSNWS_NODE_URL; do
 
         # create 'net_sta.txt' file with only NET and STA for that node
         cp ${FILE_CURL1} ${FDSNWS_NODE_PATH}/net_sta.txt
+    elif (( ${HTTP_CODE} == 204 )); then
+	echo " NODATA" > /dev/null
+    else 
+        echo " ERROR - RET_CODE=${RET_CODE}, HTTP_CODE=${HTTP_CODE}."
     fi
 done < ${FILE_FDSNWS_NODES_URLS_FILTERED}
 echo ""

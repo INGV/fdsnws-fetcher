@@ -117,7 +117,7 @@ for FDSNWS_NODE_PATH in $( ls -d ${DIR_TMP}/* ); do
     N_NET_STA_LOC_CHA=$( wc ${FDSNWS_NODE_PATH}/stationxml_channel.txt | awk '{print $1}' )
     COUNT=1
     while read NET_STA_LOC_CHA; do
-        echo "${COUNT}/${N_NET_STA_LOC_CHA} - Processing \"${NET_STA_LOC_CHA}\" on \"$( basename ${FDSNWS_NODE_PATH} )\""
+        echo "${COUNT}/${N_NET_STA_LOC_CHA} - Processing \"${NET_STA_LOC_CHA}\" on \"$( basename ${FDSNWS_NODE_PATH} )\"" > /dev/null
 
         NETWORK=$( echo ${NET_STA_LOC_CHA} | awk -F"|" '{print $1}' )
         STATION=$( echo ${NET_STA_LOC_CHA} | awk -F"|" '{print $2}' )
@@ -146,12 +146,12 @@ for FDSNWS_NODE_PATH in $( ls -d ${DIR_TMP}/* ); do
             FILE_OUTPUT_DLESS="${FDSNWS_NODE_PATH}/dless/${NETWORK}_${STATION}.dless"
             
             # Running process
-            ${DIR_WORK}/031_get_mseed-sac_parallel.sh -o ${FILE_OUTPUT_MSEED} -d ${FILE_OUTPUT_DLESS} -u ${DATASELECT_URL} -t ${TYPE} -s ${STARTTIME} -e ${ENDTIME} &
+            ${DIR_WORK}/031_get_mseed-sac_parallel.sh -k "${COUNT}/${N_NET_STA_LOC_CHA}" -o ${FILE_OUTPUT_MSEED} -d ${FILE_OUTPUT_DLESS} -u ${DATASELECT_URL} -t ${TYPE} -s ${STARTTIME} -e ${ENDTIME} &
 
             # Checking process number
             RUNNING_PROCESS=$( ps axu | grep "031_get_mseed-sac_parallel.sh" | grep -v "grep" | wc | awk '{print $1}' )
             while (( ${RUNNING_PROCESS} > ${N_PROCESS_TO_GET_DLESS} )); do
-                echo " !!! there are just \"${RUNNING_PROCESS}\" parallel process running (the limit is \"${N_PROCESS_TO_GET_DLESS}\"), waiting..."
+                echo "****** there are just \"${RUNNING_PROCESS}\" parallel process running (the limit is \"${N_PROCESS_TO_GET_DLESS}\"), waiting... ******"
                 sleep 5
                 RUNNING_PROCESS=$( ps axu | grep "031_get_mseed-sac_parallel.sh" | grep -v "grep" | wc | awk '{print $1}' )
             done

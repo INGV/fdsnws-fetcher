@@ -10,23 +10,18 @@
 # Import config file
 . $(dirname $0)/config.sh
 
-# Check DIR_TMP
-if [ ! -d ${DIR_TMP} ]; then
-        echo ""
-        echo " DIR_TMP doesn't exists."
-        echo ""
-        exit 1
-fi
-
 ### START - Check parameters ###
 TYPE=
-while getopts :o:u:t: OPTION
+INPUT_STRING=
+while getopts :o:k:u:t: OPTION
 do
 	case ${OPTION} in
         o)	FILE_OUTPUT_DLESS="${OPTARG}"
 		;;
         u)	STATIONXML_INPUT_URL="${OPTARG}"
 		;;
+        k)      INPUT_STRING="${OPTARG}"
+                ;;
         t)	TYPE="${OPTARG}"
 		;;
         \?) echo "Invalid option: -$OPTARG" >/dev/null
@@ -50,16 +45,73 @@ if [ ! -d ${DIR_DLESS_LOG_NODE} ]; then
     mkdir -p ${DIR_DLESS_LOG_NODE}
 fi
 
-echo " create DLESS \"${BASENAME_DLESS}\" from \"${STATIONXML_INPUT_URL}\""
+echo "${INPUT_STRING} - create DLESS \"${BASENAME_DLESS}\" from StationXML \"${STATIONXML_INPUT_URL}\""
 if [[ -f ${FILE_OUTPUT_DLESS} ]]; then
 	echo "  DLESS already exists"
-else
-	${STATIONXML_TO_SEED} -o ${FILE_OUTPUT_DLESS} "${STATIONXML_INPUT_URL}" >> ${DIR_DLESS_LOG_NODE}/${BASENAME_DLESS}.stationxml-converter.out 2>> ${DIR_DLESS_LOG_NODE}/${BASENAME_DLESS}.stationxml-converter.err
-	RET_STATIONXML_TO_SEED=${?}
-	if (( ${RET_STATIONXML_TO_SEED} != 0 )); then
-    		echo "  ERROR - Retriving StationXML from \"${STATIONXML_INPUT_URL}\". Check: ${DIR_DLESS_LOG_NODE}/${BASENAME_DLESS}.stationxml-converter.err"
-    		echo ""
+else	
+	COUNT=1
+	COUNT_LIMIT=5
+	HTTP_CODE=429
+	RET_CODE=-9
+	PREV=0
+	while ( (( ${HTTP_CODE} == 429 )) || (( ${HTTP_CODE} == 503 )) ) && (( ${COUNT} <= ${COUNT_LIMIT} )); do
+        	curl --digest "${STATIONXML_INPUT_URL}" -o "${FILE_OUTPUT_DLESS}.stationxml" --write-out "%{http_code}\\n" > ${DIR_DLESS_LOG_NODE}/${BASENAME_DLESS}.stationxml-converter.httpcode -s
+	        RET_CODE=$?
+        	HTTP_CODE=$( cat ${DIR_DLESS_LOG_NODE}/${BASENAME_DLESS}.stationxml-converter.httpcode )
+        	if (( ${HTTP_CODE} == 429 )); then
+                	echo "TOO MANY REQUEST (for ${INPUT_STRING}) - retrieving \"${STATIONXML_INPUT_URL}\". RET_CODE=${RET_CODE}, HTTP_CODE=${HTTP_CODE}. Tentative: ${COUNT}/${COUNT_LIMIT}"
+                	sleep 5
+			PREV=1
+		elif (( ${HTTP_CODE} == 503 )); then
+			echo "SERVICE UNAVAILABLE (for ${INPUT_STRING}) - retrieving \"${STATIONXML_INPUT_URL}\". RET_CODE=${RET_CODE}, HTTP_CODE=${HTTP_CODE}. Tentative: ${COUNT}/${COUNT_LIMIT}"
+			sleep 5
+			PREV=1
+                elif (( ${PREV} == 1 )); then
+			echo " OK (for ${INPUT_STRING}) - retrieving \"${STATIONXML_INPUT_URL}\". RET_CODE=${RET_CODE}, HTTP_CODE=${HTTP_CODE}. Tentative: ${COUNT}/${COUNT_LIMIT}"
+        	fi
+        	COUNT=$(( ${COUNT} + 1 ))
+	done
+	if [ -f ${DIR_DLESS_LOG_NODE}/${BASENAME_DLESS}.stationxml-converter.httpcode ]; then
+    		rm -f ${DIR_DLESS_LOG_NODE}/${BASENAME_DLESS}.stationxml-converter.httpcode
 	fi
+
+	if (( ${RET_CODE} == 0 )); then
+		if (( ${HTTP_CODE} == 200 )); then
+			if [ -f ${FILE_OUTPUT_DLESS}.stationxml ]; then
+				echo " OK (for ${INPUT_STRING}) - file \"${FILE_OUTPUT_DLESS}.stationxml\" successfully downloaded." > /dev/null
+				${STATIONXML_TO_SEED} --input ${FILE_OUTPUT_DLESS}.stationxml --output ${FILE_OUTPUT_DLESS}
+				RET_CODE=$?
+				if (( ${RET_CODE} == 0 )); then
+					echo "  OK (for ${INPUT_STRING}) - converting StationXML to DLESS" > /dev/null
+				else
+					echo "  ERROR (for ${INPUT_STRING}) - converting StationXML to DLESS"
+				fi
+				rm ${FILE_OUTPUT_DLESS}.stationxml
+			else
+				echo " ERROR (for ${INPUT_STRING}) - the file \"${FILE_OUTPUT_DLESS}.stationxml\" doesn't exist."
+			fi
+		elif (( ${HTTP_CODE} == 204 )); then
+			echo " NODATA (for ${INPUT_STRING}) - retrieving \"${STATIONXML_INPUT_URL}\". RET_CODE=${RET_CODE}, HTTP_CODE=${HTTP_CODE}"
+		elif (( ${HTTP_CODE} == 403 )); then
+			echo " FORBIDDEN (for ${INPUT_STRING}) - retrieving \"${STATIONXML_INPUT_URL}\". RET_CODE=${RET_CODE}, HTTP_CODE=${HTTP_CODE}"
+		elif (( ${HTTP_CODE} == 429 )); then
+			echo " TOO MANY REQUEST (for ${INPUT_STRING}) - retrieving \"${STATIONXML_INPUT_URL}\". RET_CODE=${RET_CODE}, HTTP_CODE=${HTTP_CODE}"
+                elif (( ${HTTP_CODE} == 503 )); then
+                        echo " SERVICE UNAVAILABLE (for ${INPUT_STRING}) - retrieving \"${STATIONXML_INPUT_URL}\". RET_CODE=${RET_CODE}, HTTP_CODE=${HTTP_CODE}"
+    		else
+        		echo " UNKNOWN (for ${INPUT_STRING}) - retrieving \"${STATIONXML_INPUT_URL}\". RET_CODE=${RET_CODE}, HTTP_CODE=${HTTP_CODE}"
+		fi
+	else
+    		echo " ERROR (for ${INPUT_STRING}) - retrieving \"${STATIONXML_INPUT_URL}\". RET_CODE=${RET_CODE}, HTTP_CODE=${HTTP_CODE}"
+	fi
+
+
+	#${STATIONXML_TO_SEED} -o ${FILE_OUTPUT_DLESS} "${STATIONXML_INPUT_URL}" >> ${DIR_DLESS_LOG_NODE}/${BASENAME_DLESS}.stationxml-converter.out 2>> ${DIR_DLESS_LOG_NODE}/${BASENAME_DLESS}.stationxml-converter.err
+	#RET_STATIONXML_TO_SEED=${?}
+	#if (( ${RET_STATIONXML_TO_SEED} != 0 )); then
+    	#	echo "  ERROR - Retriving StationXML from \"${STATIONXML_INPUT_URL}\". Check: ${DIR_DLESS_LOG_NODE}/${BASENAME_DLESS}.stationxml-converter.err"
+    	#	echo ""
+	#fi
 fi
 
 # Create RESP and/or PAZ

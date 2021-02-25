@@ -117,8 +117,11 @@ RUN apt-get install -y python3-yaml \
         python3-progressbar \
         python3-jinja2 \
         python3-requests
-RUN git clone https://git.pyrocko.org/pyrocko/pyrocko.git pyrocko \
-    && cd pyrocko \
+COPY soft/pyrocko_v2020.10.26.tar.gz /opt/
+#RUN git clone https://git.pyrocko.org/pyrocko/pyrocko.git pyrocko \
+RUN tar xvzf pyrocko_v2020.10.26.tar.gz \
+    && rm pyrocko_v2020.10.26.tar.gz \ 
+    && cd pyrocko* \
     && python3 setup.py install
 WORKDIR /
 RUN mkdir /.pyrocko/ \
@@ -131,6 +134,7 @@ RUN wget -O leapseconds http://www.ncedc.org/ftp/pub/programs/leapseconds
 # Install Xml2Resp and scripts
 WORKDIR /opt
 COPY soft/stationxml-converter-1.0.10.jar /opt/
+COPY soft/stationxml-seed-converter-2.1.0.jar /opt/
 COPY 01_find_stations.sh /opt/
 COPY 02_get_dless-resp-paz.sh /opt/
 COPY 021_get_dless-resp-paz_parallel.sh /opt/

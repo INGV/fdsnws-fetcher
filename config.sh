@@ -18,7 +18,8 @@ FILE_CURL2_HTTPCODE="${DIR_LOG}/$(basename $0)__FILE_CURL2.http_code"
 FILE_FDSNWS_NODES_URLS="stationxml.conf"
 
 # Set software
-STATIONXML_TO_SEED="java -jar ./stationxml-converter-1.0.10.jar -s"
+#STATIONXML_TO_SEED="java -jar ./stationxml-converter-1.0.10.jar -s"
+STATIONXML_TO_SEED="java -jar ./stationxml-seed-converter-2.1.0.jar"
 RDSEED="rdseed"
 
 # Set var
