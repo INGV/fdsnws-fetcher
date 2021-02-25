@@ -85,6 +85,8 @@ workflows:
           requires:
             - start            
       - publish-latest:
+          context:
+            - valentino
           requires:
             - build_docker_image
       - end:
