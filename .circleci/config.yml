@@ -15,10 +15,6 @@ jobs:
           command: date
   build_docker_image:
     executor: docker-publisher
-    #environment:
-    #  IMAGE_NAME: fdsnws-fetcher
-    #docker:
-    #  - image: docker:18.06.0-ce
     steps:
       - checkout
       - setup_remote_docker
@@ -34,12 +30,7 @@ jobs:
           paths:
             - ./image.tar
   publish-latest:
-    #executor: docker-publisher
-    docker:
-     - image: acme-private/private-image:321
-       auth:
-         username: $DOCKERHUB_USERNAME
-         password: $DOCKERHUB_ACCESS_TOKEN
+    executor: docker-publisher
     steps:
       - attach_workspace:
           at: /tmp/workspace
@@ -51,10 +42,9 @@ jobs:
           name: Publish Docker Image to Docker Hub
           command: |
             echo $DOCKERHUB_USERNAME
-            #echo $DOCKERHUB_ACCESS_TOKEN | docker login -u $DOCKERHUB_USERNAME --password-stdin
-            #echo "78ade860-da30-4661-b821-3213a86dbbdf" | docker login -u vlauciani --password-stdin
-            #docker push $IMAGE_NAME:latest
-            docker push ingvinstitute/fdsnws-fetcher:latest
+            docker login -u $DOCKERHUB_USERNAME -p $DOCKERHUB_ACCESS_TOKEN
+            echo $DOCKERHUB_ACCESS_TOKEN | docker login -u $DOCKERHUB_USERNAME --password-stdin
+            docker push $IMAGE_NAME:latest
   end:
     docker:
       - image: debian:stretch
@@ -92,7 +82,8 @@ workflows:
           requires:
             - start            
       - publish-latest:
-          context: valentino
+          context: 
+            - valentino
           requires:
             - build_docker_image
       - end:
