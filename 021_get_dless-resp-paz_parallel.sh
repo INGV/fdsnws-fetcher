@@ -47,7 +47,7 @@ fi
 
 echo "${INPUT_STRING} - create DLESS \"${BASENAME_DLESS}\" from StationXML \"${STATIONXML_INPUT_URL}\""
 if [[ -f ${FILE_OUTPUT_DLESS} ]]; then
-	echo "  DLESS already exists"
+	echo " DLESS already exists"
 else	
 	COUNT=1
 	COUNT_LIMIT=5
@@ -121,21 +121,30 @@ if [ -s ${FILE_OUTPUT_DLESS} ]; then
         if [ ! -d ${DIR_RESP_NODE} ]; then
             mkdir -p ${DIR_RESP_NODE}
         fi
+        DIR_RESP_NODE_TMP=${DIR_NODE}/resp/${BASENAME_DLESS}
+        if [ ! -d ${DIR_RESP_NODE_TMP} ]; then
+            mkdir -p ${DIR_RESP_NODE_TMP}
+        fi
         DIR_RESP_LOG_NODE=${DIR_RESP_NODE}/log
         if [ ! -d ${DIR_RESP_LOG_NODE} ]; then
             mkdir -p ${DIR_RESP_LOG_NODE}
         fi
-        echo " create RESP from \"${FILE_OUTPUT_DLESS}\""
-        ${RDSEED} -R -S -f ${FILE_OUTPUT_DLESS} -q ${DIR_RESP_NODE} >> ${DIR_RESP_LOG_NODE}/${BASENAME_DLESS}.rdseed.out 2>> ${DIR_RESP_LOG_NODE}/${BASENAME_DLESS}.rdseed.err
+
+        echo " OK (for ${INPUT_STRING}) - create RESP from \"${FILE_OUTPUT_DLESS}\""
+        ${RDSEED} -R -S -f ${FILE_OUTPUT_DLESS} -q ${DIR_RESP_NODE_TMP} >> ${DIR_RESP_LOG_NODE}/${BASENAME_DLESS}.rdseed.out 2>> ${DIR_RESP_LOG_NODE}/${BASENAME_DLESS}.rdseed.err
         RET_RDSEED=${?}
         if (( ${RET_RDSEED} != 0 )); then
             cat ${DIR_RESP_LOG_NODE}/${BASENAME_DLESS}.rdseed.err
             echo -e "\n"
         fi
-        if [ -f ${DIR_RESP_NODE}/rdseed.stations ]; then
-            cat ${DIR_RESP_NODE}/rdseed.stations >> ${DIR_RESP_NODE}/rdseed.stations.info
-            rm ${DIR_RESP_NODE}/rdseed.stations
+        if [ -f ${DIR_RESP_NODE_TMP}/rdseed.stations ]; then
+            cat ${DIR_RESP_NODE_TMP}/rdseed.stations >> ${DIR_RESP_NODE}/rdseed.stations.info
+            rm ${DIR_RESP_NODE_TMP}/rdseed.stations
         fi
+	for FILE_RESP in $( find ${DIR_RESP_NODE_TMP} -name RESP.??.* ); do 
+            mv ${FILE_RESP} ${DIR_RESP_NODE}; 
+	done
+	rm -fr ${DIR_RESP_NODE_TMP}
     fi
     if [[ "${TYPE}" == "paz" ]]; then
         DIR_PAZ_NODE=${DIR_NODE}/paz
@@ -146,7 +155,7 @@ if [ -s ${FILE_OUTPUT_DLESS} ]; then
         if [ ! -d ${DIR_PAZ_LOG_NODE} ]; then
             mkdir -p ${DIR_PAZ_LOG_NODE}
         fi
-        echo " create PAZ from \"${FILE_OUTPUT_DLESS}\""
+        echo " OK (for ${INPUT_STRING}) - create PAZ from \"${FILE_OUTPUT_DLESS}\""
         ${RDSEED} -p -f ${FILE_OUTPUT_DLESS} -q ${DIR_PAZ_NODE} >> ${DIR_PAZ_LOG_NODE}/${BASENAME_DLESS}.rdseed.out 2>> ${DIR_PAZ_LOG_NODE}/${BASENAME_DLESS}.rdseed.err
         RET_RDSEED=${?}
         if (( ${RET_RDSEED} != 0 )); then
@@ -155,5 +164,4 @@ if [ -s ${FILE_OUTPUT_DLESS} ]; then
         fi
     fi
 fi
-
 

@@ -121,16 +121,16 @@ EXISTS=0
 while read FDSNWS_NODE_URL; do
     STATIONXML_FULL_URL="${FDSNWS_NODE_URL}/fdsnws/station/1/query?${STATIONXML_PARAMS_FIND}"
     COUNT=1
-    COUNT_LIMIT=5
+    COUNT_LIMIT=2
     HTTP_CODE=429
     echo "Searching on \"${STATIONXML_FULL_URL}\""
     while ( (( ${HTTP_CODE} == 429 )) || (( ${HTTP_CODE} == 000 )) ) && (( ${COUNT} <= ${COUNT_LIMIT} )); do
-        curl "${STATIONXML_FULL_URL}" -o "${FILE_CURL1}" --max-time 5 --write-out "%{http_code}\\n" > ${FILE_CURL1_HTTPCODE} -s -S
+        curl "${STATIONXML_FULL_URL}" -o "${FILE_CURL1}" --max-time 20 --write-out "%{http_code}\\n" > ${FILE_CURL1_HTTPCODE} -s -S
         RET_CODE=${?}
         HTTP_CODE=$( cat ${FILE_CURL1_HTTPCODE} )
         if (( ${HTTP_CODE} == 429 )); then
             echo " TOO MANY REQUEST - Tentative: ${COUNT}/${COUNT_LIMIT}"
-            sleep 5
+            sleep 2
         elif (( ${HTTP_CODE} == 000 )); then
             echo " WARNING - curl timeout. Tentative: ${COUNT}/${COUNT_LIMIT}"
             sleep 2
