@@ -88,7 +88,7 @@ workflows:
   version: 2.1
   fdsnws-fetcher-workflow:
     jobs:
-      - start
+      - start:
           filters:
             tags:
               only: /^v.*/
