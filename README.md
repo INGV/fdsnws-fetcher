@@ -48,19 +48,10 @@ in case of errors, try:
 $ docker build --no-cache --pull --tag ingv/fdsnws-fetcher . 
 ```
 
-### Get last Docker image:
-```
-$ cd fdsnws-fetcher
-$ docker pull ingv/fdsnws-fetcher
-```
-
-### Update `stationxml.conf`
-Update your `stationxml.conf` adding more StationXML entry point
-
 ### Run docker
 Running the command below to see the **help**:
 ```
-$ docker run -it --rm -v $(pwd)/stationxml.conf:/opt/stationxml.conf -v $(pwd)/OUTPUT:/opt/OUTPUT ingv/fdsnws-fetcher -h
+$ docker run -it --user $(id -u):$(id -g) --rm -v $(pwd)/stationxml.conf:/opt/stationxml.conf -v $(pwd)/OUTPUT:/opt/OUTPUT ingv/fdsnws-fetcher -h
 
  This docker search the given STATIONXML_PARAMETERS on StationXML and convert it to RESP and/or DATALESS files and/or DATASELECT_LIST list.
 
@@ -101,6 +92,15 @@ or with `root`:
 ```
 $ docker run -it --rm -v $(pwd)/OUTPUT:/opt/OUTPUT -v $(pwd)/stationxml.conf:/opt/stationxml.conf --entrypoint=bash ingv/fdsnws-fetcher
 ```
+
+## Update Docker image available from DockerHub:
+```
+$ cd fdsnws-fetcher
+$ docker pull ingv/fdsnws-fetcher
+```
+
+## Update `stationxml.conf`
+Update your `stationxml.conf` adding more StationXML entry point
 
 # Contribute
 Please, feel free to contribute.
