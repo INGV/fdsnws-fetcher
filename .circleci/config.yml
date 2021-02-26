@@ -2,7 +2,7 @@ version: 2.1
 executors:
   docker-publisher:
     environment:
-      IMAGE_NAME: ingvinstitute/fdsnws-fetcher
+      IMAGE_NAME: vlauciani/fdsnws-fetcher
     docker:
       - image: circleci/buildpack-deps:stretch
 jobs:
@@ -43,6 +43,21 @@ jobs:
           command: |
             echo $DOCKERHUB_ACCESS_TOKEN | docker login -u $DOCKERHUB_USERNAME --password-stdin
             docker push $IMAGE_NAME:latest
+  publish-tag:
+    executor: docker-publisher
+    steps:
+      - attach_workspace:
+          at: /tmp/workspace
+      - setup_remote_docker
+      - run:
+          name: Load archived Docker image
+          command: docker load -i /tmp/workspace/image.tar
+      - run:
+          name: Publish Docker Image to Docker Hub
+          command: |
+            echo $DOCKERHUB_ACCESS_TOKEN | docker login -u $DOCKERHUB_USERNAME --password-stdin
+            IMAGE_TAG=${CIRCLE_TAG/v/''}
+            docker push $IMAGE_NAME:$IMAGE_TAG
   end:
     docker:
       - image: debian:stretch
@@ -71,7 +86,7 @@ jobs:
 
 workflows:
   version: 2.1
-  fdsnws-fetcher-workflow:
+  build-master:
     jobs:
       - start
       - build_docker_image:
@@ -85,6 +100,33 @@ workflows:
             - valentino
           requires:
             - build_docker_image
+      - end:
+          requires:
+            - publish-latest
+  build-tags:
+    jobs:
+      - start
+      - build_docker_image:
+          requires:
+            - start
+          filters:
+            tags:
+              only: /^v[0-9.]+$/
+            branches:
+              ignore: /.*/
+      - test_publiccode:
+          requires:
+            - start
+      - publish-tag:
+          context:
+            - valentino
+          requires:
+            - build_docker_image
+          filters:
+            tags:
+              only: /^v[0-9.]+$/
+            branches:
+              ignore: /.*/
       - end:
           requires:
             - publish-latest
