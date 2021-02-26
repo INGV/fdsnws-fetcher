@@ -2,8 +2,6 @@
 
 [![License](https://img.shields.io/github/license/INGV/fdsnws-fetcher.svg)](https://github.com/INGV/fdsnws-fetcher/blob/master/LICENSE)
 [![GitHub issues](https://img.shields.io/github/issues/INGV/fdsnws-fetcher.svg)](https://github.com/INGV/fdsnws-fetcher/issues)
-[![Join the #general channel](https://img.shields.io/badge/Slack%20channel-%23general-blue.svg)](https://ingv-institute.slack.com/messages/CKS902Y5B)
-[![Get invited](https://slack.developers.italia.it/badge.svg)](https://join.slack.com/t/ingv-institute/shared_invite/zt-ckoji8va-mutwycltiCw_EAhUWSND8Q)
 
 ![Docker Cloud Build Status](https://img.shields.io/docker/cloud/build/ingv/fdsnws-fetcher)
 ![Docker Image Size (latest semver)](https://img.shields.io/docker/image-size/ingv/fdsnws-fetcher?sort=semver)
@@ -93,9 +91,9 @@ or with `root`:
 $ docker run -it --rm -v $(pwd)/OUTPUT:/opt/OUTPUT -v $(pwd)/stationxml.conf:/opt/stationxml.conf --entrypoint=bash ingv/fdsnws-fetcher
 ```
 
-## Update Docker image available from DockerHub:
+## Update Docker image from DockerHub
+Get last Docker image from DockerHub repository:
 ```
-$ cd fdsnws-fetcher
 $ docker pull ingv/fdsnws-fetcher
 ```
 
