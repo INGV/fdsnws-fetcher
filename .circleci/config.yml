@@ -92,6 +92,9 @@ workflows:
       - build_docker_image:
           requires:
             - start
+          filters:
+            tags:
+              only: master
       - test_publiccode:
           requires:
             - start            
@@ -100,6 +103,9 @@ workflows:
             - valentino
           requires:
             - build_docker_image
+          filters:
+            tags:
+              only: master
       - end:
           requires:
             - publish-latest
