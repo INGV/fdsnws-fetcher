@@ -86,18 +86,24 @@ jobs:
 
 workflows:
   version: 2.1
-  build-master:
+  fdsnws-fetcher-workflow:
     jobs:
       - start
+          filters:
+            tags:
+              only: /^v.*/
       - build_docker_image:
           requires:
             - start
           filters:
             tags:
-              only: master
+              only: /^v.*/
       - test_publiccode:
           requires:
             - start            
+          filters:
+            tags:
+              only: /^v.*/
       - publish-latest:
           context: 
             - valentino
@@ -106,23 +112,6 @@ workflows:
           filters:
             tags:
               only: master
-      - end:
-          requires:
-            - publish-latest
-  build-tags:
-    jobs:
-      - start
-      - build_docker_image:
-          requires:
-            - start
-          filters:
-            tags:
-              only: /^v.*/
-            branches:
-              ignore: /.*/
-      - test_publiccode:
-          requires:
-            - start
       - publish-tag:
           context:
             - valentino
@@ -135,4 +124,7 @@ workflows:
               ignore: /.*/
       - end:
           requires:
-            - publish-tag
+            - publish-latest
+          filters:
+            tags:
+              only: /^v.*/
