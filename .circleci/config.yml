@@ -129,4 +129,4 @@ workflows:
               ignore: /.*/
       - end:
           requires:
-            - publish-latest
+            - publish-tag
