@@ -13,7 +13,7 @@ jobs:
       - run:
           name: Date start
           command: date
-  build_docker_image:
+  build-master:
     executor: docker-publisher
     steps:
       - checkout
@@ -29,6 +29,27 @@ jobs:
           root: .
           paths:
             - ./image.tar
+  build-tag:
+    executor: docker-publisher
+    steps:
+      - checkout
+      - setup_remote_docker
+      - run:
+          name: Checkout tag version
+          command: |
+            git checkout ${CIRCLE_TAG}
+      - run:
+          name: Build docker image
+          command: |
+            IMAGE_TAG=${CIRCLE_TAG/v/''}
+            docker build --no-cache --pull --tag $IMAGE_NAME:$IMAGE_TAG .
+      - run:
+          name: Archive Docker image
+          command: docker save -o image_tag.tar $IMAGE_NAME
+      - persist_to_workspace:
+          root: .
+          paths:
+            - ./image_tag.tar
   publish-latest:
     executor: docker-publisher
     steps:
@@ -51,7 +72,7 @@ jobs:
       - setup_remote_docker
       - run:
           name: Load archived Docker image
-          command: docker load -i /tmp/workspace/image.tar
+          command: docker load -i /tmp/workspace/image_tag.tar
       - run:
           name: Publish Docker Image to Docker Hub
           command: |
@@ -93,12 +114,20 @@ workflows:
           filters:
             tags:
               only: /^v.*/
-      - build_docker_image:
+      - build-master:
+          requires:
+            - start
+          filters:
+            tags:
+              only: master
+      - build-tag:
           requires:
             - start
           filters:
             tags:
               only: /^v.*/
+            branches:
+              ignore: /.*/
       - test_publiccode:
           requires:
             - start            
@@ -109,7 +138,7 @@ workflows:
           context: 
             - valentino
           requires:
-            - build_docker_image
+            - build-master
           filters:
             tags:
               only: master
@@ -117,7 +146,7 @@ workflows:
           context:
             - valentino
           requires:
-            - build_docker_image
+            - build-master
           filters:
             tags:
               only: /^v.*/
