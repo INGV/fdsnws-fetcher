@@ -66,7 +66,7 @@ jobs:
           name: Load archived Docker image
           command: docker load -i /tmp/workspace/image.tar
       - run:
-          name: Publish Docker Image to Docker Hub
+          name: Publish Docker Image (latest) to Docker Hub
           command: |
             echo $DOCKERHUB_ACCESS_TOKEN | docker login -u $DOCKERHUB_USERNAME --password-stdin
             docker push $IMAGE_NAME:latest
@@ -80,11 +80,12 @@ jobs:
           name: Load archived Docker image
           command: docker load -i /tmp/workspace/image_tag.tar
       - run:
-          name: Publish Docker Image to Docker Hub
+          name: Publish Docker Image (tag) to Docker Hub
           command: |
             echo $DOCKERHUB_ACCESS_TOKEN | docker login -u $DOCKERHUB_USERNAME --password-stdin
             IMAGE_TAG=${CIRCLE_TAG/v/''}
-            docker tag $IMAGE_NAME $IMAGE_NAME:$IMAGE_TAG
+            #docker tag $IMAGE_NAME $IMAGE_NAME:$IMAGE_TAG
+            docker images
             docker push $IMAGE_NAME:$IMAGE_TAG
   end:
     docker:
