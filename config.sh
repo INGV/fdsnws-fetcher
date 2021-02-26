@@ -30,7 +30,7 @@ function usage_entrypoint() {
 BASE_COMMAND="docker run -it --rm --user \$(id -u):\$(id -g) -v \$(pwd)/${FILE_FDSNWS_NODES_URLS}:/opt/${FILE_FDSNWS_NODES_URLS}"
 DOCKER_VOLUME_1="-v \$(pwd)/OUTPUT:/opt/OUTPUT"
 DOCKER_VOLUME_2="-v \$(pwd)/my_token:/opt/token"
-DOCKER_NAME="vlauciani/fdsnws-fetcher"
+DOCKER_NAME="ingv/fdsnws-fetcher"
 cat << EOF
 
  This docker search the given STATIONXML_PARAMETERS on StationXML and convert it to RESP or DATALESS files or DATASELECT_LIST list.
