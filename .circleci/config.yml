@@ -1,3 +1,7 @@
+# IMPORTAT GUIDES:
+#  - https://circleci.com/blog/using-circleci-workflows-to-replicate-docker-hub-automated-builds/
+#  - https://circleci.com/docs/2.0/configuration-reference/#tags
+#  - https://circleci.com/docs/2.0/workflows/#executing-workflows-for-a-git-tag
 version: 2.1
 executors:
   docker-publisher:
@@ -45,7 +49,9 @@ jobs:
             docker build --no-cache --pull --tag $IMAGE_NAME:$IMAGE_TAG .
       - run:
           name: Archive Docker image
-          command: docker save -o image_tag.tar $IMAGE_NAME:$IMAGE_TAG
+          command: |
+            IMAGE_TAG=${CIRCLE_TAG/v/''}
+            docker save -o image_tag.tar $IMAGE_NAME:$IMAGE_TAG
       - persist_to_workspace:
           root: .
           paths:
@@ -112,19 +118,19 @@ workflows:
     jobs:
       - start:
           filters:
-            tags:
+            tags: # If neither only nor ignore are specified then the job is skipped for all tags: https://circleci.com/docs/2.0/configuration-reference/#tags
               only: /^v.*/
       - build-latest:
           requires:
             - start
           filters:
-            tags:
+            tags: # If neither only nor ignore are specified then the job is skipped for all tags: https://circleci.com/docs/2.0/configuration-reference/#tags
               only: master
       - build-tag:
           requires:
             - start
           filters:
-            tags:
+            tags: # If neither only nor ignore are specified then the job is skipped for all tags: https://circleci.com/docs/2.0/configuration-reference/#tags
               only: /^v.*/
             branches:
               ignore: /.*/
