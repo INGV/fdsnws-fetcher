@@ -57,6 +57,7 @@ jobs:
           command: |
             echo $DOCKERHUB_ACCESS_TOKEN | docker login -u $DOCKERHUB_USERNAME --password-stdin
             IMAGE_TAG=${CIRCLE_TAG/v/''}
+            docker tag $IMAGE_NAME $IMAGE_NAME:$IMAGE_TAG
             docker push $IMAGE_NAME:$IMAGE_TAG
   end:
     docker:
@@ -125,6 +126,7 @@ workflows:
       - end:
           requires:
             - publish-latest
+            - publish-tag
           filters:
             tags:
               only: /^v.*/
