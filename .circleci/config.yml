@@ -111,7 +111,7 @@ workflows:
             - start
           filters:
             tags:
-              only: /^v[0-9.]+$/
+              only: /^v.*/
             branches:
               ignore: /.*/
       - test_publiccode:
@@ -124,7 +124,7 @@ workflows:
             - build_docker_image
           filters:
             tags:
-              only: /^v[0-9.]+$/
+              only: /^v.*/
             branches:
               ignore: /.*/
       - end:
