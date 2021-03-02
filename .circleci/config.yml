@@ -6,7 +6,7 @@ version: 2.1
 executors:
   docker-publisher:
     environment:
-      IMAGE_NAME: vlauciani/fdsnws-fetcher
+      IMAGE_NAME: ingv/fdsnws-fetcher
     docker:
       - image: circleci/buildpack-deps:stretch
 jobs:
