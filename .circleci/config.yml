@@ -61,7 +61,7 @@ jobs:
           name: Date end
           command: date
 
-  test_publiccode:
+  test-publiccode:
     docker:
       - image: docker:18.06.0-ce
     steps:
@@ -87,6 +87,8 @@ workflows:
           filters:
             tags: # If neither only nor ignore are specified then the job is skipped for all tags: https://circleci.com/docs/2.0/configuration-reference/#tags
               only: /^v.*/
+            branches:
+              ignore: /.*/
       - build:
           requires:
             - start
@@ -95,12 +97,14 @@ workflows:
               only: /^v.*/
             branches:
               ignore: /.*/
-      - test_publiccode:
+      - test-publiccode:
           requires:
             - start            
           filters:
             tags:
               only: /^v.*/
+            branches:
+              ignore: /.*/
       - publish-tag-and-latest:
           context:
             - valentino
@@ -117,3 +121,5 @@ workflows:
           filters:
             tags:
               only: /^v.*/
+            branches:
+              ignore: /.*/
