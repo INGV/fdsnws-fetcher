@@ -35,6 +35,7 @@ jobs:
           root: .
           paths:
             - ./image.tar
+            - ./README.md
   publish-tag-and-latest:
     executor: docker-publisher
     steps:
@@ -50,9 +51,15 @@ jobs:
             echo $DOCKERHUB_ACCESS_TOKEN | docker login -u $DOCKERHUB_USERNAME --password-stdin
             IMAGE_TAG=${CIRCLE_TAG/v/''}
             docker tag $IMAGE_NAME:latest $IMAGE_NAME:$IMAGE_TAG
-            docker images
             docker push $IMAGE_NAME:latest
             docker push $IMAGE_NAME:$IMAGE_TAG
+      - run:
+          name: Publish Docker description (README.md) to docker Hub
+          command: |
+            wget -O docker-pushrm "https://github.com/christian-korneck/docker-pushrm/releases/download/v1.7.0/docker-pushrm_linux_amd64"
+            chmod +x docker-pushrm
+            echo $DOCKERHUB_PASSWORD | docker login -u $DOCKERHUB_USERNAME --password-stdin
+            ./docker-pushrm --file /tmp/workspace/README.md $IMAGE_NAME
   end:
     docker:
       - image: debian:stretch
