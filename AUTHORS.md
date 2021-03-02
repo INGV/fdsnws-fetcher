@@ -1,1 +1,3 @@
-Valentino Lauciani <valentino.lauciani@ingv.it>
+# Authors
+
+* Valentino Lauciani <valentino.lauciani@ingv.it>
