@@ -84,7 +84,7 @@ jobs:
             # copy a config file into this volume
             docker cp publiccode.yml myfolder:/publiccode_folder
             # start an application container using this volume
-            docker run --rm --volumes-from myfolder italia/publiccode-parser-go publiccode_folder/publiccode.yml
+            docker run --rm --volumes-from myfolder italia/publiccode-parser-go --remote-base-url "https://raw.githubusercontent.com/INGV/fdsnws-fetcher/master" publiccode_folder/publiccode.yml
 
 workflows:
   version: 2.1
