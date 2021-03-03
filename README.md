@@ -3,7 +3,7 @@
 [![License](https://img.shields.io/github/license/INGV/fdsnws-fetcher.svg)](https://github.com/INGV/fdsnws-fetcher/blob/master/LICENSE)
 [![GitHub issues](https://img.shields.io/github/issues/INGV/fdsnws-fetcher.svg)](https://github.com/INGV/fdsnws-fetcher/issues)
 
-![Docker Cloud Build Status](https://img.shields.io/docker/cloud/build/ingv/fdsnws-fetcher)
+[![Docker build](https://img.shields.io/badge/docker%20build-from%20CI-yellow)](https://hub.docker.com/r/ingv/fdsnws-fetcher)
 ![Docker Image Size (latest semver)](https://img.shields.io/docker/image-size/ingv/fdsnws-fetcher?sort=semver)
 ![Docker Pulls](https://img.shields.io/docker/pulls/ingv/fdsnws-fetcher)
 
