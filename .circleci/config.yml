@@ -10,13 +10,6 @@ executors:
     docker:
       - image: circleci/buildpack-deps:stretch
 jobs:
-  start:
-    docker:
-      - image: debian:stretch
-    steps:
-      - run:
-          name: Date start
-          command: date
   build:
     executor: docker-publisher
     steps:
@@ -36,6 +29,7 @@ jobs:
           paths:
             - ./image.tar
             - ./README.md
+
   publish-tag-and-latest:
     executor: docker-publisher
     steps:
@@ -60,17 +54,11 @@ jobs:
             chmod +x docker-pushrm
             echo $DOCKERHUB_PASSWORD | docker login -u $DOCKERHUB_USERNAME --password-stdin
             ./docker-pushrm --file /tmp/workspace/README.md $IMAGE_NAME
-  end:
-    docker:
-      - image: debian:stretch
-    steps:
-      - run:
-          name: Date end
-          command: date
 
   test-publiccode:
-    docker:
-      - image: docker:18.06.0-ce
+    executor: docker-publisher
+    #docker:
+    #  - image: docker:18.06.0-ce
     steps:
       - checkout
       - setup_remote_docker
@@ -78,53 +66,37 @@ jobs:
           # https://github.com/italia/publiccode-parser-go
           name: Validate publiccode file
           command: |
+            echo "CIRCLE_PROJECT_USERNAME=$CIRCLE_PROJECT_USERNAME"
+            echo "CIRCLE_PROJECT_REPONAME=$CIRCLE_PROJECT_REPONAME"
             ### CircleCI cannot mount folder: https://circleci.com/docs/2.0/building-docker-images/#mounting-folders
             # create a dummy container which will hold a volume with config
             docker create -v /publiccode_folder --name myfolder alpine:3.4 /bin/true
             # copy a config file into this volume
             docker cp publiccode.yml myfolder:/publiccode_folder
             # start an application container using this volume
-            docker run --rm --volumes-from myfolder italia/publiccode-parser-go --remote-base-url "https://raw.githubusercontent.com/INGV/fdsnws-fetcher/master" publiccode_folder/publiccode.yml
+            docker run --rm --volumes-from myfolder italia/publiccode-parser-go --remote-base-url "https://raw.githubusercontent.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME/master" publiccode_folder/publiccode.yml
 
 workflows:
   version: 2.1
-  fdsnws-fetcher-workflow:
+  myWorkflow:
     jobs:
-      - start:
-          filters:
-            tags: # If neither only nor ignore are specified then the job is skipped for all tags: https://circleci.com/docs/2.0/configuration-reference/#tags
-              only: /^v.*/
-            branches:
-              ignore: /.*/
       - build:
-          requires:
-            - start
           filters:
             tags: # If neither only nor ignore are specified then the job is skipped for all tags: https://circleci.com/docs/2.0/configuration-reference/#tags
               only: /^v.*/
-            branches:
-              ignore: /.*/
+#            branches:
+#              ignore: /.*/
       - test-publiccode:
-          requires:
-            - start            
           filters:
             tags:
               only: /^v.*/
-            branches:
-              ignore: /.*/
+#            branches:
+#              ignore: /.*/
       - publish-tag-and-latest:
           context:
             - valentino
           requires:
             - build
-          filters:
-            tags:
-              only: /^v.*/
-            branches:
-              ignore: /.*/
-      - end:
-          requires:
-            - publish-tag-and-latest 
           filters:
             tags:
               only: /^v.*/
