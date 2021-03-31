@@ -125,7 +125,7 @@ while read FDSNWS_NODE_URL; do
     HTTP_CODE=429
     echo "Searching on \"${STATIONXML_FULL_URL}\""
     while ( (( ${HTTP_CODE} == 429 )) || (( ${HTTP_CODE} == 000 )) ) && (( ${COUNT} <= ${COUNT_LIMIT} )); do
-        curl "${STATIONXML_FULL_URL}" -o "${FILE_CURL1}" --max-time 20 --write-out "%{http_code}\\n" > ${FILE_CURL1_HTTPCODE} -s -S
+        curl --globoff "${STATIONXML_FULL_URL}" -o "${FILE_CURL1}" --max-time 20 --write-out "%{http_code}\\n" > ${FILE_CURL1_HTTPCODE} -s -S
         RET_CODE=${?}
         HTTP_CODE=$( cat ${FILE_CURL1_HTTPCODE} )
         if (( ${HTTP_CODE} == 429 )); then
