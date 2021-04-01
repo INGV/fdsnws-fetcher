@@ -121,10 +121,10 @@ if (( ${RET_CODE} == 0 )); then
             mv ${FILE_OUTPUT_MSEED} ${DIR_MSEED_LOG}/$( basename ${FILE_OUTPUT_MSEED} ).log
         fi
     elif (( ${HTTP_CODE} == 429 )); then
-        echo " TOO MANY REQUEST (for ${INPUT_STRING}) - retrieving \"${DATASELECT_URL}\". RET_CODE=${RET_CODE}, HTTP_CODE=${HTTP_CODE}"
+        #echo " TOO MANY REQUEST (for ${INPUT_STRING}) - retrieving \"${DATASELECT_URL}\". RET_CODE=${RET_CODE}, HTTP_CODE=${HTTP_CODE}"
         echo ${DATASELECT_URL} > ${DIR_MSEED_LOG}/$( basename ${FILE_OUTPUT_MSEED} ).tooManyRequest
     elif (( ${HTTP_CODE} == 503 )); then
-        echo " SERVICE UNAVAILABLE (for ${INPUT_STRING}) - retrieving \"${DATASELECT_URL}\". RET_CODE=${RET_CODE}, HTTP_CODE=${HTTP_CODE}"
+        #echo " SERVICE UNAVAILABLE (for ${INPUT_STRING}) - retrieving \"${DATASELECT_URL}\". RET_CODE=${RET_CODE}, HTTP_CODE=${HTTP_CODE}"
         echo ${DATASELECT_URL} > ${DIR_MSEED_LOG}/$( basename ${FILE_OUTPUT_MSEED} ).serviceUnavailable
     else
         echo " UNKNOWN (for ${INPUT_STRING}) - retrieving \"${DATASELECT_URL}\". RET_CODE=${RET_CODE}, HTTP_CODE=${HTTP_CODE}"

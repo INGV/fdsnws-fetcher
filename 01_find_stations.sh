@@ -123,6 +123,7 @@ while read FDSNWS_NODE_URL; do
     COUNT=1
     COUNT_LIMIT=2
     HTTP_CODE=429
+    PREV=0
     echo "Searching on \"${STATIONXML_FULL_URL}\""
     while ( (( ${HTTP_CODE} == 429 )) || (( ${HTTP_CODE} == 000 )) ) && (( ${COUNT} <= ${COUNT_LIMIT} )); do
         curl --globoff "${STATIONXML_FULL_URL}" -o "${FILE_CURL1}" --max-time 20 --write-out "%{http_code}\\n" > ${FILE_CURL1_HTTPCODE} -s -S
@@ -131,9 +132,13 @@ while read FDSNWS_NODE_URL; do
         if (( ${HTTP_CODE} == 429 )); then
             echo " TOO MANY REQUEST - Tentative: ${COUNT}/${COUNT_LIMIT}"
             sleep 2
+            PREV=1
         elif (( ${HTTP_CODE} == 000 )); then
             echo " WARNING - curl timeout. Tentative: ${COUNT}/${COUNT_LIMIT}"
             sleep 2
+            PREV=1
+        elif (( ${PREV} == 1 )); then
+            echo "  DONE. Tentative: ${COUNT}/${COUNT_LIMIT}"
         fi
         COUNT=$(( ${COUNT} + 1 ))
     done

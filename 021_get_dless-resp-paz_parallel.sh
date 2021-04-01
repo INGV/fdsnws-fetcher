@@ -95,9 +95,11 @@ else
 		elif (( ${HTTP_CODE} == 403 )); then
 			echo " FORBIDDEN (for ${INPUT_STRING}) - retrieving \"${STATIONXML_INPUT_URL}\". RET_CODE=${RET_CODE}, HTTP_CODE=${HTTP_CODE}"
 		elif (( ${HTTP_CODE} == 429 )); then
-			echo " TOO MANY REQUEST (for ${INPUT_STRING}) - retrieving \"${STATIONXML_INPUT_URL}\". RET_CODE=${RET_CODE}, HTTP_CODE=${HTTP_CODE}"
+			#echo " TOO MANY REQUEST (for ${INPUT_STRING}) - retrieving \"${STATIONXML_INPUT_URL}\". RET_CODE=${RET_CODE}, HTTP_CODE=${HTTP_CODE}"
+			echo "" > /dev/null
                 elif (( ${HTTP_CODE} == 503 )); then
-                        echo " SERVICE UNAVAILABLE (for ${INPUT_STRING}) - retrieving \"${STATIONXML_INPUT_URL}\". RET_CODE=${RET_CODE}, HTTP_CODE=${HTTP_CODE}"
+                        #echo " SERVICE UNAVAILABLE (for ${INPUT_STRING}) - retrieving \"${STATIONXML_INPUT_URL}\". RET_CODE=${RET_CODE}, HTTP_CODE=${HTTP_CODE}"
+			echo "" > /dev/null
     		else
         		echo " UNKNOWN (for ${INPUT_STRING}) - retrieving \"${STATIONXML_INPUT_URL}\". RET_CODE=${RET_CODE}, HTTP_CODE=${HTTP_CODE}"
 		fi
