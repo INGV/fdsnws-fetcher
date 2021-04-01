@@ -80,7 +80,7 @@ for FDSNWS_NODE_PATH in $( ls -d ${DIR_TMP}/* ); do
         
 
         # Running process
-        ${DIR_WORK}/021_get_dless-resp-paz_parallel.sh -k "${COUNT}/${N_NET_STA}" -o ${DIR_DLESS_NODE}/${NETWORK}_${STATION}.dless -u "${STATIONXML_FOR_DLESS}" -t ${TYPE} &
+        timeout -k 5 2m ${DIR_WORK}/021_get_dless-resp-paz_parallel.sh -k "${COUNT}/${N_NET_STA}" -o ${DIR_DLESS_NODE}/${NETWORK}_${STATION}.dless -u "${STATIONXML_FOR_DLESS}" -t ${TYPE} &
 
         # Checking process number
         RUNNING_PROCESS=$( ps axu | grep "021_get_dless-resp-paz_parallel.sh" | grep -v "grep" | wc | awk '{print $1}' )
