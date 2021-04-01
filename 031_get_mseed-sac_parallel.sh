@@ -59,6 +59,7 @@ COUNT=1
 COUNT_LIMIT=5
 HTTP_CODE=429
 RET_CODE=-9
+PREV=0
 while ( (( ${HTTP_CODE} == 429 )) || (( ${HTTP_CODE} == 503 )) ) && (( ${COUNT} <= ${COUNT_LIMIT} )); do
         curl --digest "${DATASELECT_URL}" -o "${FILE_OUTPUT_MSEED}" --write-out "%{http_code}\\n" > ${FILE_OUTPUT_MSEED_HTTPCODE_LOG} -s
         RET_CODE=$?
@@ -66,9 +67,13 @@ while ( (( ${HTTP_CODE} == 429 )) || (( ${HTTP_CODE} == 503 )) ) && (( ${COUNT} 
         if (( ${HTTP_CODE} == 429 )); then
                 echo "TOO MANY REQUEST (for ${INPUT_STRING}) - retrieving \"${DATASELECT_URL}\". RET_CODE=${RET_CODE}, HTTP_CODE=${HTTP_CODE}. Tentative: ${COUNT}/${COUNT_LIMIT}"
                 sleep 5
+		PREV=1
         elif (( ${HTTP_CODE} == 503 )); then
                 echo "SERVICE UNAVAILABLE (for ${INPUT_STRING}) - retrieving \"${DATASELECT_URL}\". RET_CODE=${RET_CODE}, HTTP_CODE=${HTTP_CODE}. Tentative: ${COUNT}/${COUNT_LIMIT}"
                 sleep 5
+		PREV=1
+        elif (( ${PREV} == 1 )); then
+                echo " OK (for ${INPUT_STRING}) - retrieving \"${STATIONXML_INPUT_URL}\". RET_CODE=${RET_CODE}, HTTP_CODE=${HTTP_CODE}. Tentative: ${COUNT}/${COUNT_LIMIT}"
         fi
         COUNT=$(( ${COUNT} + 1 ))
 done
