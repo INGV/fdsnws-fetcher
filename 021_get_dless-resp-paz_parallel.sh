@@ -67,7 +67,7 @@ else
 			sleep 5
 			PREV=1
                 elif (( ${PREV} == 1 )); then
-			echo " OK (for ${INPUT_STRING}) - retrieving \"${STATIONXML_INPUT_URL}\". RET_CODE=${RET_CODE}, HTTP_CODE=${HTTP_CODE}. Tentative: ${COUNT}/${COUNT_LIMIT}"
+			echo " DONE (for ${INPUT_STRING}) - retrieving \"${STATIONXML_INPUT_URL}\". RET_CODE=${RET_CODE}, HTTP_CODE=${HTTP_CODE}. Tentative: ${COUNT}/${COUNT_LIMIT}"
         	fi
         	COUNT=$(( ${COUNT} + 1 ))
 	done
