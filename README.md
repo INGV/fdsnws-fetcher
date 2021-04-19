@@ -102,7 +102,12 @@ $ docker pull ingv/fdsnws-fetcher
 Update your `stationxml.conf` adding more StationXML entry point
 
 # Contribute
-Please, feel free to contribute.
+Thanks to your contributions!
+
+Here is a list of users who already contributed to this repository:
+<a href="https://github.com/ingv/fdsnws-fetcher/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=ingv/fdsnws-fetcher" />
+</a>
 
 # Author
 (c) 2019 Valentino Lauciani valentino.lauciani[at]ingv.it
