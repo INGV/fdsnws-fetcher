@@ -10,20 +10,28 @@
 # Import config file
 . $(dirname $0)/config.sh
 
+# Get version number
+VERSION=$( grep "softwareVersion" publiccode.yml | awk -F":" '{print $2}' )
+
 ### START - Check parameters ###
 IN__STATIONXML_URL=
 IN__TYPES=
-while getopts :u:t: OPTION
+while getopts :u:t:v OPTION
 do
 	case ${OPTION} in
 	u)	IN__STATIONXML_URL="${OPTARG}"
 		;;
         t)	IN__TYPES="${OPTARG}"
 		;;
-        \?) echo "Invalid option: -$OPTARG" >/dev/null
+	v)      echo ""
+	        echo "fdsnws-fetcher version: ${VERSION}"
+		echo ""
+		exit
+		;;
+        \?)     echo "Invalid option: -$OPTARG" >/dev/null
 		shift
 		;;
-        *)  #echo $OPTARG >/dev/null
+        *)      #echo $OPTARG >/dev/null
 		echo "Invalid OPTARG: -$OPTARG" >&2
 		;;
 	esac
