@@ -99,7 +99,19 @@ $ docker pull ingv/fdsnws-fetcher
 ```
 
 ## Update `stationxml.conf`
-Update your `stationxml.conf` adding more StationXML entry point
+Update your `stationxml.conf` adding more StationXML entry point.
+
+From version `2.30.0`, the file `stationxml.conf` was update to support:
+- additional paramas for specific node
+- different dataselect node to submit the request
+
+for example:
+```
+http://webservices.ingv.it|authoritative=any|http://eidaws-internal.int.ingv.it:8080
+http://service.iris.edu
+http://rtserve.beg.utexas.edu
+http://seisrequest.iag.usp.br
+```
 
 # Contribute
 Thanks to your contributions!
