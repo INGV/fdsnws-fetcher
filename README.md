@@ -52,27 +52,30 @@ Running the command below to see the **help**:
 ```
 $ docker run -it --user $(id -u):$(id -g) --rm -v $(pwd)/stationxml.conf:/opt/stationxml.conf -v $(pwd)/OUTPUT:/opt/OUTPUT ingv/fdsnws-fetcher -h
 
- This docker search the given STATIONXML_PARAMETERS on StationXML and convert it to RESP and/or DATALESS files and/or DATASELECT_LIST list.
+ This docker search the given STATIONXML_PARAMETERS on StationXML and convert it to RESP or DATALESS files or DATASELECT_LIST list.
 
- usage:
- $ docker run -it --user $(id -u):$(id -g) --rm -v $(pwd)/stationxml.conf:/opt/stationxml.conf -v $(pwd)/OUTPUT:/opt/OUTPUT ingv/fdsnws-fetcher -u <stationxml params>
+  Print software version number:
+  $ docker run -it --rm ${DOCKER_NAME} -v
+
+  Usage:
+  $ ${BASE_COMMAND} ${DOCKER_VOLUME_1} ${DOCKER_NAME} -u <stationxml params>
 
     Values for option -t: resp, paz, dless, dataselect_list, miniseed, sac
 
     Examples:
-     1) $ docker run -it --user $(id -u):$(id -g) --rm -v $(pwd)/stationxml.conf:/opt/stationxml.conf -v $(pwd)/OUTPUT:/opt/OUTPUT ingv/fdsnws-fetcher -u "network=IV&station=ACER&starttime=2017-11-02T00:00:00&endtime=2017-11-02T01:00:00" -t "dataselect_list"
-     2) $ docker run -it --user $(id -u):$(id -g) --rm -v $(pwd)/stationxml.conf:/opt/stationxml.conf -v $(pwd)/OUTPUT:/opt/OUTPUT ingv/fdsnws-fetcher -u "network=IV&latitude=42&longitude=12&maxradius=1" -t "dataselect_list"
-     3) $ docker run -it --user $(id -u):$(id -g) --rm -v $(pwd)/stationxml.conf:/opt/stationxml.conf -v $(pwd)/OUTPUT:/opt/OUTPUT ingv/fdsnws-fetcher -u "network=IV&latitude=47.12&longitude=11.38&maxradius=0.5&channel=HH?,EH?,HN?" -t "dataselect_list"
-     4) $ docker run -it --user $(id -u):$(id -g) --rm -v $(pwd)/stationxml.conf:/opt/stationxml.conf -v $(pwd)/OUTPUT:/opt/OUTPUT ingv/fdsnws-fetcher -u "network=IV,MN&station=BLY&starttime=2017-11-02T00:00:00&endtime=2017-11-02T01:00:00" -t "dless"
-     5) $ docker run -it --user $(id -u):$(id -g) --rm -v $(pwd)/stationxml.conf:/opt/stationxml.conf -v $(pwd)/OUTPUT:/opt/OUTPUT ingv/fdsnws-fetcher -u "lat=45.75&lon=11.1&maxradius=1&starttime=2017-11-02T00:00:00&endtime=2017-11-02T01:00:00" -t "resp,dless"
-     6) $ docker run -it --user $(id -u):$(id -g) --rm -v $(pwd)/stationxml.conf:/opt/stationxml.conf -v $(pwd)/OUTPUT:/opt/OUTPUT ingv/fdsnws-fetcher -u "lat=45.75&lon=11.1&maxradius=1&starttime=2017-11-02T00:00:00&endtime=2017-11-02T01:00:00" -t "miniseed,resp"
-     7) $ docker run -it --user $(id -u):$(id -g) --rm -v $(pwd)/stationxml.conf:/opt/stationxml.conf -v $(pwd)/OUTPUT:/opt/OUTPUT ingv/fdsnws-fetcher -u "lat=45.75&lon=11.1&maxradius=1&starttime=2017-11-02T00:00:00&endtime=2017-11-02T01:00:00" -t "sac,dataselect_list"
+     1) $ docker run -it --rm ${DOCKER_NAME} -v
+     2) $ ${BASE_COMMAND} ${DOCKER_VOLUME_1} ${DOCKER_NAME} -u "network=IV&station=ACER&starttime=2017-11-02T00:00:00&endtime=2017-11-02T01:00:00" -t "dataselect_list"
+     3) $ ${BASE_COMMAND} ${DOCKER_VOLUME_1} ${DOCKER_NAME} -u "network=IV&latitude=42&longitude=12&maxradius=1" -t "dataselect_list"
+     4) $ ${BASE_COMMAND} ${DOCKER_VOLUME_1} ${DOCKER_NAME} -u "network=IV&latitude=47.12&longitude=11.38&maxradius=0.5&channel=HH?,EH?,HN?" -t "dataselect_list"
+     5) $ ${BASE_COMMAND} ${DOCKER_VOLUME_1} ${DOCKER_NAME} -u "network=IV,MN&station=BLY&starttime=2017-11-02T00:00:00&endtime=2017-11-02T01:00:00" -t "dless"
+     6) $ ${BASE_COMMAND} ${DOCKER_VOLUME_1} ${DOCKER_NAME} -u "lat=45.75&lon=11.1&maxradius=1&starttime=2017-11-02T00:00:00&endtime=2017-11-02T01:00:00" -t "resp,dless"
+     7) $ ${BASE_COMMAND} ${DOCKER_VOLUME_1} ${DOCKER_NAME} -u "lat=45.75&lon=11.1&maxradius=1&starttime=2017-11-02T00:00:00&endtime=2017-11-02T01:00:00" -t "miniseed,resp"
+     8) $ ${BASE_COMMAND} ${DOCKER_VOLUME_1} ${DOCKER_NAME} -u "lat=45.75&lon=11.1&maxradius=1&starttime=2017-11-02T00:00:00&endtime=2017-11-02T01:00:00" -t "sac,dataselect_list"
 
     Example with auth token for restricted stations:
-     1) $ docker run -it --user $(id -u):$(id -g) --rm -v $(pwd)/stationxml.conf:/opt/stationxml.conf -v $(pwd)/OUTPUT:/opt/OUTPUT -v $(pwd)/my_token:/opt/token ingv/fdsnws-fetcher -u "network=IV&station=ACER&starttime=2017-11-02T00:00:00&endtime=2017-11-02T01:00:00" -t "dataselect_list"
-     2) $ docker run -it --user $(id -u):$(id -g) --rm -v $(pwd)/stationxml.conf:/opt/stationxml.conf -v $(pwd)/OUTPUT:/opt/OUTPUT -v $(pwd)/my_token:/opt/token ingv/fdsnws-fetcher -u "lat=45.75&lon=11.1&maxradius=1&starttime=2017-11-02T00:00:00&endtime=2017-11-02T01:00:00" -t "miniseed,resp"
-     3) $ docker run -it --user $(id -u):$(id -g) --rm -v $(pwd)/stationxml.conf:/opt/stationxml.conf -v $(pwd)/OUTPUT:/opt/OUTPUT -v $(pwd)/my_token:/opt/token ingv/fdsnws-fetcher -u "lat=45.75&lon=11.1&maxradius=1&starttime=2017-11-02T00:00:00&endtime=2017-11-02T01:00:00" -t "sac"
-
+     1) $ ${BASE_COMMAND} ${DOCKER_VOLUME_1} ${DOCKER_VOLUME_2} ${DOCKER_NAME} -u "network=IV&station=ACER&starttime=2017-11-02T00:00:00&endtime=2017-11-02T01:00:00" -t "dataselect_list"
+     2) $ ${BASE_COMMAND} ${DOCKER_VOLUME_1} ${DOCKER_VOLUME_2} ${DOCKER_NAME} -u "lat=45.75&lon=11.1&maxradius=1&starttime=2017-11-02T00:00:00&endtime=2017-11-02T01:00:00" -t "miniseed,resp"
+     3) $ ${BASE_COMMAND} ${DOCKER_VOLUME_1} ${DOCKER_VOLUME_2} ${DOCKER_NAME} -u "lat=45.75&lon=11.1&maxradius=1&starttime=2017-11-02T00:00:00&endtime=2017-11-02T01:00:00" -t "sac"
 
 $
 ```
@@ -101,7 +104,7 @@ $ docker pull ingv/fdsnws-fetcher
 ## Update `stationxml.conf`
 Update your `stationxml.conf` adding more StationXML entry point.
 
-From version `2.30.0`, the file `stationxml.conf` was update to support three columns:
+From version `v2.30.0`, the file `stationxml.conf` was update to support three columns:
 - fdsn *station* node. **mandatory**
 - additional `GET` paramas for *station* node
 - different *dataselect* node to submit waveforms request. Default is equal to *station* node
@@ -121,7 +124,7 @@ http://seisrequest.iag.usp.br
 
 the line `http://webservices.ingv.it|authoritative=any|http://eidaws-internal.int.ingv.it:8080` will be used to:
 - request stations info from `http://webservices.ingv.it` adding `authoritative=any` to the request (`http://webservices.ingv.it/fdsnws/station/1/query?authoritative=any&<other_params>`
-- request the waveforms to the *dataselect* node: `http://eidaws.int.ingv.it/fdsnws/dataselect/1/query?<params>`
+- request the waveforms to the *dataselect* node: `http://eidaws-internal.int.ingv.it/fdsnws/dataselect/1/query?<params>`
 
 # Contribute
 Thanks to your contributions!
