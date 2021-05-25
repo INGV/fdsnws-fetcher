@@ -122,12 +122,20 @@ while read FDSNWS_NODE_URL_LINE; do
     # Convert to array spliting by "|" (pipe)
     FDSNWS_NODE_URL_LINE_ARRAY=(${FDSNWS_NODE_URL_LINE//|/ })
 
-    # Get first array element that is the StazionXML node
+    # Get 1st array element that is the StazionXML node
     FDSNWS_NODE_URL=${FDSNWS_NODE_URL_LINE_ARRAY[0]}
-    FDSNWS_DATASELECT_NODE_URL_ALTERNATIVE=${FDSNWS_NODE_URL_LINE_ARRAY[1]}
+
+    # Get 2nd array element (if exists) that is the additional parameters for StazionXML node
+    FDSNWS_STATION_NODE_ADDITIONAL_PARAMS=${FDSNWS_NODE_URL_LINE_ARRAY[1]}
+
+    # Get 3rd array element (if exists) that is the alternative dataselect node
+    FDSNWS_DATASELECT_NODE_URL_ALTERNATIVE=${FDSNWS_NODE_URL_LINE_ARRAY[2]}
 
     # Build StationXML full URL
     STATIONXML_FULL_URL="${FDSNWS_NODE_URL}/fdsnws/station/1/query?${STATIONXML_PARAMS_FIND}"
+    if [ ! -z ${FDSNWS_STATION_NODE_ADDITIONAL_PARAMS} ]; then
+        STATIONXML_FULL_URL="${STATIONXML_FULL_URL}&${FDSNWS_STATION_NODE_ADDITIONAL_PARAMS}"
+    fi
 
     COUNT=1
     COUNT_LIMIT=2
