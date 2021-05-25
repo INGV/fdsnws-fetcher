@@ -118,8 +118,17 @@ cat ${FILE_FDSNWS_NODES_URLS} | grep -v "^#" > ${FILE_FDSNWS_NODES_URLS_FILTERED
 
 # Search StationXML that match IN__STATIONXML_URL
 EXISTS=0
-while read FDSNWS_NODE_URL; do
+while read FDSNWS_NODE_URL_LINE; do
+    # Convert to array spliting by "|" (pipe)
+    FDSNWS_NODE_URL_LINE_ARRAY=(${FDSNWS_NODE_URL_LINE//|/ })
+
+    # Get first array element that is the StazionXML node
+    FDSNWS_NODE_URL=${FDSNWS_NODE_URL_LINE_ARRAY[0]}
+    FDSNWS_DATASELECT_NODE_URL_ALTERNATIVE=${FDSNWS_NODE_URL_LINE_ARRAY[1]}
+
+    # Build StationXML full URL
     STATIONXML_FULL_URL="${FDSNWS_NODE_URL}/fdsnws/station/1/query?${STATIONXML_PARAMS_FIND}"
+
     COUNT=1
     COUNT_LIMIT=2
     HTTP_CODE=429
@@ -166,6 +175,15 @@ while read FDSNWS_NODE_URL; do
 
         # create 'stationxml_station.txt' file with the name of fdsnws node
         echo ${STATIONXML_FULL_URL} > ${FDSNWS_NODE_PATH}/stationxml_station.txt
+
+        # if exists, create a file with alternative dataselect node url
+        if [ ! -z ${FDSNWS_DATASELECT_NODE_URL_ALTERNATIVE} ]; then
+                # get node host (ie: rtserve.beg.utexas.edu, eida.ipgp.fr, webservices.ingv.it, ...)
+                FDSNWS_DATASELECT_NODE_URL=${FDSNWS_DATASELECT_NODE_URL_ALTERNATIVE#*//} #removes stuff upto // from begining
+                FDSNWS_DATASELECT_NODE_URL=${FDSNWS_DATASELECT_NODE_URL%/*} #removes stuff from / all the way to end
+                #echo ${STATIONXML_FULL_URL} | sed "s/${FDSNWS_NODE}/${FDSNWS_DATASELECT_NODE_URL}/" > ${FDSNWS_NODE_PATH}/dataselect_alternative_node.txt
+                echo ${FDSNWS_DATASELECT_NODE_URL} > ${FDSNWS_NODE_PATH}/dataselect_alternative_node.txt
+        fi
 
         # Remove comment line from StationXML 'text' output
         grep -v ^# ${FILE_CURL1} > ${FILE_CURL1}.new

@@ -38,7 +38,7 @@ done
 #
 for FDSNWS_NODE_PATH in $( ls -d ${DIR_TMP}/* ); do
     FDSNWS_NODE=$( basename ${FDSNWS_NODE_PATH} )
-    echo "Processing node to create DATASELECT_LIST: ${FDSNWS_NODE}"
+    echo "Create DATASELECT_LIST processing node: ${FDSNWS_NODE}"
 
     # get 'STATIONXML_FULL_URL' from file
     STATIONXML_FULL_URL=$( cat ${FDSNWS_NODE_PATH}/stationxml_station.txt )
@@ -83,8 +83,17 @@ for FDSNWS_NODE_PATH in $( ls -d ${DIR_TMP}/* ); do
     DIR_DATASELECT_LIST_NODE=${FDSNWS_NODE_PATH}/dataselect_list
     mkdir -p ${DIR_DATASELECT_LIST_NODE}
 
-    # build base 'dataselect' URL
+    # Build url for dataselect service starting from station service
     DATASELECT_BASE_URL=$( echo ${STATIONXML_FULL_URL} | awk -F"?" '{print $1}' | sed 's/station/dataselect/' )
+
+    # get alternative dataselect node url from file 
+    if [ -s ${FDSNWS_NODE_PATH}/dataselect_alternative_node.txt ]; then
+	FDSNWS_DATASELECT_NODE_URL_ALTERNATIVE=$( cat ${FDSNWS_NODE_PATH}/dataselect_alternative_node.txt )
+	echo " override dataselect service node \"${FDSNWS_NODE}\" with \"${FDSNWS_DATASELECT_NODE_URL_ALTERNATIVE}\""
+
+	# build new DATASELECT_BASE_URL with alternative dataselect node
+        DATASELECT_BASE_URL=$( echo ${DATASELECT_BASE_URL} | sed "s/${FDSNWS_NODE}/${FDSNWS_DATASELECT_NODE_URL_ALTERNATIVE}/" )
+    fi
 
     # Check if user pass a token
     if [[ -f /opt/token ]]; then
