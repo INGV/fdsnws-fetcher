@@ -101,9 +101,15 @@ $ docker pull ingv/fdsnws-fetcher
 ## Update `stationxml.conf`
 Update your `stationxml.conf` adding more StationXML entry point.
 
-From version `2.30.0`, the file `stationxml.conf` was update to support:
-- additional paramas for specific node
-- different dataselect node to submit the request
+From version `2.30.0`, the file `stationxml.conf` was update to support three columns:
+- fdsn *station* node. **mandatory**
+- additional `GET` paramas for *station* node
+- different *dataselect* node to submit waveforms request. Default is equal to *station* node
+
+the syntax is:
+```
+<stationxml_node>|<additional_GET_params>|<dataselect_node>
+```
 
 for example:
 ```
@@ -112,6 +118,10 @@ http://service.iris.edu
 http://rtserve.beg.utexas.edu
 http://seisrequest.iag.usp.br
 ```
+
+the line `http://webservices.ingv.it|authoritative=any|http://eidaws-internal.int.ingv.it:8080` will be used to:
+- request stations info from `http://webservices.ingv.it` adding `authoritative=any` to the request (`http://webservices.ingv.it/fdsnws/station/1/query?authoritative=any&<other_params>`
+- request the waveforms to the *dataselect* node: `http://eidaws.int.ingv.it/fdsnws/dataselect/1/query?<params>`
 
 # Contribute
 Thanks to your contributions!
