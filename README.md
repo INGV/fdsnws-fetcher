@@ -8,7 +8,7 @@
 ![Docker Image Size (latest semver)](https://img.shields.io/docker/image-size/ingv/fdsnws-fetcher?sort=semver)
 ![Docker Pulls](https://img.shields.io/docker/pulls/ingv/fdsnws-fetcher)
 
-# fdsnws-fetcher [![Version](https://img.shields.io/badge/dynamic/yaml?label=ver&query=softwareVersion&url=https://raw.githubusercontent.com/INGV/fdsnws-fetcher/master/publiccode.yml)](https://github.com/INGV/fdsnws-fetcher/blob/master/publiccode.yml) [![CircleCI](https://circleci.com/gh/INGV/fdsnws-fetcher/tree/master.svg?style=svg)](https://circleci.com/gh/INGV/fdsnws-fetcher/tree/master)
+# fdsnws-fetcher [![Version](https://img.shields.io/badge/dynamic/yaml?label=ver&query=softwareVersion&url=https://raw.githubusercontent.com/INGV/fdsnws-fetcher/master/publiccode.yml)](https://github.com/INGV/fdsnws-fetcher/blob/master/publiccode.yml) [![CircleCI](https://circleci.com/gh/INGV/fdsnws-fetcher/tree/master.svg?style=svg)](https://circleci.com/gh/INGV/fdsnws-fetcher/tree/master) | [![GitHub](https://img.shields.io/static/v1?label=GitHub&message=Link%20to%20repository&color=blueviolet)](https://github.com/INGV/fdsnws-fetcher)
 
 This Docker is used to retrieve:
 - "**resp**": Response file(s)
