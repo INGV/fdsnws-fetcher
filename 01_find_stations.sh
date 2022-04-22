@@ -16,9 +16,12 @@ VERSION=$( grep "softwareVersion" publiccode.yml | awk -F":" '{print $2}' )
 ### START - Check parameters ###
 IN__STATIONXML_URL=
 IN__TYPES=
-while getopts :u:t:v OPTION
+IN__UIDGID=
+while getopts :u:t:p:v OPTION
 do
 	case ${OPTION} in
+        p)      IN__UIDGID="${OPTARG}"
+                ;;
 	u)	IN__STATIONXML_URL="${OPTARG}"
 		;;
         t)	IN__TYPES="${OPTARG}"
@@ -271,9 +274,15 @@ for FDSNWS_NODE_PATH in $( ls -d ${DIR_TMP}/* ); do
         done
 done
 echo ""
-echo "New version:"
 echo "OUTPUT_DIR=${DATE_NOW}"
 echo ""
+
+# Set permissions
+if [[ ! -z "${IN__UIDGID}" ]]; then
+	echo "Set permission to \"${IN__UIDGID}\" for path: \"${DATE_NOW}\""
+	chown -R ${IN__UIDGID} ${DIR_OUTPUT}
+	echo "Done"
+fi
 
 # Remove temporary files/directories
 #if [ -d ${DIR_TMP} ]; then
