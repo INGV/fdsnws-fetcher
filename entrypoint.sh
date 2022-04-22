@@ -23,11 +23,11 @@ do
             \?)
                 echo "Invalid option: -$OPTARG" >/dev/null
                 ;;
-    		:)
-      			echo "Option -$OPTARG requires an argument." >&2
+             :)
+                echo "Option -$OPTARG requires an argument." >&2
                 usage_entrypoint
-     			exit 1
-      			;;
+                exit 1
+                ;;
         esac
 done
 OPTIND=1
