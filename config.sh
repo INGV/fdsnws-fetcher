@@ -25,6 +25,9 @@ RDSEED="rdseed"
 # Set var
 N_PROCESS_TO_GET_DLESS=20
 
+# Get version number
+VERSION=$( grep "softwareVersion" publiccode.yml | awk -F":" '{print $2}' | sed -e 's/^[[:space:]]*//' )
+
 # Functions
 function usage_entrypoint() {
 BASE_COMMAND="docker run -it --rm --user \$(id -u):\$(id -g) -v \$(pwd)/${FILE_FDSNWS_NODES_URLS}:/opt/${FILE_FDSNWS_NODES_URLS}"

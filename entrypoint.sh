@@ -10,6 +10,26 @@
 # Import config file
 . $(dirname $0)/config.sh
 
+# Check leapsecond
+qmerge -h 2> /dev/null > /dev/null
+if (( ${?} != 0 )); then
+    wget -O /usr/local/etc/leapseconds http://www.ncedc.org/ftp/pub/programs/leapseconds
+fi
+
+# Get remote version number and check update
+VERSION_GITHUB=$( curl -s https://raw.githubusercontent.com/INGV/fdsnws-fetcher/master/publiccode.yml | grep "softwareVersion" | awk -F":" '{print $2}' | sed -e 's/^[[:space:]]*//' )
+if [ "${VERSION}" != "${VERSION_GITHUB}" ]; then
+    echo ""
+    echo "Your current version: ${VERSION}"
+    echo "New available version: ${VERSION_GITHUB}"
+    echo ""
+    echo "Please, update your docker image running command below and try again!"
+    echo "$ docker pull ingv/fdsnws-fetcher"
+    echo ""
+    echo ""
+    exit 1
+fi
+
 ### START - Check parameters ###
 #echo "Print all input params:${@}"
 IN__MODE=

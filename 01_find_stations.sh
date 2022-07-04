@@ -10,9 +10,6 @@
 # Import config file
 . $(dirname $0)/config.sh
 
-# Get version number
-VERSION=$( grep "softwareVersion" publiccode.yml | awk -F":" '{print $2}' )
-
 ### START - Check parameters ###
 IN__STATIONXML_URL=
 IN__TYPES=
@@ -80,8 +77,6 @@ if [ ! -d ${DIR_TMP} ]; then
 fi
 
 # Print version
-echo ""
-VERSION=$( grep "softwareVersion" publiccode.yml | awk -F":" '{print $2}' )
 echo "fdsnws-fetcher version: ${VERSION}"
 echo ""
 sleep 1
