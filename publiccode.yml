@@ -70,6 +70,3 @@ description:
     localisedName: 'FDSNWS Fetcher'
     features:
       - Seismic waveform and metadata downloader
-      - PNRR
-      - PNRR/Beneficiari/Università
-      - PNRR/Beneficiari/Istituti di ricerca e AFAM
