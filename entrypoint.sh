@@ -20,14 +20,17 @@ fi
 VERSION_GITHUB=$( curl -s https://raw.githubusercontent.com/INGV/fdsnws-fetcher/master/publiccode.yml | grep "softwareVersion" | awk -F":" '{print $2}' | sed -e 's/^[[:space:]]*//' )
 if [ "${VERSION}" != "${VERSION_GITHUB}" ]; then
     echo ""
-    echo "Your current version: ${VERSION}"
-    echo "New available version: ${VERSION_GITHUB}"
-    echo ""
-    echo "Please, update your docker image running command below and try again!"
-    echo "$ docker pull ingv/fdsnws-fetcher"
-    echo ""
-    echo ""
-    exit 1
+    echo "############################################################################"
+    echo "# "
+    echo "# Your current version: ${VERSION}"
+    echo "# New available version: ${VERSION_GITHUB}"
+    echo "# "
+    echo "# Please, update your docker image running command below and try again!"
+    echo "# $ docker pull ingv/fdsnws-fetcher"
+    echo "#"
+    echo "############################################################################"
+    sleep 10
+    #exit 1
 fi
 
 ### START - Check parameters ###
