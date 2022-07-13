@@ -155,7 +155,7 @@ for FDSNWS_NODE_PATH in $( ls -d ${DIR_TMP}/* ); do
             FILE_OUTPUT_DLESS="${FDSNWS_NODE_PATH}/dless/${NETWORK}_${STATION}.dless"
             
             # Running process
-            timeout -k 5 2m ${DIR_WORK}/031_get_mseed-sac_parallel.sh -k "${COUNT}/${N_NET_STA_LOC_CHA}" -o ${FILE_OUTPUT_MSEED} -d ${FILE_OUTPUT_DLESS} -u ${DATASELECT_URL} -t ${TYPE} -s ${STARTTIME} -e ${ENDTIME} &
+            timeout -k 5 5m ${DIR_WORK}/031_get_mseed-sac_parallel.sh -k "${COUNT}/${N_NET_STA_LOC_CHA}" -o ${FILE_OUTPUT_MSEED} -d ${FILE_OUTPUT_DLESS} -u ${DATASELECT_URL} -t ${TYPE} -s ${STARTTIME} -e ${ENDTIME} &
 
             # Checking process number
             RUNNING_PROCESS=$( ps axu | grep "031_get_mseed-sac_parallel.sh" | grep -v "grep" | wc | awk '{print $1}' )
@@ -168,5 +168,25 @@ for FDSNWS_NODE_PATH in $( ls -d ${DIR_TMP}/* ); do
         COUNT=$(( ${COUNT} + 1 ))
     done < ${FDSNWS_NODE_PATH}/stationxml_channel.txt
 done
-wait
+echo ""
+
+# 
+SUCCESS=0
+for pid in "${PID[@]}"
+do
+    #wait "$pid" && ((SUCCESS++)) && echo "$pid OK" > /dev/null || echo "$pid returned $?"
+    wait "$pid"
+    RET=$?
+    if (( ${RET} == 0 )); then
+        echo "$pid OK" > /dev/null
+    else
+        if (( ${RET} == 124 )); then
+            VAR='"time out"'
+        else
+            VAR=${RET}
+        fi
+        echo " pid $pid returned, ${VAR}"
+    fi
+done
+#echo "success for $SUCCESS out of ${#PID} jobs"
 echo ""
