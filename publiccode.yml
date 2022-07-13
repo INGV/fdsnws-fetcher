@@ -4,7 +4,7 @@
 
 publiccodeYmlVersion: '0.2'
 name: 'INGV - FDSNWS Fetcher' 
-releaseDate: '2022-07-04'
+releaseDate: '2022-07-13'
 url: 'https://github.com/INGV/fdsnws-fetcher'
 logo: images/ingv_logo_text_two_lines.png
 landingURL: 'https://github.com/INGV/fdsnws-fetcher'
@@ -70,3 +70,6 @@ description:
     localisedName: 'FDSNWS Fetcher'
     features:
       - Seismic waveform and metadata downloader
+      - PNRR
+      - PNRR/Beneficiari/Università
+      - PNRR/Beneficiari/Istituti di ricerca e AFAM
