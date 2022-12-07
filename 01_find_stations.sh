@@ -125,8 +125,13 @@ cat ${FILE_FDSNWS_NODES_URLS} | grep -v "^#" > ${FILE_FDSNWS_NODES_URLS_FILTERED
 # Search StationXML that match IN__STATIONXML_URL
 EXISTS=0
 while read FDSNWS_NODE_URL_LINE; do
+    # Remove white space
+    FDSNWS_NODE_URL_LINE=$( echo ${FDSNWS_NODE_URL_LINE} | tr -d " \t\n\r" )
+
     # Convert to array spliting by "|" (pipe)
-    FDSNWS_NODE_URL_LINE_ARRAY=(${FDSNWS_NODE_URL_LINE//|/ })
+    OIFS="${IFS}"
+    IFS='|' read -r -a FDSNWS_NODE_URL_LINE_ARRAY <<< "${FDSNWS_NODE_URL_LINE}"
+    IFS="${OIFS}"
 
     # Get 1st array element that is the StazionXML node
     FDSNWS_NODE_URL=${FDSNWS_NODE_URL_LINE_ARRAY[0]}
