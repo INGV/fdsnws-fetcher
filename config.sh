@@ -23,7 +23,7 @@ STATIONXML_TO_SEED="java -jar ./stationxml-seed-converter-2.1.0.jar"
 RDSEED="rdseed"
 
 # Set var
-N_PROCESS_TO_GET_DLESS=20
+N_PROCESS_TO_GET_TYPE=20
 
 # Get version number
 VERSION=$( grep "softwareVersion" publiccode.yml | awk -F":" '{print $2}' | sed -e 's/^[[:space:]]*//' )
@@ -44,7 +44,7 @@ cat << EOF
   Usage:
   $ ${BASE_COMMAND} ${DOCKER_VOLUME_1} ${DOCKER_NAME} -u <stationxml params>
 
-    Values for option -t: resp, paz, dless, dataselect_list, miniseed, sac
+    Values for option -t: resp, paz, dless, stationxml, dataselect_list, miniseed, sac
 
     Examples:
      1) $ docker run -it --rm ${DOCKER_NAME} -v
@@ -68,7 +68,7 @@ EOF
 function check_type() {
 	TYPE=${1}
         
-	if [[ "${TYPE}" == "resp" ]] || [[ "${TYPE}" == "dless" ]] || [[ "${TYPE}" == "dataselect_list" ]] || [[ "${TYPE}" == "miniseed" ]] || [[ "${TYPE}" == "sac" ]] || [[ "${TYPE}" == "paz" ]]; then
+	if [[ "${TYPE}" == "stationxml" ]] || [[ "${TYPE}" == "resp" ]] || [[ "${TYPE}" == "dless" ]] || [[ "${TYPE}" == "dataselect_list" ]] || [[ "${TYPE}" == "miniseed" ]] || [[ "${TYPE}" == "sac" ]] || [[ "${TYPE}" == "paz" ]]; then
 		return 0
         else
 		return 1

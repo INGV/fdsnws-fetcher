@@ -14,6 +14,7 @@
 IN__STATIONXML_URL=
 IN__TYPES=
 IN__UIDGID=
+
 while getopts :u:t:p:v OPTION
 do
 	case ${OPTION} in
@@ -246,7 +247,7 @@ if (( ${EXISTS} == 1 )); then
 	for ((i=0; i<${#ARRAY_TYPES_2[@]}; i+=1))
         do
 		TYPE=${ARRAY_TYPES_2[i]}
-                if [[ "${TYPE}" == "resp" ]] || [[ "${TYPE}" == "dless" ]] || [[ "${TYPE}" == "paz" ]]; then
+                if [[ "${TYPE}" == "stationxml" ]] || [[ "${TYPE}" == "resp" ]] || [[ "${TYPE}" == "dless" ]] || [[ "${TYPE}" == "paz" ]]; then
                         ${DIR_WORK}/02_get_dless-resp-paz.sh -t ${TYPE}
 		fi
                 if [[ "${TYPE}" == "dataselect_list" ]] || [[ "${TYPE}" == "miniseed" ]] || [[ "${TYPE}" == "sac" ]]; then

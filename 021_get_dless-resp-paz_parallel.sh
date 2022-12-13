@@ -16,7 +16,7 @@ INPUT_STRING=
 while getopts :o:k:u:t: OPTION
 do
 	case ${OPTION} in
-        o)	FILE_OUTPUT_DLESS="${OPTARG}"
+        o)	FILE_OUTPUT_TYPE="${OPTARG}"
 		;;
         u)	STATIONXML_INPUT_URL="${OPTARG}"
 		;;
@@ -35,29 +35,30 @@ done
 ### END - Check parameters ###
 
 # Set var
-BASENAME_DLESS=$( basename ${FILE_OUTPUT_DLESS} )
-DIRNAME_DLESS=$( dirname ${FILE_OUTPUT_DLESS} )
-DIR_NODE=$( cd ${DIRNAME_DLESS} && cd ../ && pwd )
-DIR_DLESS_LOG_NODE=${DIRNAME_DLESS}/log
+BASENAME_TYPE=$( basename ${FILE_OUTPUT_TYPE} )
+DIRNAME_TYPE=$( dirname ${FILE_OUTPUT_TYPE} )
+DIR_NODE=$( cd ${DIRNAME_TYPE} && cd ../ && pwd )
+DIR_TYPE_LOG_NODE=${DIRNAME_TYPE}/log
 
 # create dir
-if [ ! -d ${DIR_DLESS_LOG_NODE} ]; then
-    mkdir -p ${DIR_DLESS_LOG_NODE}
+if [ ! -d ${DIR_TYPE_LOG_NODE} ]; then
+    mkdir -p ${DIR_TYPE_LOG_NODE}
 fi
 
-echo "${INPUT_STRING} - create DLESS \"${BASENAME_DLESS}\" from StationXML \"${STATIONXML_INPUT_URL}\""
-if [[ -f ${FILE_OUTPUT_DLESS} ]]; then
-	echo " DLESS already exists"
+echo "${INPUT_STRING} - Get \"$( echo ${BASENAME_TYPE} | sed 's|.type||' )\" StationXML: \"${STATIONXML_INPUT_URL}\""
+if [[ -f ${FILE_OUTPUT_TYPE} ]]; then
+	echo " TYPE already exists"
 else	
 	COUNT=1
 	COUNT_LIMIT=5
 	HTTP_CODE=429
 	RET_CODE=-9
 	PREV=0
+        FILE_OUTPUT_TYPE_STATIONXML=$( echo ${FILE_OUTPUT_TYPE} | sed 's|\.type|\.stationxml|' )
 	while ( (( ${HTTP_CODE} == 429 )) || (( ${HTTP_CODE} == 503 )) ) && (( ${COUNT} <= ${COUNT_LIMIT} )); do
-        	curl --digest "${STATIONXML_INPUT_URL}" -o "${FILE_OUTPUT_DLESS}.stationxml" --write-out "%{http_code}\\n" > ${DIR_DLESS_LOG_NODE}/${BASENAME_DLESS}.stationxml-converter.httpcode -s
+        	curl --digest "${STATIONXML_INPUT_URL}" -o "${FILE_OUTPUT_TYPE_STATIONXML}" --write-out "%{http_code}\\n" > ${DIR_TYPE_LOG_NODE}/${BASENAME_TYPE}.stationxml-converter.httpcode -s
 	        RET_CODE=$?
-        	HTTP_CODE=$( cat ${DIR_DLESS_LOG_NODE}/${BASENAME_DLESS}.stationxml-converter.httpcode )
+        	HTTP_CODE=$( cat ${DIR_TYPE_LOG_NODE}/${BASENAME_TYPE}.stationxml-converter.httpcode )
         	if (( ${HTTP_CODE} == 429 )); then
                 	echo "TOO MANY REQUEST (for ${INPUT_STRING}) - retrieving \"${STATIONXML_INPUT_URL}\". RET_CODE=${RET_CODE}, HTTP_CODE=${HTTP_CODE}. Tentative: ${COUNT}/${COUNT_LIMIT}"
                 	sleep 5
@@ -71,24 +72,29 @@ else
         	fi
         	COUNT=$(( ${COUNT} + 1 ))
 	done
-	if [ -f ${DIR_DLESS_LOG_NODE}/${BASENAME_DLESS}.stationxml-converter.httpcode ]; then
-    		rm -f ${DIR_DLESS_LOG_NODE}/${BASENAME_DLESS}.stationxml-converter.httpcode
+	if [ -f ${DIR_TYPE_LOG_NODE}/${BASENAME_TYPE}.stationxml-converter.httpcode ]; then
+    		rm -f ${DIR_TYPE_LOG_NODE}/${BASENAME_TYPE}.stationxml-converter.httpcode
 	fi
 
 	if (( ${RET_CODE} == 0 )); then
 		if (( ${HTTP_CODE} == 200 )); then
-			if [ -f ${FILE_OUTPUT_DLESS}.stationxml ]; then
-				echo " OK (for ${INPUT_STRING}) - file \"${FILE_OUTPUT_DLESS}.stationxml\" successfully downloaded." > /dev/null
-				${STATIONXML_TO_SEED} --input ${FILE_OUTPUT_DLESS}.stationxml --output ${FILE_OUTPUT_DLESS}
-				RET_CODE=$?
-				if (( ${RET_CODE} == 0 )); then
-					echo "  OK (for ${INPUT_STRING}) - converting StationXML to DLESS" > /dev/null
-				else
-					echo "  ERROR (for ${INPUT_STRING}) - converting StationXML to DLESS"
-				fi
-				rm ${FILE_OUTPUT_DLESS}.stationxml
+			if [ -f ${FILE_OUTPUT_TYPE_STATIONXML} ]; then
+				echo " OK (for ${INPUT_STRING}) - file \"${FILE_OUTPUT_TYPE_STATIONXML}\" successfully downloaded." > /dev/null
+                                if [[ "${TYPE}" == "stationxml" ]]; then
+                                    echo "" >/dev/null
+                                else
+                                    FILE_OUTPUT_TYPE_DLESS=$( echo ${FILE_OUTPUT_TYPE} | sed 's|\.type|\.dless|' )
+				    ${STATIONXML_TO_SEED} --input ${FILE_OUTPUT_TYPE_STATIONXML} --output ${FILE_OUTPUT_TYPE_DLESS}
+				    RET_CODE=$?
+				    if (( ${RET_CODE} == 0 )); then
+                                        echo "  OK (for ${INPUT_STRING}) - converting StationXML to TYPE" > /dev/null
+                                    else
+                                        echo "  ERROR (for ${INPUT_STRING}) - converting StationXML to TYPE"
+                                    fi
+				    rm ${FILE_OUTPUT_TYPE_STATIONXML}
+                                fi
 			else
-				echo " ERROR (for ${INPUT_STRING}) - the file \"${FILE_OUTPUT_DLESS}.stationxml\" doesn't exist."
+				echo " ERROR (for ${INPUT_STRING}) - the file \"${FILE_OUTPUT_TYPE_STATIONXML}\" doesn't exist."
 			fi
 		elif (( ${HTTP_CODE} == 204 )); then
 			echo " NODATA (for ${INPUT_STRING}) - retrieving \"${STATIONXML_INPUT_URL}\". RET_CODE=${RET_CODE}, HTTP_CODE=${HTTP_CODE}"
@@ -108,22 +114,22 @@ else
 	fi
 
 
-	#${STATIONXML_TO_SEED} -o ${FILE_OUTPUT_DLESS} "${STATIONXML_INPUT_URL}" >> ${DIR_DLESS_LOG_NODE}/${BASENAME_DLESS}.stationxml-converter.out 2>> ${DIR_DLESS_LOG_NODE}/${BASENAME_DLESS}.stationxml-converter.err
+	#${STATIONXML_TO_SEED} -o ${FILE_OUTPUT_TYPE} "${STATIONXML_INPUT_URL}" >> ${DIR_TYPE_LOG_NODE}/${BASENAME_TYPE}.stationxml-converter.out 2>> ${DIR_TYPE_LOG_NODE}/${BASENAME_TYPE}.stationxml-converter.err
 	#RET_STATIONXML_TO_SEED=${?}
 	#if (( ${RET_STATIONXML_TO_SEED} != 0 )); then
-    	#	echo "  ERROR - Retriving StationXML from \"${STATIONXML_INPUT_URL}\". Check: ${DIR_DLESS_LOG_NODE}/${BASENAME_DLESS}.stationxml-converter.err"
+    	#	echo "  ERROR - Retriving StationXML from \"${STATIONXML_INPUT_URL}\". Check: ${DIR_TYPE_LOG_NODE}/${BASENAME_TYPE}.stationxml-converter.err"
     	#	echo ""
 	#fi
 fi
 
 # Create RESP and/or PAZ
-if [ -s ${FILE_OUTPUT_DLESS} ]; then
+if [ -s ${FILE_OUTPUT_TYPE_DLESS} ]; then
     if [[ "${TYPE}" == "resp" ]]; then
         DIR_RESP_NODE=${DIR_NODE}/resp
         if [ ! -d ${DIR_RESP_NODE} ]; then
             mkdir -p ${DIR_RESP_NODE}
         fi
-        DIR_RESP_NODE_TMP=${DIR_NODE}/resp/${BASENAME_DLESS}
+        DIR_RESP_NODE_TMP=${DIR_NODE}/resp/${BASENAME_TYPE}
         if [ ! -d ${DIR_RESP_NODE_TMP} ]; then
             mkdir -p ${DIR_RESP_NODE_TMP}
         fi
@@ -132,11 +138,11 @@ if [ -s ${FILE_OUTPUT_DLESS} ]; then
             mkdir -p ${DIR_RESP_LOG_NODE}
         fi
 
-        echo " OK (for ${INPUT_STRING}) - create RESP from \"${FILE_OUTPUT_DLESS}\""
-        ${RDSEED} -R -S -f ${FILE_OUTPUT_DLESS} -q ${DIR_RESP_NODE_TMP} >> ${DIR_RESP_LOG_NODE}/${BASENAME_DLESS}.rdseed.out 2>> ${DIR_RESP_LOG_NODE}/${BASENAME_DLESS}.rdseed.err
+        echo " OK (for ${INPUT_STRING}) - create RESP from \"${FILE_OUTPUT_TYPE_DLESS}\""
+        ${RDSEED} -R -S -f ${FILE_OUTPUT_TYPE_DLESS} -q ${DIR_RESP_NODE_TMP} >> ${DIR_RESP_LOG_NODE}/${BASENAME_TYPE}.rdseed.out 2>> ${DIR_RESP_LOG_NODE}/${BASENAME_TYPE}.rdseed.err
         RET_RDSEED=${?}
         if (( ${RET_RDSEED} != 0 )); then
-            cat ${DIR_RESP_LOG_NODE}/${BASENAME_DLESS}.rdseed.err
+            cat ${DIR_RESP_LOG_NODE}/${BASENAME_TYPE}.rdseed.err
             echo -e "\n"
         fi
         if [ -f ${DIR_RESP_NODE_TMP}/rdseed.stations ]; then
@@ -157,11 +163,11 @@ if [ -s ${FILE_OUTPUT_DLESS} ]; then
         if [ ! -d ${DIR_PAZ_LOG_NODE} ]; then
             mkdir -p ${DIR_PAZ_LOG_NODE}
         fi
-        echo " OK (for ${INPUT_STRING}) - create PAZ from \"${FILE_OUTPUT_DLESS}\""
-        ${RDSEED} -p -f ${FILE_OUTPUT_DLESS} -q ${DIR_PAZ_NODE} >> ${DIR_PAZ_LOG_NODE}/${BASENAME_DLESS}.rdseed.out 2>> ${DIR_PAZ_LOG_NODE}/${BASENAME_DLESS}.rdseed.err
+        echo " OK (for ${INPUT_STRING}) - create PAZ from \"${FILE_OUTPUT_TYPE_DLESS}\""
+        ${RDSEED} -p -f ${FILE_OUTPUT_TYPE_DLESS} -q ${DIR_PAZ_NODE} >> ${DIR_PAZ_LOG_NODE}/${BASENAME_TYPE}.rdseed.out 2>> ${DIR_PAZ_LOG_NODE}/${BASENAME_TYPE}.rdseed.err
         RET_RDSEED=${?}
         if (( ${RET_RDSEED} != 0 )); then
-            cat ${DIR_PAZ_LOG_NODE}/${BASENAME_DLESS}.rdseed.err
+            cat ${DIR_PAZ_LOG_NODE}/${BASENAME_TYPE}.rdseed.err
             echo -e "\n"
         fi
     fi

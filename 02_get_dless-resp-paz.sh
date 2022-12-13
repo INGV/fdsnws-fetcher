@@ -48,10 +48,14 @@ for FDSNWS_NODE_PATH in $( ls -d ${DIR_TMP}/* ); do
     # change 'format' to 'xml'
     STATIONXML_FULL_URL="${STATIONXML_FULL_URL/format=text/format=xml}"
 
-    # create DLESS dir
-    DIR_DLESS_NODE=${FDSNWS_NODE_PATH}/dless
-    DIR_LOG_NODE=${DIR_DLESS_NODE}/log
-    mkdir -p ${DIR_DLESS_NODE}
+    # create TYPE dir
+    if [[ "${TYPE}" == "stationxml" ]]; then
+        DIR_TYPE_NODE=${FDSNWS_NODE_PATH}/stationxml
+    else
+        DIR_TYPE_NODE=${FDSNWS_NODE_PATH}/dless
+    fi
+    DIR_LOG_NODE=${DIR_TYPE_NODE}/log
+    mkdir -p ${DIR_TYPE_NODE}
     mkdir -p ${DIR_LOG_NODE}
 
     # get network and station
@@ -62,30 +66,30 @@ for FDSNWS_NODE_PATH in $( ls -d ${DIR_TMP}/* ); do
 
         NETWORK=$( echo ${NET_STA} | awk -F"|" '{print $1}' )
         STATION=$( echo ${NET_STA} | awk -F"|" '{print $2}' )
-        STATIONXML_FOR_DLESS=
+        STATIONXML_FOR_TYPE=
 
         # build URL to get StationXML
         # START - Soluzione 1
         #STATIONXML_FULL_URL__NET__FIRST=$( echo ${STATIONXML_FULL_URL} | awk -F"network=" '{print $1}' )
         #STATIONXML_FULL_URL__NET__SECOND=$( echo ${STATIONXML_FULL_URL} | awk -F"network=" '{print $2}' | sed 's/^[^&]*//' )
-        #STATIONXML_FOR_DLESS="${STATIONXML_FULL_URL__NET__FIRST}network=${NETWORK}${STATIONXML_FULL_URL__NET__SECOND}"
+        #STATIONXML_FOR_TYPE="${STATIONXML_FULL_URL__NET__FIRST}network=${NETWORK}${STATIONXML_FULL_URL__NET__SECOND}"
 
-        #STATIONXML_FOR_DLESS__STA__FIRST=$( echo ${STATIONXML_FOR_DLESS} | awk -F"station=" '{print $1}' )
-        #STATIONXML_FOR_DLESS__STA__SECOND=$( echo ${STATIONXML_FOR_DLESS} | awk -F"station=" '{print $2}' | sed 's/^[^&]*//' )
-        #STATIONXML_FOR_DLESS="${STATIONXML_FOR_DLESS__STA__FIRST}station=${STATION}${STATIONXML_FOR_DLESS__STA__SECOND}"
+        #STATIONXML_FOR_TYPE__STA__FIRST=$( echo ${STATIONXML_FOR_TYPE} | awk -F"station=" '{print $1}' )
+        #STATIONXML_FOR_TYPE__STA__SECOND=$( echo ${STATIONXML_FOR_TYPE} | awk -F"station=" '{print $2}' | sed 's/^[^&]*//' )
+        #STATIONXML_FOR_TYPE="${STATIONXML_FOR_TYPE__STA__FIRST}station=${STATION}${STATIONXML_FOR_TYPE__STA__SECOND}"
         # END - Soluzione 1
         # START - Soluzione 2
-        STATIONXML_FOR_DLESS=$( echo ${STATIONXML_FULL_URL} | sed -e "s/network=[^&]\+//" | sed -e "s/station=[^&]\+//" )"&network=${NETWORK}&station=${STATION}"
+        STATIONXML_FOR_TYPE=$( echo ${STATIONXML_FULL_URL} | sed -e "s/network=[^&]\+//" | sed -e "s/station=[^&]\+//" | sed -e "s/\&\&\&/\&/" | sed -e "s/\&\&/\&/" )"&network=${NETWORK}&station=${STATION}"
         # END - Soluzione 2
         
 
         # Running process
-        timeout -k 5 2m ${DIR_WORK}/021_get_dless-resp-paz_parallel.sh -k "${COUNT}/${N_NET_STA}" -o ${DIR_DLESS_NODE}/${NETWORK}_${STATION}.dless -u "${STATIONXML_FOR_DLESS}" -t ${TYPE} &
+        timeout -k 5 2m ${DIR_WORK}/021_get_dless-resp-paz_parallel.sh -k "${COUNT}/${N_NET_STA}" -o ${DIR_TYPE_NODE}/${NETWORK}_${STATION}.type -u "${STATIONXML_FOR_TYPE}" -t ${TYPE} &
 
         # Checking process number
         RUNNING_PROCESS=$( ps axu | grep "021_get_dless-resp-paz_parallel.sh" | grep -v "grep" | wc | awk '{print $1}' )
-        while (( ${RUNNING_PROCESS} > ${N_PROCESS_TO_GET_DLESS} )); do
-            echo "****** there are just \"${RUNNING_PROCESS}\" parallel process running (the limit is \"${N_PROCESS_TO_GET_DLESS}\"), waiting... ******"
+        while (( ${RUNNING_PROCESS} > ${N_PROCESS_TO_GET_TYPE} )); do
+            echo "****** there are just \"${RUNNING_PROCESS}\" parallel process running (the limit is \"${N_PROCESS_TO_GET_TYPE}\"), waiting... ******"
             sleep 10
             RUNNING_PROCESS=$( ps axu | grep "021_get_dless-resp-paz_parallel.sh" | grep -v "grep" | wc | awk '{print $1}' )
         done

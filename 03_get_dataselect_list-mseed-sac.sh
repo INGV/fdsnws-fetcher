@@ -160,7 +160,7 @@ for FDSNWS_NODE_PATH in $( ls -d ${DIR_TMP}/* ); do
 
             # Checking process number
             RUNNING_PROCESS=$( ps axu | grep "031_get_mseed-sac_parallel.sh" | grep -v "grep" | wc | awk '{print $1}' )
-            while (( ${RUNNING_PROCESS} > ${N_PROCESS_TO_GET_DLESS} )); do
+            while (( ${RUNNING_PROCESS} > ${N_PROCESS_TO_GET_TYPE} )); do
                 echo "****** there are just \"${RUNNING_PROCESS}\" parallel process running (the limit is \"${N_PROCESS_TO_GET_DLESS}\"), waiting... ******"
                 sleep 5
                 RUNNING_PROCESS=$( ps axu | grep "031_get_mseed-sac_parallel.sh" | grep -v "grep" | wc | awk '{print $1}' )

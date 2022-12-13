@@ -11,11 +11,12 @@
 # fdsnws-fetcher [![Version](https://img.shields.io/badge/dynamic/yaml?label=ver&query=softwareVersion&url=https://raw.githubusercontent.com/INGV/fdsnws-fetcher/master/publiccode.yml)](https://github.com/INGV/fdsnws-fetcher/blob/master/publiccode.yml) [![CircleCI](https://circleci.com/gh/INGV/fdsnws-fetcher/tree/master.svg?style=svg)](https://circleci.com/gh/INGV/fdsnws-fetcher/tree/master) | [![GitHub](https://img.shields.io/static/v1?label=GitHub&message=Link%20to%20repository&color=blueviolet)](https://github.com/INGV/fdsnws-fetcher)
 
 This Docker is used to retrieve:
-- "**resp**": Response file(s)
 - "**paz**": Poles and zeros file(s)
-- "**dless**": Dataless file(s)
 - "**sac**": Dataless file(s)
+- "**resp**": Response file(s)
+- "**dless**": Dataless file(s)
 - "**miniseed**": MiniSeed file(s)
+- "**stationxml**": StationXML file(s)
 - "**dataselect_list**": A list of **dataselect** URL used to download MiniSeed
 
 sending a request to each "**station**" FDSNS-WS to find available stations.
@@ -60,7 +61,7 @@ $ docker run -it --user $(id -u):$(id -g) --rm -v $(pwd)/stationxml.conf:/opt/st
   Usage:
   $ docker run -it --rm --user $(id -u):$(id -g) -v $(pwd)/stationxml.conf:/opt/stationxml.conf -v $(pwd)/OUTPUT:/opt/OUTPUT ingv/fdsnws-fetcher -u <stationxml params>
 
-    Values for option -t: resp, paz, dless, dataselect_list, miniseed, sac
+    Values for option -t: resp, paz, dless, stationxml, dataselect_list, miniseed, sac
 
     Examples:
      1) $ docker run -it --rm ingv/fdsnws-fetcher -v
