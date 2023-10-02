@@ -11,9 +11,11 @@
 . $(dirname $0)/config.sh
 
 # Check leapsecond
-qmerge -h 2> /dev/null > /dev/null
-if (( ${?} != 0 )); then
-    wget -O /usr/local/etc/leapseconds http://www.ncedc.org/ftp/pub/programs/leapseconds
+if [ "$( id -u )" -eq 0 ]; then
+    qmerge -h 2> /dev/null > /dev/null
+    if (( ${?} != 0 )); then
+        wget -O /usr/local/etc/leapseconds http://www.ncedc.org/ftp/pub/programs/leapseconds
+    fi
 fi
 
 # Get remote version number and check update
