@@ -79,7 +79,8 @@ for FDSNWS_NODE_PATH in $( ls -d ${DIR_TMP}/* ); do
         #STATIONXML_FOR_TYPE="${STATIONXML_FOR_TYPE__STA__FIRST}station=${STATION}${STATIONXML_FOR_TYPE__STA__SECOND}"
         # END - Soluzione 1
         # START - Soluzione 2
-        STATIONXML_FOR_TYPE=$( echo ${STATIONXML_FULL_URL} | sed -e "s/network=[^&]\+//" | sed -e "s/station=[^&]\+//" | sed -e "s/\&\&\&/\&/" | sed -e "s/\&\&/\&/" )"&network=${NETWORK}&station=${STATION}"
+        STATIONXML_FOR_TYPE=$( echo ${STATIONXML_FULL_URL} | sed -e "s/network=[^&]\+//" | sed -e "s/station=[^&]\+//" | sed -e "s/net=[^&]\+//" | sed -e "s/sta=[^&]\+//" )"&network=${NETWORK}&station=${STATION}"
+        STATIONXML_FOR_TYPE=$( echo ${STATIONXML_FOR_TYPE} | sed -e "s/\&\&\&/\&/" | sed -e "s/\&\&/\&/" )
         # END - Soluzione 2
         
 
