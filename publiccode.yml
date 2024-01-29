@@ -4,11 +4,11 @@
 
 publiccodeYmlVersion: '0.2'
 name: 'INGV - FDSNWS Fetcher' 
-releaseDate: '2023-10-02'
+releaseDate: '2024-01-29'
 url: 'https://github.com/INGV/fdsnws-fetcher'
 logo: images/ingv_logo_text_two_lines.png
 landingURL: 'https://github.com/INGV/fdsnws-fetcher'
-softwareVersion: v2.45.0
+softwareVersion: v2.46.0
 developmentStatus: stable
 softwareType: standalone/other
 platforms:
