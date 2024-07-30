@@ -1,8 +1,7 @@
 #!/bin/bash
 #
 #
-# (c) 2018 Valentino Lauciani <valentino.lauciani@ingv.it>,
-#          Matteo Quintiliani <matteo.quintiliani@ingv.it>,
+# (c) 2024 Valentino Lauciani <valentino.lauciani@ingv.it>,
 #          Istituto Nazione di Geofisica e Vulcanologia.
 # 
 #####################################################
