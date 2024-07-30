@@ -199,9 +199,7 @@ while read FDSNWS_NODE_URL_LINE; do
         # if exists, create a file with alternative dataselect node url
         if [ ! -z ${FDSNWS_DATASELECT_NODE_URL_ALTERNATIVE} ]; then
                 # get node host (ie: rtserve.beg.utexas.edu, eida.ipgp.fr, webservices.ingv.it, ...)
-                FDSNWS_DATASELECT_NODE_URL=${FDSNWS_DATASELECT_NODE_URL_ALTERNATIVE#*//} #removes stuff upto // from begining
-                FDSNWS_DATASELECT_NODE_URL=${FDSNWS_DATASELECT_NODE_URL%/*} #removes stuff from / all the way to end
-                #echo ${STATIONXML_FULL_URL} | sed "s/${FDSNWS_NODE}/${FDSNWS_DATASELECT_NODE_URL}/" > ${FDSNWS_NODE_PATH}/dataselect_alternative_node.txt
+		FDSNWS_DATASELECT_NODE_URL=$( echo ${FDSNWS_DATASELECT_NODE_URL_ALTERNATIVE} | sed -E 's|(https?://[^/]+).*|\1|' )
                 echo ${FDSNWS_DATASELECT_NODE_URL} > ${FDSNWS_NODE_PATH}/dataselect_alternative_node.txt
         fi
 
