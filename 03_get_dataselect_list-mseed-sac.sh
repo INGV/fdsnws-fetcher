@@ -89,10 +89,10 @@ for FDSNWS_NODE_PATH in $( ls -d ${DIR_TMP}/* ); do
     # get alternative dataselect node url from file 
     if [ -s ${FDSNWS_NODE_PATH}/dataselect_alternative_node.txt ]; then
 	FDSNWS_DATASELECT_NODE_URL_ALTERNATIVE=$( cat ${FDSNWS_NODE_PATH}/dataselect_alternative_node.txt )
-	echo " override dataselect service node \"${FDSNWS_NODE}\" with \"${FDSNWS_DATASELECT_NODE_URL_ALTERNATIVE}\""
+	echo " override dataselect service node \"${DATASELECT_BASE_URL}\" with \"${FDSNWS_DATASELECT_NODE_URL_ALTERNATIVE}\""
 
 	# build new DATASELECT_BASE_URL with alternative dataselect node
-        DATASELECT_BASE_URL=$( echo ${DATASELECT_BASE_URL} | sed "s/${FDSNWS_NODE}/${FDSNWS_DATASELECT_NODE_URL_ALTERNATIVE}/" )
+	DATASELECT_BASE_URL=$( echo ${DATASELECT_BASE_URL} | sed -E "s|https?://[^/]+|${FDSNWS_DATASELECT_NODE_URL_ALTERNATIVE}|" )
     fi
 
     # Check if user pass a token
