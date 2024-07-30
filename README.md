@@ -130,12 +130,12 @@ the line `http://webservices.ingv.it|authoritative=any|http://eidaws-internal.in
 # Contribute
 Thanks to your contributions!
 
-Here is a list of users who already contributed to this repository:
+Here is a list of users who already contributed to this repository: \
 <a href="https://github.com/ingv/fdsnws-fetcher/graphs/contributors">
   <img src="https://contrib.rocks/image?repo=ingv/fdsnws-fetcher" />
 </a>
 
 # Author
-(c) 2019 Valentino Lauciani valentino.lauciani[at]ingv.it
+(c) 2024 Valentino Lauciani valentino.lauciani[at]ingv.it
 
 Istituto Nazionale di Geofisica e Vulcanologia, Italia
