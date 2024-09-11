@@ -1,9 +1,9 @@
 name: CI/CD
 
-on:
-  push:
-    tags:
-      - 'v*.*.*'
+#on:
+#  push:
+#    tags:
+#      - 'v*.*.*'
 
 env:
   IMAGE_NAME: ingv/fdsnws-fetcher
