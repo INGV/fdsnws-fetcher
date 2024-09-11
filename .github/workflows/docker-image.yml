@@ -65,7 +65,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: readme
-          path: /github/home
+          path: /home/runner/work/_temp/_github_home
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
