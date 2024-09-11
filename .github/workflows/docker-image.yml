@@ -17,7 +17,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Build docker image
         run: |
           IMAGE_TAG=${GITHUB_REF#refs/tags/v}
@@ -38,7 +38,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Download artifact
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v4
         with:
           name: docker-image
       - name: Load archived Docker image
@@ -63,7 +63,7 @@ jobs:
   test-publiccode:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Validate publiccode file
         run: |
           docker run -i --rm italia/publiccode-parser-go /dev/stdin < publiccode.yml
