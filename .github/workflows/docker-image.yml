@@ -65,6 +65,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: readme
+          #path: /home/runner/work/fdsnws-fetcher/fdsnws-fetcher
           path: /home/runner/work/_temp/_github_home
 
       - name: Set up Docker Buildx
@@ -95,7 +96,7 @@ jobs:
         with:
           provider: dockerhub
           destination_container_repo: ${{ env.IMAGE_NAME }}
-          readme_file: 'README.md'
+          readme_file: '/github/home/README.md'
           short_description: 'Docker image used to retrieve date from FDSN nodes.'
 
 #      - name: Publish Docker description (README.md) to Docker Hub
