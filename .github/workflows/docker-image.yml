@@ -87,11 +87,22 @@ jobs:
           #docker push ${{ env.IMAGE_NAME }}:latest
           docker push ${{ env.IMAGE_NAME }}:$IMAGE_TAG
 
-      - name: Publish Docker description (README.md) to Docker Hub
-        run: |
-          wget -O docker-pushrm "https://github.com/christian-korneck/docker-pushrm/releases/download/v1.7.0/docker-pushrm_linux_amd64"
-          chmod +x docker-pushrm
-          ./docker-pushrm --file README.md ${{ env.IMAGE_NAME }}
+      - name: Push README to Dockerhub
+        uses: christian-korneck/update-container-description-action@v1
+        env:
+          DOCKER_USER: ${{ secrets.DOCKER_HUB_USERNAME }}
+          DOCKER_PASS: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+        with:
+          provider: dockerhub
+          destination_container_repo: ${{ env.IMAGE_NAME }}
+          readme_file: 'README.md'
+          short_description: 'Docker image used to retrieve "resp", "dless", "sac", "minified", "paz" or "dataselect_list" from FDSN nodes.'
+
+#      - name: Publish Docker description (README.md) to Docker Hub
+#        run: |
+#          wget -O docker-pushrm "https://github.com/christian-korneck/docker-pushrm/releases/download/v1.7.0/docker-pushrm_linux_amd64"
+#          chmod +x docker-pushrm
+#          ./docker-pushrm --file README.md ${{ env.IMAGE_NAME }}
 
   test-publiccode:
     runs-on: ubuntu-latest
