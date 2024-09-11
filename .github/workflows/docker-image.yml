@@ -95,7 +95,7 @@ jobs:
         with:
           provider: dockerhub
           destination_container_repo: ${{ env.IMAGE_NAME }}
-          readme_file: 'README.md'
+          readme_file: '/tmp/README.md'
           short_description: 'Docker image used to retrieve date from FDSN nodes.'
 
 #      - name: Publish Docker description (README.md) to Docker Hub
