@@ -1,0 +1,69 @@
+name: CI/CD
+
+on:
+  push:
+    branches:
+      - "**"
+    tags:
+      - 'v*.*.*'
+  pull_request:
+    branches:
+      - "master"
+
+env:
+  IMAGE_NAME: ingv/fdsnws-fetcher
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Build docker image
+        run: |
+          IMAGE_TAG=${GITHUB_REF#refs/tags/v}
+          docker build --no-cache --pull --tag ${{ env.IMAGE_NAME }}:latest .
+      - name: Archive Docker image
+        run: |
+          docker save -o image.tar ${{ env.IMAGE_NAME }}
+      - name: Upload artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: docker-image
+          path: |
+            ./image.tar
+            ./README.md
+
+  publish-tag-and-latest:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: docker-image
+      - name: Load archived Docker image
+        run: docker load -i image.tar
+      - name: Login to DockerHub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_ACCESS_TOKEN }}
+      - name: Push Docker Image to Docker Hub
+        run: |
+          IMAGE_TAG=${GITHUB_REF#refs/tags/v}
+          docker tag ${{ env.IMAGE_NAME }}:latest ${{ env.IMAGE_NAME }}:$IMAGE_TAG
+          docker push ${{ env.IMAGE_NAME }}:latest
+          docker push ${{ env.IMAGE_NAME }}:$IMAGE_TAG
+      - name: Publish Docker description (README.md) to Docker Hub
+        run: |
+          wget -O docker-pushrm "https://github.com/christian-korneck/docker-pushrm/releases/download/v1.7.0/docker-pushrm_linux_amd64"
+          chmod +x docker-pushrm
+          ./docker-pushrm --file README.md ${{ env.IMAGE_NAME }}
+
+  test-publiccode:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Validate publiccode file
+        run: |
+          docker run -i --rm italia/publiccode-parser-go /dev/stdin < publiccode.yml
