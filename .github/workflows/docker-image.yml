@@ -31,8 +31,8 @@ jobs:
 
       - name: Build Docker image
         run: |
-          IMAGE_TAG=${{ github.ref_name/v/'' }}
-          #IMAGE_TAG=${GITHUB_REF#refs/tags/v}
+          #IMAGE_TAG=${{ github.ref_name/v/'' }}
+          IMAGE_TAG=${GITHUB_REF#refs/tags/v}
           docker build --no-cache --pull --tag ${{ env.IMAGE_NAME }}:latest .
 
       - name: Save Docker image to file
@@ -82,8 +82,8 @@ jobs:
 
       - name: Tag and push Docker image
         run: |
-          IMAGE_TAG=${{ github.ref_name/v/'' }}
-          #IMAGE_TAG=${GITHUB_REF#refs/tags/v}
+          #IMAGE_TAG=${{ github.ref_name/v/'' }}
+          IMAGE_TAG=${GITHUB_REF#refs/tags/v}
           docker tag $IMAGE_NAME:latest $IMAGE_NAME:$IMAGE_TAG
           docker push $IMAGE_NAME:latest
           docker push $IMAGE_NAME:$IMAGE_TAG
