@@ -6,6 +6,9 @@ on:
       - '**'
     tags:
       - 'v*.*.*'
+  pull_request:
+    branches:
+      - "master"
 
 env:
   IMAGE_NAME: ingv/fdsnws-fetcher
@@ -74,7 +77,7 @@ jobs:
           provider: dockerhub
           destination_container_repo: ${{ env.IMAGE_NAME }}
           readme_file: 'README.md'
-          short_description: 'Docker image used to retrieve date from FDSN nodes.'
+          short_description: 'Docker image used to retrieve date from FDSNWS nodes.'
 
   test-publiccode:
     runs-on: ubuntu-latest
