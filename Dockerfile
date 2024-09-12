@@ -6,44 +6,53 @@ ENV DEBIAN_FRONTEND=noninteractive
 ENV INITRD No
 ENV FAKE_CHROOT 1
 
+ARG TARGETPLATFORM
+
+# Print ARCHITECTURE variable
+RUN echo "Detected architecture: $(uname -m)"
+
 # install packages
 RUN apt-get update \
-    && apt-get dist-upgrade -y --no-install-recommends \
     && apt-get install -y \
-        vim \
-        git \
-        telnet \
-        dnsutils \
-        wget \
-        curl \
-        default-jre \
-        apt-transport-https \
-        procps
+    vim \
+    git \
+    telnet \
+    dnsutils \
+    wget \
+    curl \
+    default-jre \
+    apt-transport-https \
+    procps
 
-RUN apt-get install -y \
-	python3-dev \
-	python3-pycurl \
-	python3-simplejson \
-	libcurl4-gnutls-dev \
-	libssl-dev \
-	python3 \
-	python3-psutil \
-	python3-requests \
-	python3-jsonschema \
-	python3-setuptools \
-	python3-dev \
-	build-essential \
-	libxml2-dev \
-	libxslt1-dev \
-	libz-dev
+RUN apt-get update \
+    && apt-get install -y \
+    python3-dev \
+    python3-pycurl \
+    python3-simplejson \
+    libcurl4-gnutls-dev \
+    libssl-dev \
+    python3 \
+    python3-psutil \
+    python3-requests \
+    python3-jsonschema \
+    python3-setuptools \
+    python3-dev \
+    python3-pip \
+    build-essential \
+    libxml2-dev \
+    libxslt1-dev \
+    libz-dev
+
+# Upgrade pip
+RUN python3 -m pip install --upgrade pip
 
 # Set .bashrc
 RUN echo "" >> /root/.bashrc \
-     && echo "##################################" >> /root/.bashrc \
-     && echo "alias ll='ls -l --color'" >> /root/.bashrc \
-     && echo "" >> /root/.bashrc \
-     && echo "export LC_ALL=\"C\"" >> /root/.bashrc \
-     && echo "" >> /root/.bashrc
+    && echo "##################################" >> /root/.bashrc \
+    && echo "alias ll='ls -l --color'" >> /root/.bashrc \
+    && echo "" >> /root/.bashrc \
+    && echo "export LC_ALL=\"C\"" >> /root/.bashrc \
+    && echo "" >> /root/.bashrc
 
 # Set 'root' pwd
 RUN echo root:toor | chpasswd
@@ -62,9 +71,14 @@ COPY soft/qlib2.2019.365.tar.gz /opt/
 RUN tar xvzf qlib2.2019.365.tar.gz \
     && rm qlib2.2019.365.tar.gz \
     && cd qlib2 \
+    && cp Makefile Makefile.original \
     && sed -e 's|ROOTDIR\s=.*|ROOTDIR = /usr/local|' -e 's|LEAPSECONDS\s=.*|LEAPSECONDS = /usr/local/etc/leapseconds|' Makefile > Makefile.new \
-    && mv Makefile Makefile.original \
     && mv Makefile.new Makefile \
+    && ARCHITECTURE=$(uname -m) \
+    && if [ "${ARCHITECTURE}" = "aarch64" ]; then \
+        sed -e 's|C64\s=.*|C64 = |' Makefile > Makefile.new \
+        && mv Makefile.new Makefile \
+    fi \ 
     && mkdir /usr/local/share/man/man3/ \
     && mkdir /usr/local/lib64 \
     && make clean \
@@ -78,49 +92,58 @@ COPY soft/qmerge.2014.329.tar.gz /opt/
 RUN tar xvzf qmerge.2014.329.tar.gz \
     && rm qmerge.2014.329.tar.gz \
     && cd qmerge \
+    && cp Makefile Makefile.original \
     && sed -e 's|^QLIB2.*|QLIB2 = /usr/local/lib64/libqlib2.a|' Makefile > Makefile.new \
-    && mv Makefile Makefile.original \
     && mv Makefile.new Makefile \
+    && ARCHITECTURE=$(uname -m) \
+    && if [ "${ARCHITECTURE}" = "aarch64" ]; then \
+        sed -e 's|^CC.*|CC = cc -Wall|' Makefile > Makefile.new \
+        && mv Makefile.new Makefile \
+    fi \
     && make clean \
     && make install \
     && rm -fr /opt/qmerge
 
-# Get and install ObsPy
-RUN apt-get update \
-    && apt-get install -y \
-        software-properties-common
-RUN add-apt-repository "deb http://deb.obspy.org $(lsb_release -cs) main"
-RUN wget --quiet -O - https://raw.githubusercontent.com/obspy/obspy/master/misc/debian/public.key | apt-key add -
-RUN apt-get update \
-    && apt-get install -y \
-        python3-obspy 
+# Install ObsPy
+RUN pip3 install obspy
 
 # Get and install PyRocko - https://pyrocko.org/docs/current/install/system/deb.html
 WORKDIR /opt
 RUN apt-get update \
     && apt-get install -y \
-        make \
-        git \
-        python3-dev \
-        python3-setuptools \
-        python3-numpy \
-        python3-numpy-dev \
-        python3-scipy \
-        python3-matplotlib \
-        python3-pyqt4 \
-        python3-pyqt4.qtopengl \
-        python3-pyqt5 \
-        python3-pyqt5.qtopengl \
-        python3-pyqt5.qtsvg \
-        python3-pyqt5.qtwebengine || apt-get install -y python3-pyqt5.qtwebkit 
-RUN apt-get install -y python3-yaml \
-        python3-progressbar \
-        python3-jinja2 \
-        python3-requests
-COPY soft/pyrocko_v2020.10.26.tar.gz /opt/
-#RUN git clone https://git.pyrocko.org/pyrocko/pyrocko.git pyrocko \
-RUN tar xvzf pyrocko_v2020.10.26.tar.gz \
-    && rm pyrocko_v2020.10.26.tar.gz \ 
+    make \
+    git \
+    python3-dev \
+    python3-setuptools 
+RUN apt-get update \
+    && apt-get install -y \
+    python3-numpy \
+    python3-numpy-dev \
+    python3-scipy \
+    python3-matplotlib
+RUN apt-get update \
+    && apt-get install -y \
+    python3-pyqt4 \
+    python3-pyqt4.qtopengl
+RUN apt-get update \
+    && apt-get install -y \
+    python3-pyqt5 \
+    python3-pyqt5.qtopengl \
+    python3-pyqt5.qtsvg
+RUN apt-get update \
+    && apt-get install -y \
+    python3-pyqt5.qtwebengine || apt-get install -y python3-pyqt5.qtwebkit
+RUN apt-get update \
+    && apt-get install -y \
+    python3-yaml \
+    python3-progressbar \
+    python3-jinja2
+RUN apt-get update \
+    && apt-get install -y \
+    python3-requests
+COPY soft/pyrocko_v2024.01.10.tar.gz /opt/
+RUN tar xvzf pyrocko_v2024.01.10.tar.gz \
+    && rm pyrocko_v2024.01.10.tar.gz \ 
     && cd pyrocko* \
     && python3 setup.py install
 WORKDIR /
@@ -157,6 +180,13 @@ RUN chmod 777 /opt
 WORKDIR /opt
 RUN mkdir /opt/OUTPUT
 RUN chmod -R 777 /opt/OUTPUT
+
+#
+RUN echo "BUILDPLATFORM=${BUILDPLATFORM}" > /tmp/arc
+RUN echo "TARGETPLATFORM=${TARGETPLATFORM}" >> /tmp/arc
+RUN echo "TARGETOS=${TARGETOS}" >> /tmp/arc
+RUN echo "TARGETARCH=${TARGETARCH}" >> /tmp/arc
+RUN uname -m >> /tmp/arc
 
 # Set entrypoint
 ENTRYPOINT ["./entrypoint.sh"]

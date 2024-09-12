@@ -127,6 +127,36 @@ the line `http://webservices.ingv.it|authoritative=any|http://eidaws-internal.in
 - request stations info from `http://webservices.ingv.it` adding `authoritative=any` to the request (`http://webservices.ingv.it/fdsnws/station/1/query?authoritative=any&<other_params>`
 - request the waveforms to the *dataselect* node: `http://eidaws-internal.int.ingv.it/fdsnws/dataselect/1/query?<params>`
 
+# Build multi arch docker image
+Create multi-arch builder and use it:
+```
+docker buildx create \
+  --name container-builder \
+  --driver docker-container \
+  --use
+```
+
+list builders:
+```
+docker buildx ls
+```
+
+build multi-arch image with `container-builder` builder:
+```
+docker buildx build \
+  --platform linux/amd64,linux/arm64 \
+  -t ingv/fdsnws-fetcher:latest .
+```
+
+return to `default` builder:
+```
+docker buildx use default
+```
+
+NOTE:
+- the `build` command, build the images but do not export it on your local registry; to do that, use `--load` option BUT it works only with one `platform`. i.e: `docker buildx build --platform linux/amd64 --load -t ingv/fdsnws-fetcher:latest`
+- to push the image with both architectures, use `--push` option: i.e.: ``docker buildx build --platform linux/amd64,linux/arm64 --push -t ingv/fdsnws-fetcher:latest .`
+
 # Contribute
 Thanks to your contributions!
 
