@@ -77,7 +77,7 @@ RUN tar xvzf qlib2.2019.365.tar.gz \
     && ARCHITECTURE=$(uname -m) \
     && if [ "${ARCHITECTURE}" = "aarch64" ]; then \
         sed -e 's|C64\s=.*|C64 = |' Makefile > Makefile.new \
-        && mv Makefile.new Makefile \
+        && mv Makefile.new Makefile ; \
     fi \ 
     && mkdir /usr/local/share/man/man3/ \
     && mkdir /usr/local/lib64 \
@@ -98,7 +98,7 @@ RUN tar xvzf qmerge.2014.329.tar.gz \
     && ARCHITECTURE=$(uname -m) \
     && if [ "${ARCHITECTURE}" = "aarch64" ]; then \
         sed -e 's|^CC.*|CC = cc -Wall|' Makefile > Makefile.new \
-        && mv Makefile.new Makefile \
+        && mv Makefile.new Makefile ; \
     fi \
     && make clean \
     && make install \
