@@ -2,7 +2,7 @@
 # metadata file that makes public software easily discoverable.
 # More info at https://github.com/italia/publiccode.yml
 
-publiccodeYmlVersion: '0.2'
+publiccodeYmlVersion: '0.4.0'
 name: 'INGV - FDSNWS Fetcher' 
 releaseDate: '2024-09-13'
 url: 'https://github.com/INGV/fdsnws-fetcher'
@@ -26,7 +26,6 @@ maintenance:
     - name: Valentino Lauciani
       email: valentino.lauciani@ingv.it
 legal:
-  authorsFile: AUTHORS.md 
   repoOwner: 'Istituto Nazionale di Geofisica e Vulcanologia - INGV'
   license: 'AGPL-3.0-or-later'
 intendedAudience:
@@ -42,7 +41,6 @@ it:
     codiceIPA: ingv
 description:
   en:
-    genericName: fdsnws-fetcher
     shortDescription: >-
       Docker used to retrieve "resp", "dless", "sac", "minified", "paz" or
       "dataselect_list" from FDSN node.
