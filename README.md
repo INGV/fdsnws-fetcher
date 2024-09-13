@@ -12,7 +12,7 @@
 
 ![Dynamic YAML Badge](https://img.shields.io/badge/dynamic/yaml?url=https%3A%2F%2Fraw.githubusercontent.com%2FINGV%2Ffdsnws-fetcher%2Fmaster%2F.github%2Fworkflows%2Fdocker-image.yml&query=%24..platforms&style=flat&logo=amazonec2&logoColor=white&logoSize=auto&label=Supported%20Arch)
 
-# fdsnws-fetcher [![Version](https://img.shields.io/badge/dynamic/yaml?label=ver&query=softwareVersion&url=https://raw.githubusercontent.com/INGV/fdsnws-fetcher/master/publiccode.yml)](https://github.com/INGV/fdsnws-fetcher/blob/master/publiccode.yml) | ![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/ingv/fdsnws-fetcher/docker-image.yml?branch=master&style=flat&logo=GitHub-Actions&logoColor=white&logoSize=auto&label=GitHub%20Actions)
+# fdsnws-fetcher [![Version](https://img.shields.io/badge/dynamic/yaml?label=ver&query=softwareVersion&url=https://raw.githubusercontent.com/INGV/fdsnws-fetcher/master/publiccode.yml)](https://github.com/INGV/fdsnws-fetcher/blob/master/publiccode.yml) | [![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/ingv/fdsnws-fetcher/docker-image.yml?branch=master&style=flat&logo=GitHub-Actions&logoColor=white&logoSize=auto&label=GitHub%20Actions)](https://github.com/INGV/fdsnws-fetcher/actions)
 
 This Docker is used to retrieve:
 - "**paz**": Poles and zeros file(s)
