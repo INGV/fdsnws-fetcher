@@ -4,11 +4,14 @@
 [![License](https://img.shields.io/github/license/INGV/fdsnws-fetcher.svg)](https://github.com/INGV/fdsnws-fetcher/blob/master/LICENSE)
 [![GitHub issues](https://img.shields.io/github/issues/INGV/fdsnws-fetcher.svg)](https://github.com/INGV/fdsnws-fetcher/issues)
 
-[![Docker build](https://img.shields.io/badge/docker%20build-from%20CI-yellow)](https://hub.docker.com/r/ingv/fdsnws-fetcher)
-![Docker Image Size (latest semver)](https://img.shields.io/docker/image-size/ingv/fdsnws-fetcher?sort=semver)
-![Docker Pulls](https://img.shields.io/docker/pulls/ingv/fdsnws-fetcher)
+[![DockerHub](https://img.shields.io/badge/DockerHub-link_to_repository-blueviolet?style=flat&logo=docker&logoColor=blue&logoSize=auto)](https://hub.docker.com/r/ingv/fdsnws-fetcher)
+![DockerHub Image Size](https://img.shields.io/docker/image-size/ingv/fdsnws-fetcher?sort=semver&style=flat&logo=docker&logoSize=auto&label=DockerHub%20Image%20Size)
+![DockerHub Pulls](https://img.shields.io/docker/pulls/ingv/fdsnws-fetcher?style=flat&logo=docker&logoSize=auto&label=DockerHub%20Image%20Pull)
 
-# fdsnws-fetcher [![Version](https://img.shields.io/badge/dynamic/yaml?label=ver&query=softwareVersion&url=https://raw.githubusercontent.com/INGV/fdsnws-fetcher/master/publiccode.yml)](https://github.com/INGV/fdsnws-fetcher/blob/master/publiccode.yml) [![CircleCI](https://circleci.com/gh/INGV/fdsnws-fetcher/tree/master.svg?style=svg)](https://circleci.com/gh/INGV/fdsnws-fetcher/tree/master) | [![GitHub](https://img.shields.io/static/v1?label=GitHub&message=Link%20to%20repository&color=blueviolet)](https://github.com/INGV/fdsnws-fetcher)
+![Static Badge](https://img.shields.io/badge/GitHub-link_to_repository-blueviolet?style=flat&logo=github&logoSize=auto)
+![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/ingv/fdsnws-fetcher/docker-image.yml?branch=master&style=flat&logo=GitHub-Actions&logoColor=white&logoSize=auto&label=github%20actions)
+
+# fdsnws-fetcher [![Version](https://img.shields.io/badge/dynamic/yaml?label=ver&query=softwareVersion&url=https://raw.githubusercontent.com/INGV/fdsnws-fetcher/master/publiccode.yml)](https://github.com/INGV/fdsnws-fetcher/blob/master/publiccode.yml)
 
 This Docker is used to retrieve:
 - "**paz**": Poles and zeros file(s)
