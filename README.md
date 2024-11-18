@@ -7,7 +7,7 @@
 ![DockerHub Image Size](https://img.shields.io/docker/image-size/ingv/fdsnws-fetcher?sort=semver&style=flat&logo=docker&logoSize=auto&label=DockerHub%20Image%20Size)
 ![DockerHub Pulls](https://img.shields.io/docker/pulls/ingv/fdsnws-fetcher?style=flat&logo=docker&logoSize=auto&label=DockerHub%20Image%20Pull)
 
-![GitHub Static Badge](https://img.shields.io/badge/GitHub-link_to_repository-blueviolet?style=flat&logo=github&logoSize=auto)
+[![GitHub Static Badge](https://img.shields.io/badge/GitHub-link_to_repository-blueviolet?style=flat&logo=github&logoSize=auto)](https://github.com/INGV/fdsnws-fetcher)
 [![GitHub Issues](https://img.shields.io/github/issues/INGV/fdsnws-fetcher?label=GitHub%20Issues&logo=github)](https://github.com/INGV/fdsnws-fetcher/issues)
 
 ![Dynamic YAML Badge](https://img.shields.io/badge/dynamic/yaml?url=https%3A%2F%2Fraw.githubusercontent.com%2FINGV%2Ffdsnws-fetcher%2Fmaster%2F.github%2Fworkflows%2Fdocker-image.yml&query=%24..platforms&style=flat&logo=amazonec2&logoColor=white&logoSize=auto&label=Supported%20Arch)
