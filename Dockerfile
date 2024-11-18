@@ -3,8 +3,8 @@ FROM debian:buster
 LABEL maintainer="Valentino Lauciani <valentino.lauciani@ingv.it>"
 
 ENV DEBIAN_FRONTEND=noninteractive
-ENV INITRD No
-ENV FAKE_CHROOT 1
+ENV INITRD=No
+ENV FAKE_CHROOT=1
 
 ARG TARGETPLATFORM
 
