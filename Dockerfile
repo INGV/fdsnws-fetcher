@@ -1,4 +1,5 @@
-FROM debian:buster
+#FROM debian:buster
+FROM debian:bullseye
 
 LABEL maintainer="Valentino Lauciani <valentino.lauciani@ingv.it>"
 
@@ -22,7 +23,8 @@ RUN apt-get update \
     curl \
     default-jre \
     apt-transport-https \
-    procps
+    procps \
+    && rm -rf /var/lib/apt/lists/* /var/cache/apt/*
 
 RUN apt-get update \
     && apt-get install -y \
@@ -41,7 +43,8 @@ RUN apt-get update \
     build-essential \
     libxml2-dev \
     libxslt1-dev \
-    libz-dev
+    libz-dev \
+    && rm -rf /var/lib/apt/lists/* /var/cache/apt/*
 
 # Upgrade pip
 RUN python3 -m pip install --upgrade pip
@@ -99,37 +102,49 @@ RUN tar xvzf qmerge.2014.329.tar.gz \
     && if [ "${ARCHITECTURE}" = "aarch64" ]; then \
         sed -e 's|^CC.*|CC = cc -Wall|' Makefile > Makefile.new \
         && mv Makefile.new Makefile ; \
-    fi \
+    fi 
+# Fix for multiple definition error of 'qverify' and 'verify' variables during linking.
+# This modifies 'externals.h' to declare 'qverify' and 'verify' as external variables 
+# and adds their actual definitions in 'qmerge.c' to avoid reallocation issues.
+WORKDIR /opt/qmerge
+RUN sed -i '/int qverify;/s/^/extern /' ./externals.h \
+    && sed -i '/struct _verify {/s/^/extern /' ./externals.h \
+    && sed -i '/#include "externals.h"/a \ \nint qverify = 0;\nstruct _verify verify;\n' ./qmerge.c \
     && make clean \
     && make install \
     && rm -fr /opt/qmerge
+WORKDIR /opt
 
 # Install ObsPy
 RUN pip3 install obspy
 
-# Get and install PyRocko - https://pyrocko.org/docs/current/install/system/deb.html
+# Get and install PyRocko - https://pyrocko.org/docs/current/install/system/linux/index.html
 WORKDIR /opt
 RUN apt-get update \
     && apt-get install -y \
     make \
     git \
     python3-dev \
-    python3-setuptools 
+    python3-setuptools \
+    && rm -rf /var/lib/apt/lists/* /var/cache/apt/* 
 RUN apt-get update \
     && apt-get install -y \
     python3-numpy \
     python3-numpy-dev \
     python3-scipy \
-    python3-matplotlib
-RUN apt-get update \
-    && apt-get install -y \
-    python3-pyqt4 \
-    python3-pyqt4.qtopengl
+    python3-matplotlib \
+    && rm -rf /var/lib/apt/lists/* /var/cache/apt/*
+#RUN apt-get update \
+#    && apt-get install -y \
+#    python3-pyqt4 \
+#    python3-pyqt4.qtopengl \
+#    && rm -rf /var/lib/apt/lists/* /var/cache/apt/*
 RUN apt-get update \
     && apt-get install -y \
     python3-pyqt5 \
     python3-pyqt5.qtopengl \
-    python3-pyqt5.qtsvg
+    python3-pyqt5.qtsvg \
+    && rm -rf /var/lib/apt/lists/* /var/cache/apt/*
 RUN apt-get update \
     && apt-get install -y \
     python3-pyqt5.qtwebengine || apt-get install -y python3-pyqt5.qtwebkit
@@ -137,13 +152,15 @@ RUN apt-get update \
     && apt-get install -y \
     python3-yaml \
     python3-progressbar \
-    python3-jinja2
+    python3-jinja2 \
+    && rm -rf /var/lib/apt/lists/* /var/cache/apt/*
 RUN apt-get update \
     && apt-get install -y \
-    python3-requests
-COPY soft/pyrocko_v2024.01.10.tar.gz /opt/
-RUN tar xvzf pyrocko_v2024.01.10.tar.gz \
-    && rm pyrocko_v2024.01.10.tar.gz \ 
+    python3-requests \
+    && rm -rf /var/lib/apt/lists/* /var/cache/apt/*
+COPY soft/pyrocko_v2024.01.10bis.tar.gz /opt/
+RUN tar xvzf pyrocko_v2024.01.10bis.tar.gz \
+    && rm pyrocko_v2024.01.10bis.tar.gz \ 
     && cd pyrocko* \
     && python3 setup.py install
 WORKDIR /
