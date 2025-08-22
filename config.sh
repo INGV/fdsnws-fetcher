@@ -1,7 +1,11 @@
 #!/bin/bash
 
-# Set date
+# Set variable
 export DATE_NOW=${DATE_NOW:=$(date +%Y%m%d_%H%M%S)}
+if [ ! -d /tmp/MPLCONFIGDIR ]; then
+    mkdir -p /tmp/MPLCONFIGDIR
+fi
+export MPLCONFIGDIR=/tmp/MPLCONFIGDIR
 
 # Set dir name
 DIR_WORK=$( cd $( dirname $0 ) && pwd )
