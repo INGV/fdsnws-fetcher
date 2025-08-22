@@ -1,5 +1,5 @@
-#FROM debian:buster
-FROM debian:bullseye
+FROM debian:buster
+#FROM debian:bullseye
 
 LABEL maintainer="Valentino Lauciani <valentino.lauciani@ingv.it>"
 
