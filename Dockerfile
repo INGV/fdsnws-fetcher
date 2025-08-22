@@ -47,7 +47,7 @@ RUN apt-get update \
     && rm -rf /var/lib/apt/lists/* /var/cache/apt/*
 
 # Upgrade pip
-RUN python3 -m pip install --upgrade pip
+RUN python3 -m pip install --upgrade pip --break-system-packages
 
 # Set .bashrc
 RUN echo "" >> /root/.bashrc \
@@ -116,7 +116,7 @@ RUN sed -i '/int qverify;/s/^/extern /' ./externals.h \
 WORKDIR /opt
 
 # Install ObsPy
-RUN pip3 install obspy
+RUN pip3 install obspy --break-system-packages
 
 # Get and install PyRocko - https://pyrocko.org/docs/current/install/system/linux/index.html
 WORKDIR /opt
