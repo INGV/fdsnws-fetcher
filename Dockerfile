@@ -168,8 +168,8 @@ RUN mkdir /.pyrocko/ \
     && chmod 777 /.pyrocko/
 
 # Get last leapseconds
-WORKDIR /usr/local/etc
-RUN wget -O leapseconds http://www.ncedc.org/ftp/pub/programs/leapseconds
+WORKDIR /tmp
+RUN wget -O /tmp/leapseconds http://www.ncedc.org/ftp/pub/programs/leapseconds
 
 # Install Xml2Resp and scripts
 WORKDIR /opt
@@ -192,6 +192,10 @@ RUN chmod 755 /opt/031_get_mseed-sac_parallel.sh
 RUN chmod 755 /opt/seed_handler.py
 RUN chmod 755 /opt/publiccode.yml
 RUN chmod 777 /opt
+
+# Fix permissions problem on log file 'seed_handler.Log'
+RUN sed -i "s|logfn=open('seed_handler.Log','w')|logfn=open('/tmp/seed_handler.Log','w')|" seed_handler.py
+
 
 # Create OUTPUT dir 
 WORKDIR /opt
