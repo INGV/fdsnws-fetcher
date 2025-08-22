@@ -1,5 +1,5 @@
-FROM debian:bullseye
-#FROM debian:bookworm
+#FROM debian:bullseye
+FROM debian:bookworm
 
 LABEL maintainer="Valentino Lauciani <valentino.lauciani@ingv.it>"
 
@@ -79,8 +79,8 @@ RUN tar xvzf qlib2.2019.365.tar.gz \
     && mv Makefile.new Makefile \
     && ARCHITECTURE=$(uname -m) \
     && if [ "${ARCHITECTURE}" = "aarch64" ]; then \
-        sed -e 's|C64\s=.*|C64 = |' Makefile > Makefile.new \
-        && mv Makefile.new Makefile ; \
+    sed -e 's|C64\s=.*|C64 = |' Makefile > Makefile.new \
+    && mv Makefile.new Makefile ; \
     fi \ 
     && mkdir /usr/local/share/man/man3/ \
     && mkdir /usr/local/lib64 \
@@ -100,8 +100,8 @@ RUN tar xvzf qmerge.2014.329.tar.gz \
     && mv Makefile.new Makefile \
     && ARCHITECTURE=$(uname -m) \
     && if [ "${ARCHITECTURE}" = "aarch64" ]; then \
-        sed -e 's|^CC.*|CC = cc -Wall|' Makefile > Makefile.new \
-        && mv Makefile.new Makefile ; \
+    sed -e 's|^CC.*|CC = cc -Wall|' Makefile > Makefile.new \
+    && mv Makefile.new Makefile ; \
     fi 
 # Fix for multiple definition error of 'qverify' and 'verify' variables during linking.
 # This modifies 'externals.h' to declare 'qverify' and 'verify' as external variables 
