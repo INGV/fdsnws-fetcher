@@ -10,11 +10,15 @@
 . $(dirname $0)/config.sh
 
 # Check leapsecond
-if [ "$( id -u )" -eq 0 ]; then
-    qmerge -h 2> /dev/null > /dev/null
-    if (( ${?} != 0 )); then
-        wget -O /usr/local/etc/leapseconds http://www.ncedc.org/ftp/pub/programs/leapseconds
-    fi
+if [ -f /usr/local/etc/leapseconds ]; then
+    export LEAPSECONDS=/usr/local/etc/leapseconds
+elif [ -f /tmp/leapseconds ]; then
+    export LEAPSECONDS=/tmp/leapseconds
+fi
+qmerge -h 2> /tmp/check_leapseconds > /dev/null
+if (( ${?} != 0 )) || grep -qi "unable to open leap second file" /tmp/check_leapseconds ; then
+    wget -O /tmp/leapseconds http://www.ncedc.org/ftp/pub/programs/leapseconds
+    export LEAPSECONDS=/tmp/leapseconds
 fi
 
 # Get remote version number and check update
