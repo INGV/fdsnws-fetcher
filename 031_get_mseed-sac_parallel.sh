@@ -84,6 +84,10 @@ if (( ${RET_CODE} == 0 )); then
             if [[ ! -z ${STARTTIME} ]] && [[ ! -z ${ENDTIME} ]]; then
                 #echo "  use qmerge to cut file properly"
                 qmerge -f ${STARTTIME} -t ${ENDTIME} ${FILE_OUTPUT_MSEED} > ${FILE_OUTPUT_MSEED}.new 2> ${DIR_MSEED_LOG}/$( basename ${FILE_OUTPUT_MSEED} ).qmerge.log
+                RET_QMERGE=${?}
+                if [ ${RET_QMERGE} -ne 0 ]; then
+                    echo " ERROR - running qmerge. Check log folder!"
+                fi
                 mv ${FILE_OUTPUT_MSEED}.new ${FILE_OUTPUT_MSEED}
             fi
             if [[ "${TYPE}" == "sac" ]]; then
