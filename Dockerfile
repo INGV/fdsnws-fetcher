@@ -168,9 +168,8 @@ RUN mkdir /.pyrocko/ \
     && chmod 777 /.pyrocko/
 
 # Get last leapseconds
-WORKDIR /tmp
-RUN wget -O /tmp/leapseconds http://www.ncedc.org/ftp/pub/programs/leapseconds
-RUN chmod 777 /tmp/leapseconds
+WORKDIR /usr/local/etc
+RUN wget -O /usr/local/etc/leapseconds http://www.ncedc.org/ftp/pub/programs/leapseconds
 
 # Install Xml2Resp and scripts
 WORKDIR /opt
