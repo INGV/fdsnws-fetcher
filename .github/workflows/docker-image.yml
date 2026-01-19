@@ -25,7 +25,7 @@ jobs:
 
       - name: Run publiccode parser
         run: |
-          docker run -i --rm italia/publiccode-parser-go /dev/stdin < publiccode.yml
+          docker run -i --rm -v $(pwd):/publiccode_folder italia/publiccode-parser-go:v5.2.3 /publiccode_folder/publiccode.yml
 
   build_and_push_to_registry:
     name: Build and Push Docker image to Docker Hub
