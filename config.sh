@@ -6,18 +6,21 @@ if [ ! -d /tmp/MPLCONFIGDIR ]; then
     mkdir -p /tmp/MPLCONFIGDIR
 fi
 export MPLCONFIGDIR=/tmp/MPLCONFIGDIR
-# Detect architecture
-case "$(uname -m)" in
-  arm64|aarch64)
-    ARCH_TYPE="aarch64"
-    ;;
-  x86_64)
-    ARCH_TYPE="x64"
-    ;;
-  *)
-    show_error "Unsupported architecture: $(uname -m)"
-    exit 1
-    ;;
+
+# === Detect OS and architecture ===
+OS_TYPE=$(echo "$(uname -s)")
+ARCH_TYPE=$(uname -m)
+# Normalize OS name
+case "${OS_TYPE}" in
+    Darwin) OS_NAME="macos" ;;
+    Linux)  OS_NAME="linux" ;;
+    *)      OS_NAME=$(echo "$OS_TYPE" | tr '[:upper:]' '[:lower:]') ;;
+esac
+# Normalize architecture name
+case "$ARCH_TYPE" in
+    x86_64)         ARCH_NAME="amd64" ;;
+    aarch64|arm64)  ARCH_NAME="arm64" ;;
+    *)              ARCH_NAME="$ARCH_TYPE" ;;
 esac
 
 # Set dir name
@@ -35,16 +38,12 @@ FILE_CURL2_HTTPCODE="${DIR_LOG}/$(basename $0)__FILE_CURL2.http_code"
 FILE_FDSNWS_NODES_URLS="stationxml.conf"
 
 # Set software
-#STATIONXML_TO_SEED="java -jar ./stationxml-converter-1.0.10.jar -s"
 STATIONXML_TO_SEED="java -jar ./stationxml-seed-converter-2.1.0.jar"
-case "${ARCH_TYPE}" in
-  aarch64)
-    RDSEED="rdseed-aarch64"
-    ;;
-  x64)
-    RDSEED="rdseed-amd64"
-    ;;
-esac
+RDSEED="rdseed-${OS_NAME}-${ARCH_NAME}"
+if [ ! -f /usr/bin/${RDSEED} ]; then
+    echo "Error: rdseed executable not found for OS \"${OS_NAME}\" and ARCH \"${ARCH_NAME}\"."
+    exit 1
+fi
 
 # Set var
 N_PROCESS_TO_GET_TYPE=20
