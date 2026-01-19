@@ -2,7 +2,7 @@
 # metadata file that makes public software easily discoverable.
 # More info at https://github.com/italia/publiccode.yml
 
-publiccodeYmlVersion: '0.4.0'
+publiccodeYmlVersion: '0.5'
 name: 'INGV - FDSNWS Fetcher' 
 releaseDate: '2026-01-19'
 url: 'https://github.com/INGV/fdsnws-fetcher'
@@ -26,7 +26,6 @@ maintenance:
     - name: Valentino Lauciani
       email: valentino.lauciani@ingv.it
 legal:
-  repoOwner: 'Istituto Nazionale di Geofisica e Vulcanologia - INGV'
   license: 'AGPL-3.0-or-later'
 intendedAudience:
   scope:
@@ -35,10 +34,9 @@ localisation:
   localisationReady: false
   availableLanguages:
     - en
-it:
-  countryExtensionVersion: '0.2'
-  riuso:
-    codiceIPA: ingv
+organisation:
+  uri: urn:x-italian-pa:ingv
+  name: Istituto Nazionale di Geofisica e Vulcanologia (INGV)
 description:
   en:
     shortDescription: >-
