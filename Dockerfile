@@ -64,8 +64,9 @@ RUN echo root:toor | chpasswd
 WORKDIR /opt
 COPY soft/rdseed /opt/rdseed
 RUN cd /usr/bin \
-    && ln -s /opt/rdseed/linux-aarch64/rdseed rdseed-aarch64 \
-    && ln -s /opt/rdseed/linux-amd64/rdseed rdseed-amd64
+    && ln -s /opt/rdseed/linux-arm64/rdseed rdseed-linux-arm64 \
+    && ln -s /opt/rdseed/linux-amd64/rdseed rdseed-linux-amd64 \
+    && ln -s /opt/rdseed/macos-arm64/rdseed rdseed-macos-arm64
 
 # Install qlib
 WORKDIR /opt
