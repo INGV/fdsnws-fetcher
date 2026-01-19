@@ -62,11 +62,10 @@ RUN echo root:toor | chpasswd
 
 # Get and install rdseed
 WORKDIR /opt
-COPY soft/rdseedv5.3.1.tar.gz /opt/
-RUN tar xvzf rdseedv5.3.1.tar.gz \
-    && rm /opt/rdseedv5.3.1.tar.gz \
-    && cd /usr/bin \
-    && ln -s /opt/rdseedv5.3.1/rdseed.rh6.linux_64 rdseed
+COPY soft/rdseed /opt/rdseed
+RUN cd /usr/bin \
+    && ln -s /opt/rdseed/linux-aarch64/rdseed rdseed-aarch64 \
+    && ln -s /opt/rdseed/linux-amd64/rdseed rdseed-amd64
 
 # Install qlib
 WORKDIR /opt
