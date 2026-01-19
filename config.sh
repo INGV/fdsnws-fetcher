@@ -6,6 +6,19 @@ if [ ! -d /tmp/MPLCONFIGDIR ]; then
     mkdir -p /tmp/MPLCONFIGDIR
 fi
 export MPLCONFIGDIR=/tmp/MPLCONFIGDIR
+# Detect architecture
+case "$(uname -m)" in
+  arm64|aarch64)
+    ARCH_TYPE="aarch64"
+    ;;
+  x86_64)
+    ARCH_TYPE="x64"
+    ;;
+  *)
+    show_error "Unsupported architecture: $(uname -m)"
+    exit 1
+    ;;
+esac
 
 # Set dir name
 DIR_WORK=$( cd $( dirname $0 ) && pwd )
@@ -24,7 +37,14 @@ FILE_FDSNWS_NODES_URLS="stationxml.conf"
 # Set software
 #STATIONXML_TO_SEED="java -jar ./stationxml-converter-1.0.10.jar -s"
 STATIONXML_TO_SEED="java -jar ./stationxml-seed-converter-2.1.0.jar"
-RDSEED="rdseed"
+case "${ARCH_TYPE}" in
+  aarch64)
+    RDSEED="rdseed-aarch64"
+    ;;
+  x64)
+    RDSEED="rdseed-amd64"
+    ;;
+esac
 
 # Set var
 N_PROCESS_TO_GET_TYPE=20
